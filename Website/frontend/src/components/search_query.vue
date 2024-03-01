@@ -73,45 +73,53 @@
           no-caret
           toggle-class="text-decoration-none"
         >
+
+           <!-- The button -->
           <template v-slot:button-content>
             <b-icon icon="plus-circle"></b-icon>
           </template>
+
+          <!-- dropdown items after clicking on plus icon-->
           <b-dropdown-item v-for="(operator, index) in filters.items.other.logical_operators" :key="index" v-on:click="add_query_block(operator, index, guidGenerator(), false, [block_index, form_block_array.length])">{{
             index
           }}</b-dropdown-item>
-          <!-- <b-dropdown-item v-for="(template, index) in filter_template_group" :key="index" v-on:click="add_query_block(template, index, guidGenerator(), true, false)">{{ index }}</b-dropdown-item> -->
-          <!-- v-on:click="add_query_block(this.logical_operators, 'and', guidGenerator(), false)">and</b-dropdown-item> -->
-          <!-- Filter values{ "properties": { "type": "filter", "query": "expression" }, "items": { "logical_operator": { "label": "Show rows with values that are", "type": "b-form-select", "default_options": [], "options": [ "= equal to", "!= not", "< less than", "> more than", ">= more or equal to", "<= less or equal to" ], "id": "filter_values_logical-operator", "selected": null }, "filter_value": { "type": "b-form-input", "id": "filter_values_value", "selected": null }, "filter_area": { "label": "for ", "type": "b-form-tags", "default_options": [ "any column", "all columns" ], "options": [ "any column", "all columns", "locus tag", "(sdfds) logFC", "(sdfds) logCPM", "(sdfds) PValue", "(sdfds) FDR" ], "id": "filter_values_area", "selected": [ "any column" ] } } } -->
-          <!-- <b-dropdown-item v-on:click="add_query_block(form_block_array, 'or', guidGenerator(), false)">or</b-dropdown-item> -->
-        </b-dropdown>
+         </b-dropdown>
 
+
+        <!-- dropdown image the plus button -->
         <b-dropdown v-else-if="form_block_array[0].forms.properties.type === 'filter'" size="sm" variant="link" pill id="add-dropdown" text="Add..." class="m-md-2 rounded" no-caret toggle-class="text-decoration-none">
           <template v-slot:button-content>
             <b-icon icon="plus-circle"></b-icon>
           </template>
-          <b-dropdown-group v-for="(filter_template_group, index) in filters.items.templates" :key="index" :header="index" id="dropdown-group-numeric">
-            <b-dropdown-item v-for="(template, index) in filter_template_group" :key="index" v-on:click="add_query_block(template, index, guidGenerator(), true, [block_index, form_block_array.length])">{{ index }}</b-dropdown-item>
-            <b-dropdown-divider></b-dropdown-divider>
-          </b-dropdown-group>
+
+          <!-- populating the different buttons, such as filter, transform data etc 
+          For example, filters.items.templates, 
+        .templates looks in filters.json and collects all the items under templates-->
+
+
+          <!-- dropdown contents for the plus button -->
+          <!-- Filters -->
           <b-dropdown-group v-for="(filter_preset_group, index) in filters.items.presets" :key="index" :header="index" id="dropdown-group-numeric">
-            <b-dropdown-item v-for="(preset, index) in filter_preset_group" :key="index" v-on:click="add_query_block(preset, index, guidGenerator(), true, [block_index, form_block_array.length])">{{ index }}</b-dropdown-item>
-            <b-dropdown-divider></b-dropdown-divider>
-          </b-dropdown-group>
+          <b-dropdown-item v-for="(preset, index) in filter_preset_group" :key="index" v-on:click="add_query_block(preset, index, guidGenerator(), true, false)">{{ index }}</b-dropdown-item>
+          <b-dropdown-divider></b-dropdown-divider>
+        </b-dropdown-group>
+          
+          <!-- to add more options - populate here with additional dropdown groups -->
+         
         </b-dropdown>
-        <!-- <b-dropdown v-if="form_block_array[form_block_array.length - 1]['logic'] === false" size="sm" variant="link" pill id="add-dropdown" text="Add..." class="m-md-2 rounded" no-caret toggle-class="text-decoration-none">
-          <template v-slot:button-content>
-            <b-icon icon="plus-circle"></b-icon>
-          </template>
-          <b-dropdown-item v-on:click="add_inline_query_block('change_values', form_block_array)">Change values...</b-dropdown-item>
-          <b-dropdown-item v-on:click="add_inline_query_block('values_in_column', form_block_array)">Values in column...</b-dropdown-item>
-          <b-dropdown-item v-on:click="add_inline_query_block('values_in_row', form_block_array)">Values in row...</b-dropdown-item>
-        </b-dropdown> -->
+
+        
         <b-button size="sm" variant="link" v-on:click="remove_query_block(form_block_array)">
           <b-icon icon="trash"></b-icon>
         </b-button>
       </b-card>
 
+      <!-- Each b-dropdown are the filter/transform buttons-->
+      <!-- If you need to add a new button or link to a new annotation category, change filters.items.presets
+            The .presents links into the filters.json file and new annotation cateories can be added -->
+
       <b-dropdown size="sm" variant="link" pill id="add-query-dropdown" text="Add..." class="m-md-2 rounded" no-caret toggle-class="text-decoration-none">
+        <!-- This is the popover text that whows when the help button is pressed - repeats below -->
         <b-popover id="tutorial_popover" :no-fade="true" triggers placement="bottom" target="add-query-dropdown" title="2. Build filters"
           >You can add multiple filters to search for all kinds of values, including GO terms, KEGG pathways, and COG categories.</b-popover
         >
@@ -124,8 +132,9 @@
 
       <b-dropdown size="sm" variant="link" pill id="load-query-dropdown" text="Add..." class="m-md-2 rounded" no-caret toggle-class="text-decoration-none">
         <b-popover id="tutorial_popover" :no-fade="true" triggers placement="rightbottom" target="load-query-dropdown" title="3. Load preset filters"
-          >Load pre-filled filters to search for pathogenicity islands, sORF etc.</b-popover
-        >
+          >Load pre-filled filters to search for pathogenicity islands, sORF etc.</b-popover>
+
+         <!-- The preset filters button-->
         <template v-slot:button-content> <b-icon icon="intersect"></b-icon> Preset Filters </template>
         <b-dropdown-group v-for="(filter_preset_group, index) in filters.items.presets" :key="index" :header="index" id="dropdown-group-numeric">
           <b-dropdown-item v-for="(preset, index) in filter_preset_group" :key="index" v-on:click="add_query_block(preset, index, guidGenerator(), true, false)">{{ index }}</b-dropdown-item>
@@ -144,6 +153,7 @@
         </b-dropdown-group>
       </b-dropdown>
 
+       <!-- The filter data button-->
       <div class="submit-button-parent">
         <b-button type="submit" variant="primary" pill size="sm" class="submit-button">
           <!-- <b-spinner label="Loading..." class="search-spinner" v-if="loading"></b-spinner> -->
