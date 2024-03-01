@@ -1,7 +1,7 @@
 {
   "items": {
     "transformations": {
-      "Basic": {
+      "Basic transformations": {
         "Round Values": {
           "properties": {
             "type": "round",
