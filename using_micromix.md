@@ -19,6 +19,7 @@
     - [How to add new expression data](modifying_micromix.md#how-to-add-new-expression-data)
     - [Modifying or adding gene or pathway annotations](modifying_micromix.md#modifying-or-adding-gene-or-pathway-annotations)
     - [Adding new visualisation plugins](modifying_micromix.md#adding-new-visualisation-plugins)
+    - [Database maintenance](modifying_micromix.md#database-maintenance)
 
 
 <br><br>
