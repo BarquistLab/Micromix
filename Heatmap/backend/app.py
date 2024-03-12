@@ -13,14 +13,13 @@ from bson.json_util import loads, dumps, ObjectId
 import pandas as pd
 from io import BytesIO
 
-# When testing locally, we can use a local instance of MongoDB for the database.
-# #MongoDB does need to be installed though
-# To test locally, use  client = MongoClient()
+
+# #MongoDB needs to be installed
 # Otherwise, use #client = MongoClient(os.environ.get("testend")) to point to the MongoDB server on the cloud
 
 #client = MongoClient(os.environ.get("testend"))
 client = MongoClient() # For offline testing.
-db = client.test
+db = client.micromix
 visualizations = db.visualizations
 
 DEBUG = True
@@ -32,16 +31,6 @@ app.config.from_object(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['FLASK_DEBUG']=1
 app.config['DEBUG'] = True
-
-#CORS testing - not needed - only needed to add the browser plugin to enable CORS requests (when testing locally)
-# https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf/related?hl=en
-
-#Testing different config options
-#app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-#cors = CORS(app, resources={r"/*":{"origins": "*"}})
-#cors = CORS(app, resources={r"/*":{"cors_allowed_origins": "*"}})
-# CORS(app, resources={r'/*':{'origins': 'http://localhost:8080',"allow_headers": "Access-Control-Allow-Origin"}})
-#CORS(app, resources={r'/*':{'origins': 'http://127.1.1.1:8081',"allow_headers": "Access-Control-Allow-Origin"}})
 
 
 @app.route('/status', methods=['GET'])

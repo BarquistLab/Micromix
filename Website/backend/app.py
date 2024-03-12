@@ -6,7 +6,7 @@
 #--------------------------------
 # 
 # 
-# To-Do: Configure CORS to only allow specific requests. Very important!
+# To-Do: Configure CORS to only allow specific requests.
 
 import os
 from flask import Flask, flash, request, redirect, url_for, jsonify, send_from_directory, Response, send_file
@@ -150,34 +150,12 @@ def health():
         )
     return resp
 
-
-#if __name__ == "__main__":
-#    app.run(debug=True)
-
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
 
-
-#PORT = '27017'
-#app.config['MONGO_PORT'] = PORT
-
-
 # MongoDB
-
-# When testing locally, we can use a local instance of MongoDB for the database.
-# #MongoDB does need to be installed though
-# To test locally, use  client = MongoClient()
-# Otherwise, use #client = MongoClient(os.environ.get("mongocredential")) to point to the MongoDB server on the cloud
-
-#client = MongoClient(os.environ.get("mongocredential"))
-#client = MongoClient() # For offline testing. 
-#client = MongoClient(host=['localhost:8080'])
-#client = MongoClient(host=['0.0.0.0'])
-#client = MongoClient(host=['localhost:5000'], connect=True)
-#client = MongoClient(host=['localhost:27017'], connect=True)
 client = MongoClient()
-#db = client.test_db
-db = client.test
+db = client.micromix
 visualizations = db.visualizations
 plugins = db.plugins
 
