@@ -19,6 +19,7 @@
     - [How to add new expression data](modifying_micromix.md#how-to-add-new-expression-data)
     - [Modifying or adding gene or pathway annotations](modifying_micromix.md#modifying-or-adding-gene-or-pathway-annotations)
     - [Adding new visualisation plugins](modifying_micromix.md#adding-new-visualisation-plugins)
+    - [Database maintenance](modifying_micromix.md#database-maintenance)
 
 
 <br><br>
@@ -528,9 +529,32 @@ The plugin configuration file is stored here: `btheta_site/Website/plugins.json`
 
 
 
-## How to deploy on a server and config files – nginx and gunicorn
+## Database maintenance
 
-**<< work in progress >>**
+Micromix stores session data within MongoDB. Over time, the database will grow and may require that old entries are removed. In the `\scripts` folder, there are three python scripts that allow you perform general maintenance - these can be run from the command line.
+
+`MONGO_count_records_between_dates.py` to count the records between dates
+
+`MONGO_look_for_locked.py` to look for locked session IDs. This may be useful for integrating into a Cron job or similar if wanting to automate removal of records, but exclude locked sessions
+
+`MONGO_remove_records_between_dates.py` To remove records within a specified timeframe – you also have the option of manually inputting session IDs to be excluded, such as IDs that are linked to collobrators or IDs that might be linked to a publication
+
+You can also interact with MongoDB from the command line. For example:
+
+```bash
+#To list the available databases
+mongo --eval "printjson(db.adminCommand('listDatabases'))"
+
+#To give details about the database 'micromix'
+mongo micromix --eval "var stats = db.stats(1024 * 1024); printjson({dataSizeMB: stats.dataSize, storageSizeMB: stats.storageSize, totalEntries: stats.objects})"
+
+#To get the head of a record
+mongo micromix --eval "printjson(db.visualizations.findOne())" | head
+
+```
+
+
+
 
 
 
