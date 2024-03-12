@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 #Connect to Db
 print("---Connecting to DB (1/5)---")
 client = MongoClient("mongodb://localhost:27017/")
-db = client["test"]
+db = client["micromix"]
 collection = db["visualizations"]
 print("---Connected to DB (2/5)---")
 
