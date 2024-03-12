@@ -13,8 +13,8 @@ from datetime import datetime, timedelta
 
 #Connect to MongoDB
 client = MongoClient("mongodb://localhost:27017/")
-db = client["test"]
-collection = db["visualizations"]
+db = client["micromix"] #DB name
+collection = db["visualizations"] #collection name
 
 #Note
 #Dates will need to be manually changed
