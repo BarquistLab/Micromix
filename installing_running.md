@@ -67,11 +67,86 @@ The site can be accessed by opening the browser and typing **localhost:8080**
 
 ## 2. Using Docker containers
 
-Docker is
+Docker is a platform that automates the deployment of applications inside lightweight, portable containers. These containers package up the application, along with its environment and dependencies, ensuring consistency across different environments. 
 
-**Docker will need to be installed**
+The following steps assume the following:
+ - You have access to a debian-based Linux 64bit machine
+ - You have sudo (admin) access
 
-**to be updated**
+We have created Micromix so it can be installed and run with Docker. To prepare the machine for Micromix to work properly, we will need to install various software.
+
+
+1. Install MongoDB (we install this locally so sessions are not lost if the containers need to be restarted)
+
+```bash
+#Install MongoDB
+sudo apt install -y mongodb
+
+#Confirm it is running
+sudo systemctl status mongodb
+
+#if not, then start with
+sudo systemctl start mongodb
+```
+
+
+2. Install Docker: The latest instructions can be found [here](https://docs.docker.com/engine/install/ubuntu/)
+
+```bash
+#Uninstall old versions or conflicting packages
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+
+3. Download Micromix from Github
+```bash
+git clone https://github.com/BarquistLab/Micromix.git
+```
+
+4. Run Micromix
+```bash
+#browse to the correct directory
+cd Micromix/Website
+
+#Run docker compose
+#This is llined to two dockerfiles, one for the backend and one for the frontend
+sudo docker compose build 
+sudo docker compose up
+
+#If you require that the containers run in the background, you can use
+docker compose up --detach
+
+#These two commands may take some time to complete
+#Once the containers have completed running, you should see this line from the command line (or something similar)
+* Running on http://127.0.0.1:5000 
+
+#Browse to this address in your browser, and Micromix will be running
+
+#To stop the containers - first press 'ctrl + C', then
+docker compose down
+
+#To also remove the associated volumes (-v) and images (-)
+docker compose down --volumes --rmi
+
+```
+
+??????HEATMAP???????
+
+> **Note:** Following these commands will allow you to run Micromix on any compatable computer. If you would like to setup a Micromix server that can be publically viewed through the internet, see [Server deployment](installing_running.md#server-deployment).
+
 
 
 ## 3. Manually installing Micromix
@@ -280,6 +355,8 @@ If you don't have any institute or department hosting services available, you ca
 
 Once you have access to a running server, you will need to download and install various software.
 
+The following steps 1-3 are identical to [Containers](installing_running.md#2-using-docker-containers) - and can be skipped if already completed.
+
 1. Install MongoDB (we install this locally so sessions are not lost if the containers need to be restarted)
 
 ```bash
@@ -326,11 +403,13 @@ git clone https://github.com/BarquistLab/Micromix.git
 **how to install and configure NGINX + Gunicorn**
 
 
+will also need to change the IP address to the one that the server has
+
 
 To run Micromix, 
 
 **To be completed**
 
-To run the website
+To run the heatmap
 
 **To be completed**
