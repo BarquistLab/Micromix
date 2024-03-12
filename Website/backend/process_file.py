@@ -15,14 +15,14 @@ def convert_to_df(input_file, extension, metadata,):
         df = pd.read_excel(input_file)
     elif extension == ".csv":
         if len(metadata["database_columns"]) > 0:
-            df = pd.read_csv(input_file, sep=metadata["formatting"]["file"]["csv_seperator"], decimal=metadata["formatting"]["file"]["decimal_character"], error_bad_lines=False, usecols=metadata["database_columns"])
+            df = pd.read_csv(input_file, sep=metadata["formatting"]["file"]["csv_seperator"], decimal=metadata["formatting"]["file"]["decimal_character"], on_bad_lines='skip', usecols=metadata["database_columns"])
         else:
-            df = pd.read_csv(input_file, sep=metadata["formatting"]["file"]["csv_seperator"], decimal=metadata["formatting"]["file"]["decimal_character"], error_bad_lines=False)
+            df = pd.read_csv(input_file, sep=metadata["formatting"]["file"]["csv_seperator"], decimal=metadata["formatting"]["file"]["decimal_character"], on_bad_lines='skip')
     elif extension == ".txt" or extension == ".tsv":
-        df = pd.read_csv(input_file, sep='\t', decimal=metadata["formatting"]["file"]["decimal_character"], error_bad_lines=False)
+        df = pd.read_csv(input_file, sep='\t', decimal=metadata["formatting"]["file"]["decimal_character"], on_bad_lines='skip')
     elif extension == "string":
         from io import StringIO
-        df = pd.read_csv(StringIO(input_file), sep='\t', decimal=metadata["formatting"]["text"]["decimal_character"], error_bad_lines=False)
+        df = pd.read_csv(StringIO(input_file), sep='\t', decimal=metadata["formatting"]["text"]["decimal_character"], on_bad_lines='skip')
         df.columns = pd.to_numeric(df.columns,errors='ignore')
     else:
         print("Error: No valid extension. Please upload .xlsx (Excel), .csv, or .txt (TSV).")
