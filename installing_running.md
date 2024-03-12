@@ -67,13 +67,14 @@ The site can be accessed by opening the browser and typing **localhost:8080**
 
 Docker is
 
-to be updated
+**Docker will need to be installed**
 
-Include in here that AMS can be linked?
+**to be updated**
+
 
 ## 3. Manually installing Micromix
 
-need to install website first, then heatmap
+need to install website first, then heatmap - useful for developers
 
 ### **Website**
 There are a number of requirements if running locally or on a server for the first time. 
@@ -271,7 +272,61 @@ npm run serve
 
 # Server deployment
 
-Gunicorn
-Nginx
+To make Micromix accessable through the internet, you will need to have access to a running online server that is capable of publically displaying websites with an IP address.
+
+If you don't have any institute or department hosting services available, you can create and run a virtual machine from different web services, such as Amazon Web Services (AWS) or Google Cloud. An AWS tutorial can be viewed [here](https://aws.amazon.com/getting-started/launch-a-virtual-machine-B-0/), and with Google Cloud [here](https://cloud.google.com/compute/docs/create-linux-vm-instance). If choosing this option, you will need to use a Debian-based Linux distribution (64bit). In addition, when launching the VM, ensure that it assigned a public IP address. You will need to remember this for later steps.
+
+Once you have access to a running server, you will need to download and install various software.
+
+1. Install MongoDB (we install this locally so sessions are not lost if the containers need to be restarted)
+
+```bash
+#Install MongoDB
+sudo apt install -y mongodb
+
+#Confirm it is running
+sudo systemctl status mongodb
+
+#if not, then start with
+sudo systemctl start mongodb
+```
+
+2. Install Docker. The latest instructions can be found [here](https://docs.docker.com/engine/install/ubuntu/)
+
+```bash
+#Uninstall old versions or conflicting packages
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
 
 
+3. Download Micromix from Github
+```bash
+git clone https://github.com/BarquistLab/Micromix.git
+```
+
+
+**how to install and configure NGINX + Gunicorn**
+
+**will need to modify the docker compose file slightly??**
+
+To run Micromix, 
+
+**To be completed**
+
+To run the website
+
+**To be completed**
