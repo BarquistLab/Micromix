@@ -2,11 +2,12 @@
 
 ## Contents
 - [Micromix](README.md#micromix-user-guide)
-- [Installing and running](installing_running.md#micromix-user-guide)
-    - [Using pre-built AWS container](installing_running.md#1-using-pre-built-aws-container)
-    - [Local install](installing_running.md#2-running-locally-or-on-a-server)
-        - [Website](installing_running.md#website)
-        - [Heatmap](installing_running.md#heatmap)
+- [Installing and running](installing_running.md##installing-and-running-micromix)
+    - [Install options](installing_running.md#install-options)
+        - [Virtual machine](installing_running.md#1.using-a-pre---built-virtual-machine)
+        - [Containers](installing_running.md#containers)
+        - [Manual install](installing_running.md#manual-install)
+    - [Server deployment](installing_running.md#server-deployment)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
@@ -27,14 +28,20 @@
 
 # Installing and running Micromix
 
-There are two options to use Micromix, depending on the user requirements.
+There are three options to use Micromix, depending on the user requirements.
 
-1) Using pre-built AWS container
-2) Running locally or on a server
+1) Using a pre-built virtual machine
+2) Using Docker containers
+3) Manually installing Micromix
 
-## 1. Using pre-built AWS container
+## 1. Using a pre-built virtual machine
 
-The simplest way to use Micromix is to use our pre-built container. This is available on AWS here: **[ << insert hyperlink >> ]**, as a downloadable virtual image that can be loaded with tools such as VirtualBox. Alternatively, the container can also be directly used with AWS services and loaded within the browser. **[ << instructions to follow >> ]**
+The simplest way to use Micromix is to use our pre-built virtual machine. This is available for download here: **[ << insert hyperlink >> ]**.
+
+The image was created using VirtualBox (version 6.1), free software that can be run on all operating systems, and can be downloaded here: xxxxx
+To create the virtual machine, within VirtualBox, click on **New**, then select **Expert mode**, then **use an existing virtual hard disk file** and select the downloaded Micromix virtual machine. Make sure the operating system is set to **Linux - Ubuntu - 64bit**, and adjust the memory size to a desired size (we recommend about 4GB). Then click on **Create**. Once created, we also recommend going into **Settings >> System >> Processor** and changing to 2 or greater, which makes Micromix run smoother. 
+
+To run, click on **Start** (the green arrow)
 
 Once the container has loaded, you will need to start the website and the heatmap.
 
@@ -42,9 +49,10 @@ Once the container has loaded, you will need to start the website and the heatma
 #On the desktop are two files, you will need to run both
 
 #To start the website
-./run_website.sh
+#open a terminal (right click - 'Open in terminal')
+./run_website.sh 
 
-#To start the heatmap
+#To start the heatmap - open another terminal
 ./run_heatmap.sh
 
 ```
@@ -52,6 +60,9 @@ Once the container has loaded, you will need to start the website and the heatma
 The site can be accessed by opening the browser and typing **localhost:8080**
 
 <img width="80%" src="images/micromix_running.png" />
+
+
+
 
 ## 2. Running locally or on a server
 
