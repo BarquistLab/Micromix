@@ -3,10 +3,10 @@
 ## Contents
 - [Micromix](README.md#micromix-user-guide)
 - [Installing and running](installing_running.md##installing-and-running-micromix)
-    - [Install options](installing_running.md#install-options)
-        - [Virtual machine](installing_running.md#1.using-a-pre---built-virtual-machine)
-        - [Containers](installing_running.md#containers)
-        - [Manual install](installing_running.md#manual-install)
+    - [Install options](installing_running.md#installing-and-running-micromix)
+        - [Virtual machine](installing_running.md#1-using-a-pre---built-virtual-machine)
+        - [Containers](installing_running.md#2-using-docker-containers)
+        - [Manual install](installing_running.md#3-manually-installing-micromix)
     - [Server deployment](installing_running.md#server-deployment)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
@@ -36,14 +36,15 @@ There are three options to use Micromix, depending on the user requirements.
 
 ## 1. Using a pre-built virtual machine
 
-The simplest way to use Micromix is to use our pre-built virtual machine. This is available for download here: **[ << insert hyperlink >> ]**.
+The simplest way to use Micromix is to use our pre-built virtual machine (VM). This is available for download [here](https://www.virtualbox.org/wiki/Download_Old_Builds_6_1).
 
 The image was created using VirtualBox (version 6.1), free software that can be run on all operating systems, and can be downloaded here: xxxxx
-To create the virtual machine, within VirtualBox, click on **New**, then select **Expert mode**, then **use an existing virtual hard disk file** and select the downloaded Micromix virtual machine. Make sure the operating system is set to **Linux - Ubuntu - 64bit**, and adjust the memory size to a desired size (we recommend about 4GB). Then click on **Create**. Once created, we also recommend going into **Settings >> System >> Processor** and changing to 2 or greater, which makes Micromix run smoother. 
 
-To run, click on **Start** (the green arrow)
+To create the VM: within VirtualBox, click on **New**, then select **Expert mode**. Choose **use an existing virtual hard disk file** and select the downloaded Micromix VM. Make sure the operating system is set to **Linux - Ubuntu - 64bit**, and adjust the memory to a desired size (we recommend about 4GB). Then click on **Create**. 
 
-Once the container has loaded, you will need to start the website and the heatmap.
+Once created, we also recommend going into **Settings >> System >> Processor** and changing to 2 or greater, which makes Micromix run smoother. 
+
+To run the VM, click on **Start** (the green arrow). Once running, you will need to start the website and the heatmap.
 
 ```bash
 #On the desktop are two files, you will need to run both
@@ -62,9 +63,16 @@ The site can be accessed by opening the browser and typing **localhost:8080**
 <img width="80%" src="images/micromix_running.png" />
 
 
+<br>
 
+## 2. Using Docker containers
 
-## 2. Running locally or on a server
+to be updated
+Include in here that AMS can be linked?
+
+## 3. Manually installing Micromix
+
+need to install website first, then heatmap
 
 ### **Website**
 There are a number of requirements if running locally or on a server for the first time. 
@@ -257,4 +265,12 @@ npm run serve
 <img width="80%" src="images/heatmap_frontend_running.png" />
 
 > You should now be able to browse the site by selecting a dataset then using the heatmap visualisation plugin
+
+
+
+# Server deployment
+
+Gunicorn
+Nginx
+
 
