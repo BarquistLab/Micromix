@@ -63,6 +63,8 @@ The site can be accessed by opening the browser and typing **localhost:8080**
 <img width="80%" src="images/micromix_running.png" />
 
 
+> **Note:** This VM was created in development mode and should mainly be used for exploration and testing. If you want to run Micromix on a server that you can share with other users, you should use option 2 or 3 below.  
+
 ## 2. Using Docker containers
 
 Docker is
