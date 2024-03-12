@@ -319,9 +319,11 @@ git clone https://github.com/BarquistLab/Micromix.git
 ```
 
 
+**will need to modify the docker compose file slightly??**
+
 **how to install and configure NGINX + Gunicorn**
 
-**will need to modify the docker compose file slightly??**
+
 
 To run Micromix, 
 
