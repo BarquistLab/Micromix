@@ -2,12 +2,12 @@
 
 ## Contents
 - [Micromix](README.md#micromix-user-guide)
-- [Installing and running](installing_running.md#micromix-user-guide)
-    - [Install options](installing_running.md#1-using-pre-built-aws-container)
-        - [Virtual machine](installing_running.md#website)
-        - [Containers](installing_running.md#website)
-        - [Manual install](installing_running.md#heatmap)
-    - [Server deployment](installing_running.md#1-using-pre-built-aws-container)
+- [Installing and running](installing_running.md##installing-and-running-micromix)
+    - [Install options](installing_running.md#installing-and-running-micromix)
+        - [Virtual machine](installing_running.md#1-using-a-pre-built-virtual-machine)
+        - [Containers](installing_running.md#2-using-docker-containers)
+        - [Manual install](installing_running.md#3-manually-installing-micromix)
+    - [Server deployment](installing_running.md#server-deployment)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)

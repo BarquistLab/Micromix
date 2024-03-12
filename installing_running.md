@@ -4,7 +4,7 @@
 - [Micromix](README.md#micromix-user-guide)
 - [Installing and running](installing_running.md##installing-and-running-micromix)
     - [Install options](installing_running.md#installing-and-running-micromix)
-        - [Virtual machine](installing_running.md#1-using-a-pre---built-virtual-machine)
+        - [Virtual machine](installing_running.md#1-using-a-pre-built-virtual-machine)
         - [Containers](installing_running.md#2-using-docker-containers)
         - [Manual install](installing_running.md#3-manually-installing-micromix)
     - [Server deployment](installing_running.md#server-deployment)
@@ -36,9 +36,9 @@ There are three options to use Micromix, depending on the user requirements.
 
 ## 1. Using a pre-built virtual machine
 
-The simplest way to use Micromix is to use our pre-built virtual machine (VM). This is available for download [here](https://www.virtualbox.org/wiki/Download_Old_Builds_6_1).
+The simplest way to use Micromix is to use our pre-built virtual machine (VM). This is available for download **INSERT HYPERLINK**.
 
-The image was created using VirtualBox (version 6.1), free software that can be run on all operating systems, and can be downloaded here: xxxxx
+The image was created using VirtualBox (version 6.1), free software that can be run on all operating systems, and can be downloaded [here](https://www.virtualbox.org/wiki/Download_Old_Builds_6_1).
 
 To create the VM: within VirtualBox, click on **New**, then select **Expert mode**. Choose **use an existing virtual hard disk file** and select the downloaded Micromix VM. Make sure the operating system is set to **Linux - Ubuntu - 64bit**, and adjust the memory to a desired size (we recommend about 4GB). Then click on **Create**. 
 
@@ -63,11 +63,12 @@ The site can be accessed by opening the browser and typing **localhost:8080**
 <img width="80%" src="images/micromix_running.png" />
 
 
-<br>
-
 ## 2. Using Docker containers
 
+Docker is
+
 to be updated
+
 Include in here that AMS can be linked?
 
 ## 3. Manually installing Micromix
