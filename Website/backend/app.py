@@ -165,6 +165,9 @@ plugins = db.plugins
 
 
 
+#---
+#FUNCTION: allowed_file
+#---
 # Function to check if the uploaded file's extension is within the allowed set.
 # This helps prevent the upload of potentially malicious files.
 def allowed_file(filename, extension_whitelist):
@@ -175,12 +178,15 @@ def allowed_file(filename, extension_whitelist):
 
 
 #=============
-# ROUTE 
+# ROUTE 'export/'
 #=============
 
 # Route for exporting data in various formats (Excel or CSV) based on user's choice.
 # Fetches the specific visualization data from MongoDB, prepares it, and sends the file to the user.
 @app.route('/export', methods=['POST'])
+#---
+#FUNCTION: export_df
+#---
 def export_df():
     try:
         # Extract form data containing export options and the unique visualization identifier.
@@ -214,9 +220,10 @@ def export_df():
         print(str(e))
         return respond_error(ERROR_MESSAGES['export_error']['expected']['type'], str(e))
 
-
-
-# Helper function to convert dataframes into an Excel file and return it as a Flask response.
+#---
+# FUNCTION: df_to_excel
+#---
+#Helper function to convert dataframes into an Excel file and return it as a Flask response.
 def df_to_excel(dataframe_dict):
     from io import BytesIO
     output = BytesIO()
@@ -230,6 +237,10 @@ def df_to_excel(dataframe_dict):
     # This is the only instance where the send_file module from flask is used. You can try an approach with Response as below, however this exact implementation has caused the excel file to be corrupted.
     # return Response(output, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers={"Content-disposition": "attachment; filename=filename.xlsx"})
 
+
+#---
+# FUNCTION: df_to_csv
+#---
 # Helper function to convert a dataframe into a CSV file and return it as a Flask response.
 # Only supports exporting a single dataframe due to the nature of CSV format.
 def df_to_csv(dataframe_dict, seperator):
@@ -240,6 +251,10 @@ def df_to_csv(dataframe_dict, seperator):
         df = dataframe_dict["filtered"]["df"]
     return Response(df.to_csv(sep=seperator, index=False, encoding='utf-8'), mimetype="text/csv", headers={"Content-disposition": "attachment; filename=dataframe.csv"})
 
+
+#---
+# FUNCTION: upload_db_entry
+#---
 # Function to handle the uploading of database entries.
 # It checks if the current db_entry is locked and creates a new entry if it is,
 # otherwise, it updates the existing entry with new information.
@@ -259,22 +274,47 @@ def upload_db_entry(db_entry, mongo_update, url):
 
 
 #=============
-# ROUTE 
+# ROUTE '/query/
 #=============
-
 # Route to handle queries from the frontend. 
-#It filters the database based on the query provided.
+# It filters the database based on the query provided.
 @app.route('/query', methods=['POST'])
+#---
+#FUNCTION: search_query
+#PURPOSE: This function is responsible for handling POST requests that contain a user-defined query for filtering data.
+# It extracts the query and the unique identifier (URL) for the database entry (visualization configuration),
+# applies the filter to the specified dataset, updates the database with the filtered data,
+# and returns the updated database entry ID.
+#---
+# 
 def search_query():
     try:
+        # Dynamically import a custom module designed for applying filters to dataframes.
+        # This module likely contains logic to parse the query parameters and apply them
+        # to the dataframe to produce a subset of the data based on the specified criteria.
         import filter_dataframe  # Custom module for filtering dataframes based on queries.
+
+        # Extract the query and the unique identifier from the POST request data.
         query = json.loads(request.form['query'])
         url = json.loads(request.form['url'])
+        
+        # Retrieve the database entry for the visualization configuration using the provided unique identifier.
+        # This entry includes the 'transformed_dataframe', which is the dataset to be filtered.
         db_entry = db.visualizations.find_one({"_id": ObjectId(url)}, {'_id': False})
+
+        # Load the dataframe from its Parquet representation stored in MongoDB.
+        # Parquet is a columnar storage file format that supports efficient compression and encoding schemes.
         df = pd.read_parquet(BytesIO(db_entry['transformed_dataframe']))  # Load the dataframe.
         # print('query: ', query)
+
+        # Apply the user-defined query to filter the dataframe. The `filter_dataframe.main` function
+        # is assumed to take the query and the original dataframe as inputs and return a new dataframe
+        # that only contains the rows that match the query criteria.
         filtered_df = filter_dataframe.main(query, df)  # Filter the dataframe based on the query.
-        # Prepare the update to set the filtered_dataframe and clear existing visualizations and queries.
+        
+        # Prepare an update operation for the MongoDB document. This operation sets the new 'filtered_dataframe'
+        # (after converting it to Parquet and then to binary for storage), resets 'vis_links' to an empty list
+        # (as the existing visualizations may no longer be relevant to the filtered data), and stores the query itself.
         mongo_update = {
             '$set': {
                 'filtered_dataframe': df_to_parquet(filtered_df),
@@ -282,9 +322,19 @@ def search_query():
                 'query': query
             }
         }
+        
+        # Apply the update to the database entry and retrieve the updated entry's ID.
+        # This step involves calling a previously defined function `upload_db_entry` which abstracts
+        # the logic for updating or creating database entries.
         db_entry_id = upload_db_entry(db_entry, mongo_update, url)  # Update the db_entry with the new filtered data.
+
+        # Return a response to the client that includes the ID of the updated database entry.
+        # This allows the client to reference the updated visualization configuration.
         return Response(dumps({'db_entry_id': db_entry_id}, allow_nan=True), mimetype="application/json")
+    
     except Exception as e:
+         # In case of any errors during the process, log the error and return a standardized error response.
+        # This helps with debugging and ensures the client is aware of the failure.
         print(str(e))
         return respond_error(ERROR_MESSAGES['query_error']['expected']['type'], str(e))
 
@@ -292,44 +342,92 @@ def search_query():
 
 
 #=============
-# ROUTE 
+# ROUTE '/locked'
 #=============
     
 # Route to lock the session, preventing further modifications to the db_entry.
 @app.route('/locked', methods=['POST'])
+#---
+#FUNCTION: lock_session
+#PURPOSE:  This function is designed to "lock" a visualization session by setting a 'locked' flag in the database. 
+#          Once locked, the session's data cannot be altered, ensuring the current state of the visualization 
+#          is preserved. This is particularly useful for finalizing a visualization for presentation or further analysis.
+#---
 def lock_session():
     print('locking')
     try:
+        # The MongoClient import is redundant here if it's already imported globally. 
+        # It's included for clarity within this snippet but should be considered for removal 
+        # to adhere to best practices regarding imports (i.e., imports at the beginning of a file).
         from pymongo import MongoClient
+
+        # Extract the unique identifier (URL) of the visualization session from the request form data.
+        # This ID is used to find the specific database document corresponding to the session.
         url = json.loads(request.form['url'])
-        print('URL: ', url)
-        db.visualizations.update_one({'_id': ObjectId(url)}, {
-            '$set': {'locked': True}})
+        print('URL: ', url)  # Logging the URL for debugging purposes.
+
+        # Update the specified visualization document in the MongoDB 'visualizations' collection,
+        # setting its 'locked' field to True. This operation effectively locks the session, preventing
+        # any further modifications to its associated data and configuration.
+        db.visualizations.update_one({'_id': ObjectId(url)}, {'$set': {'locked': True}})
+
+        # Upon successful locking of the session, return a simple success message. 
+        # In a more comprehensive application, this might be replaced with a more detailed response 
+        # or a status code indicating success.
         return "success"
     except Exception as e:
+        # If an error occurs during the process, log the error message for troubleshooting purposes.
+        # Then, return a standardized error response using the `respond_error` function,
+        # which likely formats the error into a JSON response suitable for client-side handling.
         print('###### ERROR')
         return respond_error(ERROR_MESSAGES['locking_error']['expected']['type'], str(e))
 
 
 
 #=============
-# ROUTE 
+# ROUTE '/active_plugin'
 #=============
     
 # Route to set the active plugin based on user selection.
 @app.route('/active_plugin', methods=['POST'])
+#---
+# FUNCTION: set_active_plugin
+# PURPOSE: This function updates the current visualization session to set a specified plugin as the "active" plugin. 
+#          This allows users to dynamically change how data is visualized by selecting different plugins according to their analysis needs.
+#---
 def set_active_plugin():
     try:
+        # Importing MongoClient in each function may not be necessary if it's already imported globally.
+        # This import is shown for clarity but should be done at the top of the file in practice.
         from pymongo import MongoClient
+
+        # Extract the ID of the plugin to be activated from the request's form data.
+        # This ID is crucial for identifying which plugin should be marked as active in the database.
         active_plugin_id = json.loads(request.form['active_plugin_id'])
-        print(active_plugin_id)
+        print(active_plugin_id)  # Logging for debugging purposes.
+
+        # Similarly, extract the URL (unique identifier for the visualization session/document) from the request.
         url = json.loads(request.form['url'])
-        db_entry = db.visualizations.find_one(
-            {"_id": ObjectId(url)}, {'_id': False})
+
+        # Retrieve the specific database entry for the visualization session using its unique identifier.
+        # This entry contains current configuration data, including which plugin is currently active.
+        db_entry = db.visualizations.find_one({"_id": ObjectId(url)}, {'_id': False})
+
+        # Prepare the update operation to change the 'active_plugin_id' field to the new plugin's ID.
+        # This operation specifies exactly how the document should be updated in the database.
         mongo_update = {'$set': {'active_plugin_id': active_plugin_id}}
+
+        # Call the `upload_db_entry` function to apply the update to the database. This function likely abstracts
+        # the logic for either creating a new entry or updating an existing one, depending on the context.
         db_entry_id = upload_db_entry(db_entry, mongo_update, url)
+
+        # If the update operation is successful, return a simple success message to the requester.
+        # In a real-world application, this might be more detailed or structured to provide feedback to the user.
         return "success"
     except Exception as e:
+        # In case of an error (such as a database update failure or an issue with the request data),
+        # log the error for troubleshooting and return a standardized error response.
+        # The `respond_error` function formats this response in a way that's expected by the client-side application.
         print(e)
         return respond_error('Error in active plugin loading', str(e))
 
@@ -337,7 +435,7 @@ def set_active_plugin():
 
 
 #=============
-# ROUTE 
+# ROUTE '/visualization'
 #=============
     
 # This route handles the generation and retrieval of visualization links based on the dataset
@@ -345,6 +443,17 @@ def set_active_plugin():
 # visualization of data through specific visualization plugins.
 
 @app.route('/visualization', methods=['POST'])
+# FUNCTION: make_vis_link
+# PURPOSE: The purpose of the `make_vis_link` function is to dynamically generate a visualization link
+#          for a specific dataset using a selected visualization plugin. This function takes a plugin ID
+#          and a dataset identifier from a client-side request, retrieves the corresponding dataset from
+#          the database, applies the specified visualization plugin to generate a visualization, and updates
+#          the database with the link to the newly created visualization. This enables users to interactively
+#          explore their data through various visualization techniques and facilitates a dynamic, user-driven
+#          approach to data analysis within the application. The function ensures that each visualization
+#          is traceable and accessible through a unique link, enhancing the data exploration experience by
+#          allowing users to switch between different visualizations seamlessly.
+#---
 def make_vis_link():
     try:
         # Parse the plugin ID and the MongoDB document ID (url) from the POST request.
@@ -394,7 +503,7 @@ def make_vis_link():
 
 
 #=============
-# ROUTE 
+# ROUTE '/plugins'
 #=============
     
 # This route is dedicated to adding new visualization plugins into the system.
@@ -402,6 +511,16 @@ def make_vis_link():
 # saves the plugin data into MongoDB, and associates it with a specific visualization if provided.
 
 @app.route('/plugins', methods=['POST'])
+#---
+# FUNCTION: add_plugin
+# PURPOSE: The purpose of the `add_plugin` function is to facilitate the addition of new visualization plugins
+#          into the system. It handles incoming requests that contain metadata and possibly an icon file for 
+#          the new plugin, saving this information to the database. This function not only stores the plugin's 
+#          metadata but also manages its association with existing or new visualization configurations. 
+#          By doing so, it enriches the application's visualization capabilities, allowing users to 
+#          dynamically explore data through a broader range of visual interpretations and analyses.
+#          This extensibility supports continuous improvement and customization of the visualization experience.
+#---
 def add_plugin():
     # Dynamically import necessary modules for MongoDB operations and handling ObjectIds.
     from pymongo import MongoClient
@@ -467,17 +586,33 @@ def add_plugin():
 
 
 #=============
-# ROUTE 
+# ROUTE '/config'
 #=============
+
+
 @app.route('/config', methods=['GET', 'POST'])
+#---
+# FUNCTION: respond_config
+# PURPOSE: The purpose of the `respond_config` function is to retrieve and return the configuration of a 
+#          specific visualization session based on its unique identifier. This configuration includes 
+#          information about the dataset, any applied filters, and the set of plugins associated with 
+#          the session. The function supports dynamic interaction with the visualization data, enabling 
+#          users to save their work and return to it later or share it with others. It caters to both 
+#          retrieving an existing configuration and initializing a new session with a default configuration.
+#---
 def respond_config():
     print('responding...')
+    
+    # Check if a unique identifier (URL) for the visualization configuration has been provided.
     if request.form['url'] != 'undefined':
-        # import bson
-        # from pymongo import MongoClient
+       # Convert the string representation of the ObjectId back into an ObjectId type.
         db_entry_id = ObjectId(loads(request.form['url']))
-        print('Object_ID: ', db_entry_id)
+        print('Object_ID: ', db_entry_id)  # Log the ObjectId for debugging purposes.
+
+        # Retrieve the visualization configuration document from the MongoDB 'visualizations' collection.
         db_entry = db.visualizations.find_one({"_id": db_entry_id})
+        
+        # Convert the ObjectId to a string for JSON serialization compatibility.
         # print(len(bson.BSON.encode(db_entry)))
         db_entry['_id'] = str(db_entry['_id'])
 
@@ -489,94 +624,184 @@ def respond_config():
         #     {'_id': {'$in': db_entry['plugins_id']}})]
         
         
+        # Check if the 'transformed_dataframe' field is stored as binary data (bytes).
+        # If so, convert it from its Parquet format to JSON for client-side use.
+        # The conversion process replaces any NaN values with None to ensure JSON serialization compatibility.
         if type(db_entry['transformed_dataframe']) == bytes: # The mockup db_entry stores the empty transformed_dataframe as a list, so don't convert that one.
             # PERFORMANCE: We have to replace NaN cells with None for JSON.
             db_entry['transformed_dataframe'] = pd.read_parquet(BytesIO(db_entry['transformed_dataframe'])).to_json(orient='records')
+        # Attempt to convert the 'filtered_dataframe' in the same manner as 'transformed_dataframe',
+        # if it exists. This field represents any user-applied filters on the dataset.
         try:
             # PERFORMANCE: We have to replace NaN cells with None for JSON.
             db_entry['filtered_dataframe'] = pd.read_parquet(BytesIO(db_entry['filtered_dataframe'])).to_json(orient='records')
         except:
-            pass
-        # For size benchmarks
+            pass  # If the 'filtered_dataframe' doesn't exist or an error occurs, ignore it.
+        
+        # Testing - For size benchmarks
         # import bson
         # print('######### Size of document')
         # print(len(bson.BSON.encode(db_entry)))
+
+        # Return the visualization configuration document as a JSON response to the client.
         return Response(dumps({'db_entry': db_entry}, allow_nan=True), mimetype="application/json")
     else:
+        # If the 'url' parameter is undefined, it indicates a request to initialize a new visualization session.
         print('undefined')
         import copy
+        # Create a new visualization configuration using a predefined template (DB_ENTRY_MOCKUP).
         db_entry = copy.deepcopy(DB_ENTRY_MOCKUP)
+        
         # print(db_entry)
         #db_entry['plugins'] = [plugin for plugin in db.plugins.find(
         #    {'_id': {'$in': db_entry['plugins_id']}})]
+        
+        # Return the new visualization configuration as a JSON response, allowing the client to start a new session.
         return Response(dumps({'db_entry': db_entry}, allow_nan=True), mimetype="application/json")
 
 
-#Error handling
+#---
+# FUNCTION: respond_error
+# PURPOSE: Error handling 
+#---
 def respond_error(error_type, error_message):
     return Response(dumps({'error_type': error_type, 'error_message': error_message}, allow_nan=True), mimetype="application/json")
 
 
 #=============
-# ROUTE 
+# ROUTE '/upload'
 #=============
 @app.route('/upload', methods=['GET', 'POST'])
+#---
+# FUNCTION: add_matrix
+# PURPOSE: The purpose of the `add_matrix` function is to handle the upload and integration of data matrices 
+#          into the visualization system. It processes metadata and data files provided by the user, adjusting 
+#          for specific data formatting nuances (e.g., decimal and separator characters in CSV files), and 
+#          incorporates these matrices into existing or new visualization configurations. This function supports 
+#          a variety of data sources, including direct file uploads and text inputs, enhancing the flexibility 
+#          and usability of the data visualization platform.
+#---
 def add_matrix():
     try:
+        # Parse the provided metadata from the form data, which includes information about the data source and formatting.
         metadata = json.loads(request.form['form'])
+        
+        # Adjust for data formatting specifics, such as decimal characters and CSV separators, which can vary by locale.
         if metadata['source']['database'] != None: # NOTE: Unelegant. Determine decimal and seperator characters of database csv's.
             metadata['formatting']['file']['csv_seperator'] = metadata['source']['database']['seperator']
             metadata['formatting']['file']['decimal_character'] = metadata['source']['database']['decimal_character'] # This is because all database files were exported with german decimals
+        
+        # Call the helper function `upload_file` to process the data file upload or text input based on the provided metadata.
         source, extension = upload_file(request, ALLOWED_EXTENSIONS_MATRIX, metadata)
+
+        # Integrate the uploaded matrix into the system by adding it to the appropriate visualization configuration.
         db_entry_id = process_file.add_matrix(source, metadata, extension, db, PRE_CONFIGURED_PLUGINS)
+
+        # Return the ID of the updated or newly created database entry as a JSON response.
         return Response(dumps({'db_entry_id': db_entry_id}, allow_nan=True), mimetype='application/json')
     except Exception as e:
+        # Handle any exceptions that occur during the upload process and return an error message.
         print(str(e))
         return respond_error(ERROR_MESSAGES['upload_error']['expected']['type'], str(e))
 
+
+#---
+# FUNCTION: respond_data
+# PURPOSE: Helper function to return a standardized success response with additional payload data. 
+#---
 def respond_data(label, payload):
     response_object = {'status': 'success'}
     response_object[label] = payload
     return response_object
 
+#---
+# FUNCTION: upload_file
+# PURPOSE: serves as a multifaceted utility for processing data submissions 
+#          to the visualization platform. It is designed to accept and validate user submissions 
+#          through various formats, including direct file uploads, text inputs, and references to database 
+#          exports. Its primary role is to ensure that the submitted data is accessible in a standardized 
+#          format for further processing, while also enforcing security measures through file extension 
+#          whitelisting. This function adapts to the diverse ways users might provide their data, 
+#          facilitating a smoother integration into the visualization pipeline.
+#---
 def upload_file(request, extension_whitelist, metadata):
+    # Check if the submission includes a file upload.
     if 'file' in request.files:
         file = request.files['file']
-        # If user does not select file, browser also submit an empty part without filename.
+
+        # Validate that a file was actually selected for upload. If not, inform the user and redirect appropriately.
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
+
+        # If a file is present and its extension is within the allowed set, proceed with processing.
         if file and allowed_file(file.filename, extension_whitelist):
-            print('true')
-            extension = os.path.splitext(file.filename)[1]
+            print('true')  # Debugging output to confirm file acceptance.
+            extension = os.path.splitext(file.filename)[1]  # Extract the file's extension for further validation or processing.
+
+        # Return both the file object and its extension as indicators of successful file processing.
         return file, extension
-    # If data is pasted text with "Text" as source
+
+    # If the submission is through pasted text, directly return the text and indicate its format as a string.
     elif metadata['source']['text'] != None:
         return metadata['source']['text'], "string"
+
+    # For submissions that refer to database exports, construct the path to the static file 
+    # based on the filename provided in the metadata and return it along with the file's extension.
+    # This allows for the processing of data that has been pre-uploaded or resides within a specific directory.
     elif metadata['source']['database'] != None:
         file = "static/" + metadata['source']['database']['filename']
         extension = os.path.splitext(metadata['source']['database']['filename'])[1]
         return file, extension
+
+    # If none of the above conditions are met, return a "failure" status to indicate that the submission
+    # did not conform to the expected formats or encountered an issue in processing.
     return "failure"
 
 
 #=============
-# ROUTE 
+# ROUTE '/uploads/<filename>'
 #=============
 @app.route('/uploads/<filename>')
+#---
+# FUNCTION: uploaded_file
+# PURPOSE: The purpose of the `uploaded_file` function is to serve files from a specified directory 
+#          within the application's file system to the client. This function facilitates the retrieval 
+#          and display of uploaded files, such as data matrices, visualization assets, or plugin icons, 
+#          by generating a secure path to the requested file and sending it as a response to the client. 
+#          It is particularly useful in scenarios where users need to access or download files that 
+#          have been previously uploaded to the platform, ensuring that these files are served in a 
+#          controlled and secure manner. By leveraging Flask's `send_from_directory` method, the function 
+#          also automatically handles MIME type detection and appropriate header setting, enhancing the 
+#          file delivery process.
+#---
 def uploaded_file(filename):
+    # Utilize Flask's `send_from_directory` function to safely serve the requested file from the 
+    # application's designated upload folder. This approach prevents direct filesystem access by the client, 
+    # mitigating potential security risks associated with file serving.
+    # The `app.config['UPLOAD_FOLDER']` variable contains the path to the directory from which files are served,
+    # which should be configured securely within the application settings.
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 
 
 #=============
-# ROUTE 
+# ROUTE '/matrix/<matrix_id>'
 #=============
 @app.route('/matrix/<matrix_id>', methods=['GET', 'POST'])
 
 #---
 # FUNCTION: remove_matrix
+# PURPOSE: The purpose of the `remove_matrix` function is to facilitate the deletion of a specific data matrix 
+#          from a user's visualization configuration. This function is essential for users who need to refine 
+#          or correct their data sets by removing irrelevant or erroneous matrices. It enhances the user's 
+#          ability to manage and organize their data effectively within the visualization platform. Upon 
+#          receiving a request with the unique identifier of the matrix to be removed, along with any 
+#          necessary metadata, this function orchestrates the removal process, updates the visualization 
+#          configuration in the database, and informs the client of the successful update. This dynamic 
+#          interaction allows for a flexible and user-centric approach to data visualization preparation 
+#          and presentation.
 #---
 
 # Function to handle the removal of a specific matrix from a visualization configuration.
@@ -607,14 +832,17 @@ def remove_matrix(matrix_id):
     return Response(dumps({'db_entry_id': db_entry_id}, allow_nan=True), mimetype="application/json")
 
 
+
+
 #---
 # FUNCTION: df_to_parquet
+# PURPOSE:  This function converts a given pandas DataFrame to a Parquet file format and then encapsulates
+#           the Parquet data into a binary format. The binary format is suitable for storage in MongoDB,
+#           which allows for efficient serialization and deserialization of structured data like Parquet files.
+#           Parquet is a columnar storage file format optimized for fast retrieval of columns of data,
+#           not only saving storage space but also improving I/O efficiency compared to row-based formats like CSV.
 #---
-# This function converts a given pandas DataFrame to a Parquet file format and then encapsulates
-# the Parquet data into a binary format. The binary format is suitable for storage in MongoDB,
-# which allows for efficient serialization and deserialization of structured data like Parquet files.
-# Parquet is a columnar storage file format optimized for fast retrieval of columns of data,
-# not only saving storage space but also improving I/O efficiency compared to row-based formats like CSV.
+
 
 def df_to_parquet(df):
     # Import the necessary module to handle binary data in Python.
