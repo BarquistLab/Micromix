@@ -276,9 +276,12 @@ def upload_db_entry(db_entry, mongo_update, url):
 #=============
 # ROUTE '/query/
 #=============
+
 # Route to handle queries from the frontend. 
 # It filters the database based on the query provided.
 @app.route('/query', methods=['POST'])
+
+
 #---
 #FUNCTION: search_query
 #PURPOSE: This function is responsible for handling POST requests that contain a user-defined query for filtering data.
@@ -286,7 +289,7 @@ def upload_db_entry(db_entry, mongo_update, url):
 # applies the filter to the specified dataset, updates the database with the filtered data,
 # and returns the updated database entry ID.
 #---
-# 
+ 
 def search_query():
     try:
         # Dynamically import a custom module designed for applying filters to dataframes.
@@ -347,12 +350,14 @@ def search_query():
     
 # Route to lock the session, preventing further modifications to the db_entry.
 @app.route('/locked', methods=['POST'])
+
 #---
 #FUNCTION: lock_session
 #PURPOSE:  This function is designed to "lock" a visualization session by setting a 'locked' flag in the database. 
 #          Once locked, the session's data cannot be altered, ensuring the current state of the visualization 
 #          is preserved. This is particularly useful for finalizing a visualization for presentation or further analysis.
 #---
+
 def lock_session():
     print('locking')
     try:
@@ -390,11 +395,14 @@ def lock_session():
     
 # Route to set the active plugin based on user selection.
 @app.route('/active_plugin', methods=['POST'])
+
+
 #---
 # FUNCTION: set_active_plugin
 # PURPOSE: This function updates the current visualization session to set a specified plugin as the "active" plugin. 
 #          This allows users to dynamically change how data is visualized by selecting different plugins according to their analysis needs.
 #---
+
 def set_active_plugin():
     try:
         # Importing MongoClient in each function may not be necessary if it's already imported globally.
@@ -441,8 +449,9 @@ def set_active_plugin():
 # This route handles the generation and retrieval of visualization links based on the dataset
 # and the plugin selected by the user. It serves as an endpoint for the front-end to request
 # visualization of data through specific visualization plugins.
-
 @app.route('/visualization', methods=['POST'])
+
+#---
 # FUNCTION: make_vis_link
 # PURPOSE: The purpose of the `make_vis_link` function is to dynamically generate a visualization link
 #          for a specific dataset using a selected visualization plugin. This function takes a plugin ID
@@ -454,6 +463,7 @@ def set_active_plugin():
 #          is traceable and accessible through a unique link, enhancing the data exploration experience by
 #          allowing users to switch between different visualizations seamlessly.
 #---
+
 def make_vis_link():
     try:
         # Parse the plugin ID and the MongoDB document ID (url) from the POST request.
@@ -509,8 +519,9 @@ def make_vis_link():
 # This route is dedicated to adding new visualization plugins into the system.
 # It handles the POST request containing plugin metadata and potentially an icon file,
 # saves the plugin data into MongoDB, and associates it with a specific visualization if provided.
-
 @app.route('/plugins', methods=['POST'])
+
+
 #---
 # FUNCTION: add_plugin
 # PURPOSE: The purpose of the `add_plugin` function is to facilitate the addition of new visualization plugins
@@ -521,6 +532,7 @@ def make_vis_link():
 #          dynamically explore data through a broader range of visual interpretations and analyses.
 #          This extensibility supports continuous improvement and customization of the visualization experience.
 #---
+
 def add_plugin():
     # Dynamically import necessary modules for MongoDB operations and handling ObjectIds.
     from pymongo import MongoClient
@@ -589,8 +601,8 @@ def add_plugin():
 # ROUTE '/config'
 #=============
 
-
 @app.route('/config', methods=['GET', 'POST'])
+
 #---
 # FUNCTION: respond_config
 # PURPOSE: The purpose of the `respond_config` function is to retrieve and return the configuration of a 
@@ -600,6 +612,7 @@ def add_plugin():
 #          users to save their work and return to it later or share it with others. It caters to both 
 #          retrieving an existing configuration and initializing a new session with a default configuration.
 #---
+
 def respond_config():
     print('responding...')
     
@@ -664,6 +677,7 @@ def respond_config():
 # FUNCTION: respond_error
 # PURPOSE: Error handling 
 #---
+    
 def respond_error(error_type, error_message):
     return Response(dumps({'error_type': error_type, 'error_message': error_message}, allow_nan=True), mimetype="application/json")
 
@@ -672,6 +686,7 @@ def respond_error(error_type, error_message):
 # ROUTE '/upload'
 #=============
 @app.route('/upload', methods=['GET', 'POST'])
+
 #---
 # FUNCTION: add_matrix
 # PURPOSE: The purpose of the `add_matrix` function is to handle the upload and integration of data matrices 
@@ -681,6 +696,7 @@ def respond_error(error_type, error_message):
 #          a variety of data sources, including direct file uploads and text inputs, enhancing the flexibility 
 #          and usability of the data visualization platform.
 #---
+
 def add_matrix():
     try:
         # Parse the provided metadata from the form data, which includes information about the data source and formatting.
@@ -709,10 +725,13 @@ def add_matrix():
 # FUNCTION: respond_data
 # PURPOSE: Helper function to return a standardized success response with additional payload data. 
 #---
+    
 def respond_data(label, payload):
     response_object = {'status': 'success'}
     response_object[label] = payload
     return response_object
+
+
 
 #---
 # FUNCTION: upload_file
@@ -724,6 +743,7 @@ def respond_data(label, payload):
 #          whitelisting. This function adapts to the diverse ways users might provide their data, 
 #          facilitating a smoother integration into the visualization pipeline.
 #---
+
 def upload_file(request, extension_whitelist, metadata):
     # Check if the submission includes a file upload.
     if 'file' in request.files:
@@ -759,10 +779,13 @@ def upload_file(request, extension_whitelist, metadata):
     return "failure"
 
 
+
+
 #=============
 # ROUTE '/uploads/<filename>'
 #=============
 @app.route('/uploads/<filename>')
+
 #---
 # FUNCTION: uploaded_file
 # PURPOSE: The purpose of the `uploaded_file` function is to serve files from a specified directory 
@@ -775,6 +798,7 @@ def upload_file(request, extension_whitelist, metadata):
 #          also automatically handles MIME type detection and appropriate header setting, enhancing the 
 #          file delivery process.
 #---
+
 def uploaded_file(filename):
     # Utilize Flask's `send_from_directory` function to safely serve the requested file from the 
     # application's designated upload folder. This approach prevents direct filesystem access by the client, 
@@ -803,10 +827,6 @@ def uploaded_file(filename):
 #          interaction allows for a flexible and user-centric approach to data visualization preparation 
 #          and presentation.
 #---
-
-# Function to handle the removal of a specific matrix from a visualization configuration.
-# It is triggered by a request containing the matrix ID to be removed and additional metadata
-# that might be needed for the operation.
 
 def remove_matrix(matrix_id):
     # Parse the JSON metadata sent with the request. This metadata could include details
@@ -842,7 +862,6 @@ def remove_matrix(matrix_id):
 #           Parquet is a columnar storage file format optimized for fast retrieval of columns of data,
 #           not only saving storage space but also improving I/O efficiency compared to row-based formats like CSV.
 #---
-
 
 def df_to_parquet(df):
     # Import the necessary module to handle binary data in Python.
