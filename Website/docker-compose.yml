@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  flask-backend:
+    build: ./backend
+    network_mode: "host"
+    ports:
+      - "8080:8080"
+  vue-frontend:
+    build: 
+      context: . 
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "2003:80"
+
+

@@ -87,6 +87,15 @@ sudo systemctl status mongodb
 
 #if not, then start with
 sudo systemctl start mongodb
+
+#We also need to add in an additional IP address that allows Docker to communicate with this local installation of MongoDB
+sudo vim /etc/mongodb.conf
+
+#you will need to add in 172.17.0.1 so the bind_ip address has two values
+bind_ip = 127.0.0.1,172.17.0.1 
+
+#Restart mongoDB
+sudo systemctl restart mongodb
 ```
 
 
@@ -368,6 +377,15 @@ sudo systemctl status mongodb
 
 #if not, then start with
 sudo systemctl start mongodb
+
+#We also need to add in an additional IP address that allows Docker to communicate with this local installation of MongoDB
+sudo vim /etc/mongodb.conf
+
+#you will need to add in 172.17.0.1 so the bind_ip address has two values
+bind_ip = 127.0.0.1,172.17.0.1 
+
+#Restart mongoDB
+sudo systemctl restart mongodb
 ```
 
 2. Install Docker. The latest instructions can be found [here](https://docs.docker.com/engine/install/ubuntu/)

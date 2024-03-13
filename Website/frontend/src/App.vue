@@ -178,20 +178,8 @@ import search_query from "./components/search_query";
 import toolbar from "./components/toolbar";
 import visualization from "./components/visualization";
 import pluginsConfig from "../../plugins.json"
-
-//import addDataForm from "./components/addDataForm.vue";
-//import visualization from "./components/visualization";
-//import plugins from "./components/plugins";
-//import add_plugin from "./components/add_plugin";
-//import addDataButton from "./components/addDataButton";
-//import search_query from "./components/search_query";
-//import axios from "axios";
-//import toolbar from "./components/toolbar";
-//import dataframe from "./components/dataframe";
-//import loading from "./components/loading";
-//import error_alert from "./components/error_alert";
-//import organism_selection from "./components/organism_selection";
-//import organisms from "./assets/json/organisms.json"
+//If running outside of docker, you will need to change the location of the plugins.json file to: 
+//import pluginsConfig from "/plugins.json"
 
 
 export default {
