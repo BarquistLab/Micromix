@@ -173,6 +173,11 @@ def allowed_file(filename, extension_whitelist):
 
 
 
+
+#=============
+# ROUTE 
+#=============
+
 # Route for exporting data in various formats (Excel or CSV) based on user's choice.
 # Fetches the specific visualization data from MongoDB, prepares it, and sends the file to the user.
 @app.route('/export', methods=['POST'])
@@ -252,6 +257,11 @@ def upload_db_entry(db_entry, mongo_update, url):
     return db_entry_id  # Return the ID of the db_entry that was inserted/updated.
 
 
+
+#=============
+# ROUTE 
+#=============
+
 # Route to handle queries from the frontend. 
 #It filters the database based on the query provided.
 @app.route('/query', methods=['POST'])
@@ -280,6 +290,11 @@ def search_query():
 
 
 
+
+#=============
+# ROUTE 
+#=============
+    
 # Route to lock the session, preventing further modifications to the db_entry.
 @app.route('/locked', methods=['POST'])
 def lock_session():
@@ -296,6 +311,11 @@ def lock_session():
         return respond_error(ERROR_MESSAGES['locking_error']['expected']['type'], str(e))
 
 
+
+#=============
+# ROUTE 
+#=============
+    
 # Route to set the active plugin based on user selection.
 @app.route('/active_plugin', methods=['POST'])
 def set_active_plugin():
@@ -314,6 +334,12 @@ def set_active_plugin():
         return respond_error('Error in active plugin loading', str(e))
 
 
+
+
+#=============
+# ROUTE 
+#=============
+    
 # This route handles the generation and retrieval of visualization links based on the dataset
 # and the plugin selected by the user. It serves as an endpoint for the front-end to request
 # visualization of data through specific visualization plugins.
@@ -367,6 +393,10 @@ def make_vis_link():
 
 
 
+#=============
+# ROUTE 
+#=============
+    
 # This route is dedicated to adding new visualization plugins into the system.
 # It handles the POST request containing plugin metadata and potentially an icon file,
 # saves the plugin data into MongoDB, and associates it with a specific visualization if provided.
@@ -436,7 +466,9 @@ def add_plugin():
 
 
 
-
+#=============
+# ROUTE 
+#=============
 @app.route('/config', methods=['GET', 'POST'])
 def respond_config():
     print('responding...')
@@ -484,6 +516,10 @@ def respond_config():
 def respond_error(error_type, error_message):
     return Response(dumps({'error_type': error_type, 'error_message': error_message}, allow_nan=True), mimetype="application/json")
 
+
+#=============
+# ROUTE 
+#=============
 @app.route('/upload', methods=['GET', 'POST'])
 def add_matrix():
     try:
@@ -523,6 +559,10 @@ def upload_file(request, extension_whitelist, metadata):
         return file, extension
     return "failure"
 
+
+#=============
+# ROUTE 
+#=============
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
