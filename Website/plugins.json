@@ -3,13 +3,13 @@
         {
             "_id": "5f984ac1b478a2c8653ed827",
             "desc": "Clustered heatmap by the Ma'ayan Laboratory",
-            "image_url": "https://raw.githubusercontent.com/reganhayward/micromix/main/backend/plugins/clustergrammer.svg",
+            "image_url": "https://github.com/BarquistLab/Micromix/blob/main/Website/backend/plugins/clustergrammer.svg",
             "name": "Clustergrammer"
         },
         {
             "_id": "khds8fohoduskfi7syf99",
             "desc": "2D and 3D heatmap",
-            "image_url": "https://raw.githubusercontent.com/reganhayward/micromix/main/frontend/src/assets/heatmap_hiri_logo.svg",
+            "image_url": "https://github.com/BarquistLab/Micromix/blob/main/Website/backend/plugins/heatmap_hiri_logo.svg",
             "name": "Heatmap"
         }
 
