@@ -19,93 +19,136 @@
       }
     ]
   },
-  "SalCom Salmonella enterica Typhimurium Gene Expression Compendium": {
-    "label": "SalCom Salmonella enterica Typhimurium Gene Expression Compendium",
+  
+  "sRNA": {
+    "label": "sRNA fitness",
     "options": [
       {
-        "text": "Complete Dataset",
-        "value": {"filename": "salmonella-salcom_complete.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"},"locus_tag", "common gene name", "strand", "start", "end","EEP","MEP","LEP","ESP (biological replicate 1)","ESP (biological replicate 2)","ESP average (biological replicate 1 and 2)","LSP (biological replicate 1)","LSP (biological replicate 2)","LSP average (biological replicate 1 and 2)","25C","Cold shock (15C)","pH3 shock","pH5.8 shock","NaCl shock","Bile shock","LowFe2+ shock","Anaerobic shock","Anaerobic growth","Aerobic shock","InSPI2 (biological replicate 1)","InSPI2 (biological replicate 2)","InSPI2 average (biological replicate 1 and 2)","InSPI2 LowMg2+","Peroxide shock (InSPI2)","Nitric oxide shock (InSPI2)","NonSPI2","Temp10","Temp20","RNA pool"], "pre_selected_columns": ["locus_tag","common gene name","EEP","MEP","LEP","ESP average (biological replicate 1 and 2)","LSP average (biological replicate 1 and 2)","25C","Cold shock (15C)","pH3 shock","pH5.8 shock","NaCl shock","Bile shock","LowFe2+ shock","Anaerobic shock","Anaerobic growth","Aerobic shock","NonSPI2","InSPI2 average (biological replicate 1 and 2)","InSPI2 LowMg2+","Peroxide shock (InSPI2)","Nitric oxide shock (InSPI2)"]},
+        "text": "Phenotypes",
+        "value": {"filename": "sRNA_Fitness.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Name","locus tag","BHIS with LL17-29 0.1 mg/ml (set11IT029)"," Varel Bryant medium Glucose with Chlorhexidine diacetate salt 0.0015625 mM (set10IT003)","Varel Bryant medium Glucose with Chlorpromazine 0.1 mM (set10IT015)","Varel Bryant medium Glucose with Levofloxacin 0.0015625 mM (set10IT017)","Varel Bryant medium Glucose with Trimethoprim 0.025 mM (set10IT019)","Varel Bryant medium Glucose with Rifampicin 0.00009765625 mM (set10IT021)","Varel Bryant medium Glucose with Ceftriaxone hemi(heptahydrate) 0.2 mM (set10IT038)","Varel Bryant medium Glucose with Lincomycin 0.0015625 mM (set10IT041)","Varel Bryant medium Glucose with Doxycycline hyclate 0.000048828125 mM (set10IT056)","Varel Bryant medium Glucose with Chlorhexidine diacetate salt 0.003125 mM (set10IT086)","Varel Bryant medium Glucose with Dimethyl Sulfoxide 0.2 vol% (set10IT093)","Varel Bryant medium Glucose with Ramoplanin 0.003125 mM (set10IT095)","Varel Bryant medium Glucose with Thioridazine 0.025 mM (set11IT001)","Varel Bryant medium Glucose with Doxycycline hyclate 0.0001953125 mM (set11IT011)","Varel Bryant medium Glucose with Oxytetracycline 0.000390625 mM (set11IT014)","Varel Bryant medium Glucose with Dimethyl Sulfoxide 0.2 vol% (set11IT023)","9 BHIS with Lithocholic 0.4 mg/ml (set11IT03)","1 BHIS with Chenodeoxycholic 0.25 mg/ml (set11IT04)","2 BHIS with Deoxycholic 0.2 mg/ml (set11IT04)","7 Varel Bryant medium Glucose with Indolicidin 0.002 mg/ml (set11IT08)","5 Varel Bryant medium Glucose with Bile salts 0.125 mg/mL; pH 5.5 (set12IT01)","8 Varel Bryant medium Glucose with Indolicidin 0.002 mg/ml (set12IT01)"," NAG (C) (set1IT089)"," L-Arabinose (C) (set1IT091)"," D-Ribose (C) (set2IT020)"," Mannan from Saccharomyces cerevisiae (C) (set3IT012)"," Red Arabinan from sugar-beet (C) (set3IT019)"," Mucin from porcine stomach Type II (set3IT052)"," BHIS with Paraquat dichloride 0.1 mg/ml (set3IT064)"," BHIS with Fusidic 0.002 mg/ml (set3IT094)"," BHIS with A22 0.3 mg/ml (set4IT007)"," BHIS with Lomefloxacin 0.025 mM (set4IT008)"," BHIS with Vancomycin 0.016 mg/ml (set4IT019)"," L-aspartic (N) (set5IT010)"," L-Leucine (N) (set5IT014)"," Casamino Acids (N) (set5IT017)"," Bile salts 0.5 mg/ml (set5IT057)"," BHIS with Thioridazine 0.0125 mM (set6IT003)"," BHIS with Dimetridazole 0.025 mM (set6IT046)"," Varel Bryant medium with Chlorpromazine 0.05 mM (set7IT021)"," Varel Bryant medium with Chlorpromazine 0.025 mM (set7IT022)"," BHIS with Thioridazine 0.025 mM (set8IT007)","Varel Bryant medium Glucose with Dimetridazole 0.0125 mM (set8IT023)","Varel Bryant medium Glucose with Cefoxitin 0.025 mM (set8IT024)","BHIS with Chlorpromazine 0.2 mM (set8IT027)","BHIS with Chlorpromazine 0.1 mM (set8IT039)","BHIS with Sulfamethizole 0.1 mM (set8IT042)","BHIS with Trimethoprim 0.00625 mM (set8IT043)","BHIS with Rifampicin 0.0000244140625 mM (set8IT045)","BHIS with 5-Fluorouracil 0.2 mM (set8IT049)","BHIS with Econazole nitrate salt 0.025 mM (set8IT052)","BHIS with Sulfamonomethoxine 0.2 mM (set8IT054)","Varel Bryant medium Glucose with Cephalothin 0.2 mM (set8IT072)","BHIS with Cephalothin 0.2 mM (set8IT074)","BHIS with Cephalothin 0.1 mM (set8IT086)","BHIS with Oxytetracycline 0.000390625 mM (set8IT092)","Varel Bryant medium Glucose with Chlorhexidine diacetate salt 0.003125 mM (set8IT096)","BHIS with Thioridazine 0.0125 mM (set9IT019)","Varel Bryant medium Glucose with Dimethyl Sulfoxide 0.2 vol% (set9IT024)","BHIS with Cefoxitin 0.025 mM (set9IT026)","BHIS with Rifampicin 0.000048828125 mM (set9IT033)","Varel Bryant medium Glucose with Chlorpromazine 0.05 mM (set9IT035)","BHIS with Dimethyl Sulfoxide 0.2 vol% (set9IT040)","Varel Bryant medium Glucose with Econazole nitrate salt 0.0125 mM (set9IT048)","BHIS with Lincomycin 0.0015625 mM (set9IT053)","BHIS with Sulfaquinoxaline 0.1 mM (set9IT090)","Varel Bryant medium Glucose with Dimethyl Sulfoxide 0.1 vol% (set9IT095)","Varel Bryant medium Glucose with Irgasan 0.025 mM (set9IT096)"], "pre_selected_columns": ["locus tag","Name","BHIS with LL17-29 0.1 mg/ml (set11IT029)"," Varel Bryant medium Glucose with Chlorhexidine diacetate salt 0.0015625 mM (set10IT003)","Varel Bryant medium Glucose with Chlorpromazine 0.1 mM (set10IT015)","Varel Bryant medium Glucose with Levofloxacin 0.0015625 mM (set10IT017)","Varel Bryant medium Glucose with Trimethoprim 0.025 mM (set10IT019)","Varel Bryant medium Glucose with Rifampicin 0.00009765625 mM (set10IT021)","Varel Bryant medium Glucose with Ceftriaxone hemi(heptahydrate) 0.2 mM (set10IT038)","Varel Bryant medium Glucose with Lincomycin 0.0015625 mM (set10IT041)","Varel Bryant medium Glucose with Doxycycline hyclate 0.000048828125 mM (set10IT056)","Varel Bryant medium Glucose with Chlorhexidine diacetate salt 0.003125 mM (set10IT086)","Varel Bryant medium Glucose with Dimethyl Sulfoxide 0.2 vol% (set10IT093)","Varel Bryant medium Glucose with Ramoplanin 0.003125 mM (set10IT095)","Varel Bryant medium Glucose with Thioridazine 0.025 mM (set11IT001)","Varel Bryant medium Glucose with Doxycycline hyclate 0.0001953125 mM (set11IT011)","Varel Bryant medium Glucose with Oxytetracycline 0.000390625 mM (set11IT014)","Varel Bryant medium Glucose with Dimethyl Sulfoxide 0.2 vol% (set11IT023)","9 BHIS with Lithocholic 0.4 mg/ml (set11IT03)","1 BHIS with Chenodeoxycholic 0.25 mg/ml (set11IT04)","2 BHIS with Deoxycholic 0.2 mg/ml (set11IT04)","7 Varel Bryant medium Glucose with Indolicidin 0.002 mg/ml (set11IT08)","5 Varel Bryant medium Glucose with Bile salts 0.125 mg/mL; pH 5.5 (set12IT01)","8 Varel Bryant medium Glucose with Indolicidin 0.002 mg/ml (set12IT01)"," NAG (C) (set1IT089)"," L-Arabinose (C) (set1IT091)"," D-Ribose (C) (set2IT020)"," Mannan from Saccharomyces cerevisiae (C) (set3IT012)"," Red Arabinan from sugar-beet (C) (set3IT019)"," Mucin from porcine stomach Type II (set3IT052)"," BHIS with Paraquat dichloride 0.1 mg/ml (set3IT064)"," BHIS with Fusidic 0.002 mg/ml (set3IT094)"," BHIS with A22 0.3 mg/ml (set4IT007)"," BHIS with Lomefloxacin 0.025 mM (set4IT008)"," BHIS with Vancomycin 0.016 mg/ml (set4IT019)"," L-aspartic (N) (set5IT010)"," L-Leucine (N) (set5IT014)"," Casamino Acids (N) (set5IT017)"," Bile salts 0.5 mg/ml (set5IT057)"," BHIS with Thioridazine 0.0125 mM (set6IT003)"," BHIS with Dimetridazole 0.025 mM (set6IT046)"," Varel Bryant medium with Chlorpromazine 0.05 mM (set7IT021)"," Varel Bryant medium with Chlorpromazine 0.025 mM (set7IT022)"," BHIS with Thioridazine 0.025 mM (set8IT007)","Varel Bryant medium Glucose with Dimetridazole 0.0125 mM (set8IT023)","Varel Bryant medium Glucose with Cefoxitin 0.025 mM (set8IT024)","BHIS with Chlorpromazine 0.2 mM (set8IT027)","BHIS with Chlorpromazine 0.1 mM (set8IT039)","BHIS with Sulfamethizole 0.1 mM (set8IT042)","BHIS with Trimethoprim 0.00625 mM (set8IT043)","BHIS with Rifampicin 0.0000244140625 mM (set8IT045)","BHIS with 5-Fluorouracil 0.2 mM (set8IT049)","BHIS with Econazole nitrate salt 0.025 mM (set8IT052)","BHIS with Sulfamonomethoxine 0.2 mM (set8IT054)","Varel Bryant medium Glucose with Cephalothin 0.2 mM (set8IT072)","BHIS with Cephalothin 0.2 mM (set8IT074)","BHIS with Cephalothin 0.1 mM (set8IT086)","BHIS with Oxytetracycline 0.000390625 mM (set8IT092)","Varel Bryant medium Glucose with Chlorhexidine diacetate salt 0.003125 mM (set8IT096)","BHIS with Thioridazine 0.0125 mM (set9IT019)","Varel Bryant medium Glucose with Dimethyl Sulfoxide 0.2 vol% (set9IT024)","BHIS with Cefoxitin 0.025 mM (set9IT026)","BHIS with Rifampicin 0.000048828125 mM (set9IT033)","Varel Bryant medium Glucose with Chlorpromazine 0.05 mM (set9IT035)","BHIS with Dimethyl Sulfoxide 0.2 vol% (set9IT040)","Varel Bryant medium Glucose with Econazole nitrate salt 0.0125 mM (set9IT048)","BHIS with Lincomycin 0.0015625 mM (set9IT053)","BHIS with Sulfaquinoxaline 0.1 mM (set9IT090)","Varel Bryant medium Glucose with Dimethyl Sulfoxide 0.1 vol% (set9IT095)","Varel Bryant medium Glucose with Irgasan 0.025 mM (set9IT096)"]},
         "seperator": "\t"
-      },
+       }
+      ]
+  },
+
+  "TYG": {
+    "label": "TYG growth (Ryan et al 2020)",
+    "options": [
       {
-        "text": "Growth Curves",
-        "value": {"filename": "salmonella-salcom_growth-curves.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"},"locus_tag", "common gene name", "strand", "start", "end","EEP","MEP","LEP","ESP (biological replicate 1)","ESP (biological replicate 2)","ESP average (biological replicate 1 and 2)","LSP (biological replicate 1)","LSP (biological replicate 2)","LSP average (biological replicate 1 and 2)"], "pre_selected_columns": ["locus_tag","common gene name","EEP","MEP","LEP","ESP average (biological replicate 1 and 2)","LSP average (biological replicate 1 and 2)"]},
-        "seperator": "\t"
-      },
-      {
-        "text": "25C",
-        "value": {"filename": "salmonella-salcom_25c.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"},"locus_tag", "common gene name", "25C", "strand","start", "end"], "pre_selected_columns": ["locus_tag","common gene name","25C"]},
-        "seperator": "\t"
-      },
-      {
-        "text": "Environmental Shocks",
-        "value": {"filename": "salmonella-salcom_environmental-shocks.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"}, "locus_tag","common gene name","strand","start","end","MEP","Cold shock (15C)","pH3 shock","pH5.8 shock","NaCl shock","Bile shock","LowFe2+ shock","Anaerobic shock"], "pre_selected_columns": ["locus_tag","common gene name","MEP","Cold shock (15C)","pH3 shock","pH5.8 shock","NaCl shock","Bile shock","LowFe2+ shock","Anaerobic shock"]},
-        "seperator": "\t"
-      },
-      {
-        "text": "Oxygen Shocks",
-        "value": {"filename": "salmonella-salcom_oxygen-shocks.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"}, "locus_tag", "common gene name", "strand", "start", "end","Anaerobic growth","Aerobic shock"], "pre_selected_columns": ["locus_tag","common gene name","Anaerobic growth","Aerobic shock"]},
-        "seperator": "\t"
-      },
-      {
-        "text": "SPI2",
-        "value": {"filename": "salmonella-salcom_spi2.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"}, "locus_tag", "common gene name", "strand", "start", "end","NonSPI2","InSPI2 (biological replicate 1)","InSPI2 (biological replicate 2)","InSPI2 average (biological replicate 1 and 2)","InSPI2 LowMg2+","Peroxide shock (InSPI2)","Nitric oxide shock (InSPI2)"], "pre_selected_columns": ["locus_tag","common gene name","NonSPI2","InSPI2 average (biological replicate 1 and 2)","InSPI2 LowMg2+","Peroxide shock (InSPI2)","Nitric oxide shock (InSPI2)"]},
+        "text": "CPMs",
+        "value": {"filename": "TYG_growth.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus tag", "Name", "Early Exponential Phase r1 (EEP)", "Early Exponential Phase r2 (EEP)", "Early Exponential Phase r3 (EEP)", "Mid Exponential Phase r1 (MEP)", "Mid Exponential Phase r2 (MEP)", "Mid Exponential Phase r3 (MEP)", "Stationary Phase r1 (Stat)", "Stationary Phase r2 (Stat)", "Stationary Phase r3 (Stat)"], "pre_selected_columns": ["locus tag", "Name", "Early Exponential Phase r1 (EEP)", "Early Exponential Phase r2 (EEP)", "Early Exponential Phase r3 (EEP)", "Mid Exponential Phase r1 (MEP)", "Mid Exponential Phase r2 (MEP)", "Mid Exponential Phase r3 (MEP)", "Stationary Phase r1 (Stat)", "Stationary Phase r2 (Stat)", "Stationary Phase r3 (Stat)"]},
         "seperator": "\t"
       }
     ]
   },
-  "Salmonella Small Proteins": {
-    "label": "Salmonella Small Proteins",
+  
+  "Salmonella Salcom": {
+    "label": "SalCom Gene Expression Compendium (TPM)",
     "options": [
       {
-        "text": "Additional Transcript Data",
-        "value": {"filename": "salmonella-small-proteins_transcript-data.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"},"locus tag","gene name","start","end","gene length","amino acid length","strand"], "pre_selected_columns": ["locus tag","gene name","amino acid length"]},
+        "text": "Growth Curves",
+        "value": {"filename": "salmonella_salcom_growth_tpm.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag", "Name", "strand", "start", "end", "EEP", "MEP", "LEP", "ESP", "LSP"], "pre_selected_columns": ["Locus Tag", "Name", "strand", "start", "end", "EEP", "MEP", "LEP", "ESP", "LSP"]},
         "seperator": "\t"
       },
       {
-        "text": "Ribo-Seq",
-        "value": {"filename": "salmonella-small-proteins_ribo-seq.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"},"locus tag","start","end","strand","amino acid length","Ribo-seq"], "pre_selected_columns": ["locus tag","Ribo-seq"]},
+        "text": "Environmental Shocks",
+        "value": {"filename": "salmonella_salcom_environmental_shocks_tpm.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag", "Name", "strand", "start", "end", "MEP", "Cold shock (15C)", "pH3 shock", "pH5.8 shock", "NaCl shock", "Bile shock", "LowFe2+ shock", "Anaerobic shock"], "pre_selected_columns": ["Locus Tag", "Name", "strand", "start", "end", "MEP", "Cold shock (15C)", "pH3 shock", "pH5.8 shock", "NaCl shock", "Bile shock", "LowFe2+ shock", "Anaerobic shock"]},
+        "seperator": "\t"
+
+      },
+      {
+        "text": "Oxygen Shocks",
+        "value": {"filename": "salmonella_salcom_oxygen_shock_tpm.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag", "Name", "strand", "start", "end", "Anaerobic growth", "Anaerobic shock"], "pre_selected_columns": ["Locus Tag", "Name", "strand", "start", "end", "Anaerobic growth", "Anaerobic shock"]},
+        "seperator": "\t"
+
+      },
+      {
+        "text": "SPI2",
+        "value": {"filename": "salmonella_salcom_inspi2_tpm.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag", "Name", "strand", "start", "end", "InSPI2", "InSPI2 LowMg2+", "Peroxide shock (InSPI2)", "Nitric oxide shock (InSPI2)"], "pre_selected_columns": ["Locus Tag", "Name", "strand", "start", "end", "InSPI2", "InSPI2 LowMg2+", "Peroxide shock (InSPI2)", "Nitric oxide shock (InSPI2)"]},
+        "seperator": "\t"
+
+      },
+      {
+        "text": "Complete Dataset",
+        "value": {"filename": "salmonella_salcom_complete_tpm.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag", "Name", "strand", "start", "end", "EEP","MEP","LEP","ESP","LSP","25C","Cold shock (15C)","pH3 shock","pH5.8 shock","NaCl shock","Bile shock","LowFe2+ shock","Anaerobic shock","Anaerobic growth","Aerobic shock","InSPI2","InSPI2 LowMg2+","Peroxide shock (InSPI2)","Nitric oxide shock (InSPI2)","NonSPI2","Temp(10C)","Temp(20C)","RNA pool"], "pre_selected_columns": ["Locus Tag", "Name", "strand", "start", "end", "EEP","MEP","LEP","ESP","LSP","25C","Cold shock (15C)","pH3 shock","pH5.8 shock","NaCl shock","Bile shock","LowFe2+ shock","Anaerobic shock","Anaerobic growth","Aerobic shock","InSPI2","InSPI2 LowMg2+","Peroxide shock (InSPI2)","Nitric oxide shock (InSPI2)","NonSPI2","Temp(10C)","Temp(20C)","RNA pool"]},
+        "seperator": "\t"
+
+      }
+    ]
+  },
+
+
+
+  "Salmonella dualrnaseq":{
+    "label": "Dual RNA-seq timeseries - HeLa cells (TPM)",
+    "options": [
+      {
+        "text": "0hrs",
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_00hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","start","end","strand","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","start","end","strand","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)"]},
         "seperator": "\t"
       },
       {
-        "text": "sPepFinder",
-        "value": {"filename": "salmonella-small-proteins_spepfinder.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"},"locus tag","start","end","strand","amino acid length","sPepFinder"], "pre_selected_columns": ["locus tag","sPepFinder"]},
+        "text": "2hrs",
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_02hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","start","end","strand","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","start","end","strand","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)"]},
         "seperator": "\t"
       },
       {
-        "text": "2h Dual RNA Seq",
-        "value": {"filename": "salmonella-small-proteins_2h-dual-rna-seq.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"},"locus tag","logFC","logCPM","PValue","FDR"]},
+        "text": "4hrs",
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_04hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","start","end","strand","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","start","end","strand","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)"]},
         "seperator": "\t"
       },
       {
-        "text": "4h Dual RNA Seq",
-        "value": {"filename": "salmonella-small-proteins_4h-dual-rna-seq.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"},"locus tag","logFC","logCPM","PValue","FDR"]},
+        "text": "8hrs",
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_08hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","start","end","strand","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","start","end","strand","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)"]},
         "seperator": "\t"
       },
       {
-        "text": "8h Dual RNA Seq",
-        "value": {"filename": "salmonella-small-proteins_8h-dual-rna-seq.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"},"locus tag","logFC","logCPM","PValue","FDR"]},
+        "text": "16hrs",
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_16hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","start","end","strand","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","start","end","strand","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)"]},
         "seperator": "\t"
       },
       {
-        "text": "16h Dual RNA Seq",
-        "value": {"filename": "salmonella-small-proteins_16h-dual-rna-seq.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"},"locus tag","logFC","logCPM","PValue","FDR"]},
+        "text": "24hrs",
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_24hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","start","end","strand","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","start","end","strand","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"]},
         "seperator": "\t"
       },
       {
-        "text": "24h Dual RNA Seq",
-        "value": {"filename": "salmonella-small-proteins_24h-dual-rna-seq.csv", "seperator": "\t", "decimal_character": ",", "columns": [{"value": null, "text": "All columns"},"locus tag","logFC","logCPM","PValue","FDR"]},
+        "text": "Complete Dataset",
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_complete.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","start","end","strand","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","start","end","strand","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"]},
+        "seperator": "\t"
+      }
+    ]
+  },
+
+
+  "Salmonella Fitness":{
+    "label": "Fitness (TraDIS)",
+    "options": [
+      {
+        "text": "Mouse",
+        "value": {"filename": "salmonella_sl1344_tradis_mouse.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag", "Name", "FDR", "logFC", "Fitness"], "pre_selected_columns": ["Locus Tag", "Name", "FDR", "logFC", "Fitness"]},
         "seperator": "\t"
       },
       {
-        "text": "Grad-Seq",
-        "value": {"filename": "salmonella-small-proteins_gradr.csv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"},"UniprotID","locus tag","gene name","protein","amino acid length","norm_to_max fraction 1","norm_to_max fraction 2","norm_to_max fraction 3","norm_to_max fraction 4","norm_to_max fraction 5","norm_to_max fraction 6","norm_to_max fraction 7","norm_to_max fraction 8","norm_to_max fraction 9","norm_to_max fraction 10","norm_to_max fraction 11","norm_to_max fraction 12","norm_to_max fraction 13","norm_to_max fraction 14","norm_to_max fraction 15","norm_to_max fraction 16","norm_to_max fraction 17","norm_to_max fraction 18","norm_to_max fraction 19","norm_to_max fraction 20","norm_to_max fraction P"], "pre_selected_columns": ["locus tag","gene name","amino acid length","norm_to_max fraction 1","norm_to_max fraction 2","norm_to_max fraction 3","norm_to_max fraction 4","norm_to_max fraction 5","norm_to_max fraction 6","norm_to_max fraction 7","norm_to_max fraction 8","norm_to_max fraction 9","norm_to_max fraction 10","norm_to_max fraction 11","norm_to_max fraction 12","norm_to_max fraction 13","norm_to_max fraction 14","norm_to_max fraction 15","norm_to_max fraction 16","norm_to_max fraction 17","norm_to_max fraction 18","norm_to_max fraction 19","norm_to_max fraction 20","norm_to_max fraction P"]},
+        "text": "Chicken",
+        "value": {"filename": "salmonella_sl1344_tradis_chicken.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag", "Name", "FDR", "logFC", "Fitness"], "pre_selected_columns": ["Locus Tag", "Name", "FDR", "logFC", "Fitness"]},
         "seperator": "\t"
       },
-      {
-        "text": "TraDIS",
-        "value": {"filename": "salmonella-small-proteins_tradis.csv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"},"locus tag","gene name","function","log2FC","logCPM","PValue","q.value"]},
+{
+        "text": "Pig",
+        "value": {"filename": "salmonella_sl1344_tradis_pig.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag", "Name", "FDR", "logFC", "Fitness"], "pre_selected_columns": ["Locus Tag", "Name", "FDR", "logFC", "Fitness"]},
         "seperator": "\t"
+      },
+{
+        "text": "Cattle",
+        "value": {"filename": "salmonella_sl1344_tradis_cattle.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag", "Name", "FDR", "logFC", "Fitness"], "pre_selected_columns": ["Locus Tag", "Name", "FDR", "logFC", "Fitness"]},
+        "seperator": "\t"
+      },
+{
+        "text": "Complete Dataset",
+        "value": {"filename": "salmonella_sl1344_tradis_complete.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag","Name","FDR (Mouse)","logFC (Mouse)","Fitness (Mouse)","FDR (Pig)","logFC (Pig)","Fitness (Pig)","FDR (Chicken)","logFC (Chicken)","Fitness (Chicken)","FDR (Cattle)","logFC (Cattle)","Fitness (Cattle)"], "pre_selected_columns": ["Locus Tag","Name","FDR (Mouse)","logFC (Mouse)","Fitness (Mouse)","FDR (Pig)","logFC (Pig)","Fitness (Pig)","FDR (Chicken)","logFC (Chicken)","Fitness (Chicken)","FDR (Cattle)","logFC (Cattle)","Fitness (Cattle)"]},
+        "seperator": "\t"
+
       }
     ]
   }

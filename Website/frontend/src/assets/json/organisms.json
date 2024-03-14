@@ -12,14 +12,14 @@
       "description": "SPIs, Annotation Pathways, and more.",
       "path": "/salmonella",
       "id": "salmonella-fecb06c6-be97-403d-9e91-7f100a3fa2a4",
-      "datasets": ["SalCom Salmonella enterica Typhimurium Gene Expression Compendium", "Salmonella Small Proteins"]
+      "datasets": ["Salmonella Salcom", "Salmonella dualrnaseq", "Salmonella Fitness"]
     },
     "Bacteroides thetaiotaomicron": {
       "name": "Bacteroides Theta",
       "description": "CPS Loci, Annotation Pathways, and more.",
       "path": "/bacteroides",
       "id": "bacteroides-thetaiotaomicron-e2ad6b25-40cb-4594-8685-f4fcb3ceb0e7",
-      "datasets": ["Bacteroides theta RNA-seq"]
+      "datasets": ["Bacteroides theta RNA-seq", "sRNA", "TYG"]
     }
   }
 }
