@@ -13,34 +13,19 @@
       <b-container class="bv-example-row">
         <b-row>
           <b-col>
-            <h2 style="cursor:help; display:inline-block;" id="upload-dataset-popover-target">Add Data<span style="font-size:1rem;"><sup><b-icon style="cursor:help;" icon="question-circle-fill"></b-icon></sup></span></h2>
-              <b-popover target="upload-dataset-popover-target" triggers="hover" placement="top"><template v-slot:title>Upload a dataset</template>Upload various datasets from our databases or your local machine. If you give datasets the same title, the tool will automatically merge them without data-loss. The first column and all columns with non-numeric values will be turned into index columns. <strong>Uploading multiple tables requires 1 or more index column with the same column name.</strong></b-popover>
+            <h2 style="cursor:help; display:inline-block;" id="upload-dataset-popover-target">Add Data
+              <span style="font-size:1rem;"><sup><b-icon style="cursor:help;" icon="question-circle-fill"></b-icon></sup></span>
+            </h2>
+              <b-popover target="upload-dataset-popover-target" triggers="hover" placement="top">
+                <template v-slot:title>Upload a dataset
+                </template>Upload various datasets from our databases or your local machine. If you give datasets the same title, the tool will automatically merge them without data-loss. The first column and all columns with non-numeric values will be turned into index columns. <strong>Uploading multiple tables requires 1 or more index column with the same column name.</strong>
+              </b-popover>
             <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-              <!-- <b-form-group id="input-group-4" label="Type:" label-for="checkboxes-4">
-            <b-form-radio-group v-model="form.type" id="checkboxes-4" required>
-              <b-form-radio name="table" value="RadioTable">Table</b-form-radio>
-              <b-form-radio name="category" value="RadioCategory">Category</b-form-radio>
-            </b-form-radio-group>
-              </b-form-group>-->
+              
               <b-form-group id="input-group-2" label="Title:" label-for="input-2">
                 <b-form-input id="input-2" v-model="form.title" required></b-form-input>
               </b-form-group>
-              <!-- <b-form-group
-                id="group-cat-amount"
-                label="Category columns:"
-                label-for="input-cat-amount"
-                description="Enter the amount of columns with non numeric values. A value of '4' turns the first four columns into categories. Cells with non numeric values can only be categories and should be at the beginning of your table."
-              >
-                <b-form-spinbutton
-                  id="sb-cat-amount"
-                  placeholder="--"
-                  v-model="form.cat_amount"
-                  wrap
-                  min="0"
-                  required
-                ></b-form-spinbutton>
-                <b-form-input id="input-cat-amount" v-model="form.cat_amount" required placeholder="Number of categories..."></b-form-input>
-              </b-form-group>-->
+              
               <b-form-group id="input-group-6" label="Source:" label-for="source-card">
                 <b-card no-body id="source-card">
                   <b-tabs card>
@@ -53,7 +38,6 @@
                           id="input-3"
                           v-model="form.source.database"
                           :options="datasets_options"
-                         @change="updateTitleAndValue"
                         ></b-form-select>
                       </b-form-group>
                       <b-form-group
@@ -278,13 +262,6 @@ export default {
         database_columns: [],
       },
       text: "",
-      foods: [
-        { text: "Select One", value: null },
-        "Carrots",
-        "Beans",
-        "Tomatoes",
-        "Corn"
-      ],
       show: true
     };
   },
@@ -314,48 +291,19 @@ export default {
   },
   methods: {
     refine_dataset_options() {
-      //default option to prompt the user
       this.datasets_options.push(this.default_dataset_option)
-
       for(var i in this.active_organism.datasets) {
         if(this.active_organism.datasets[i] === "$all_datasets") {
-          for (var datasetKey in this.datasets) {
-          let datasetGroup = this.datasets[datasetKey];
-          datasetGroup.options.forEach(option => {
-            this.datasets_options.push({
-              value: option.value, // This uniquely identifies the dataset option
-              text: option.text // This is for the title
-              });
-          });
-            //for(var dataset in this.datasets) {
-            //this.datasets_options.push(this.datasets[dataset])
+          for(var dataset in this.datasets) {
+            this.datasets_options.push(this.datasets[dataset])
           }
           break
-
         } else {
-          // Adding specific dataset options based on active organism's datasets
-          //this.datasets_options.push(this.datasets[this.active_organism.datasets[i]])
-        let datasetKey = this.active_organism.datasets[i];
-        let datasetGroup = this.datasets[datasetKey];
-          if (datasetGroup && datasetGroup.options) {
-            datasetGroup.options.forEach(option => {
-              this.datasets_options.push({
-                value: option.value,
-                text: option.text
-                });
-            });
-          }
+          this.datasets_options.push(this.datasets[this.active_organism.datasets[i]])
         }
       }
     },
-    updateTitleAndValue(selectedValue) {
-    //updates the title box with the selected dataset from the dropdown 
-    const selectedOption = this.datasets_options.find(option => option.value === selectedValue);
-    if (selectedOption) {
-      this.form.title = selectedOption.text; // Set the title
-      this.form.source.database = selectedValue; // Update the selected dataset value
-    }
-  },
+
     change_transformation(obj) {
       // console.log(obj);
       this.form.transformation = obj;
@@ -367,17 +315,7 @@ export default {
         this.bar_value = this.bar_value + Math.random() * 40;
       }, 2000);
     },
-    // fetch_matrices() {
-    //   const path = "http://192.168.1.31:5000/matrix";
-    //   axios
-    //     .get(path)
-    //     .then(res => {
-    //       this.matrices_old = res.data.matrix;
-    //     })
-    //     .catch(error => {
-    //       console.error(error);
-    //     });
-    // },
+
     change_matrix(path, payload) {
       this.show_loading_overlay = true;
       if (this.$route.query.config) {

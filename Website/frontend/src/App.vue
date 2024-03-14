@@ -16,11 +16,11 @@
       <div>
         <div class="ball-grid-pulse"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
         <h5 class="title initial_load_text">Loading Session</h5>
-        <small>v1.0.1-local</small>
+        <small>v1.0.0-container</small>
       </div>
     </div>
-    <b-alert variant="info" show dismissible><strong class="alert-heading">Update v1.0.1-local: </strong>
-       Fixed plugin shading button state.
+    <b-alert variant="info" show dismissible><strong class="alert-heading">Update v1.0.0-local: </strong>
+       Deployment on Docker.
     </b-alert>
     <!-- <b-progress v-if="loading.state" :value="loading.bar.value" :variant="loading.bar.variant" :key="loading.bar.variant" height="6px"></b-progress> -->
     <!-- <div class="loading" v-if="loading"><b-spinner label="Spinning"></b-spinner><span>Loading ...</span></div> -->
@@ -177,9 +177,9 @@ import plugins from "./components/plugins";
 import search_query from "./components/search_query";
 import toolbar from "./components/toolbar";
 import visualization from "./components/visualization";
-import pluginsConfig from "../../plugins.json"
+import pluginsConfig from "/plugins.json"
 //If running outside of docker, you will need to change the location of the plugins.json file to: 
-//import pluginsConfig from "/plugins.json"
+//import pluginsConfig from "../../plugins.json"
 
 
 export default {
@@ -199,10 +199,6 @@ export default {
   },
   data() {
     return {
-      // backend_url: 'https://hiri-webtool-backend-v011-44nub6ij6q-ez.a.run.app',
-      // backend_url: 'http://dataframe-playground-backend.test.fedcloud.eu', 
-      // backend_url: 'http://localhost:5000',
-      // backend_url: '/home/r/Desktop/dataframe_beginning_vue2/backend',
          backend_url: 'http://127.0.0.1:5000', 
       organisms,
       loading: {
