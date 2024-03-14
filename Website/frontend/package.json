@@ -1,9 +1,10 @@
 {
   "name": "Micromix",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "prebuild": "npx update-browserslist-db@latest",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
