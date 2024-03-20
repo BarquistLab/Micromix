@@ -25,7 +25,6 @@ from pymongo import MongoClient
 from bson.json_util import loads, dumps, ObjectId
 from io import BytesIO
 import pandas as pd
-import numpy as np
 
 
 # Define allowed file extensions for matrix data and icon uploads to ensure security and data integrity.
@@ -184,46 +183,71 @@ def allowed_file(filename, extension_whitelist):
 # Route for exporting data in various formats (Excel or CSV) based on user's choice.
 # Fetches the specific visualization data from MongoDB, prepares it, and sends the file to the user.
 @app.route('/export', methods=['POST'])
+
 #---
-#FUNCTION: export_df
+# FUNCTION: export_df
+# PURPOSE: This function is designed to export data from a database as either a CSV or Excel file based on user input.
+#          It handles both "filtered" and "unfiltered" datasets, retrieving them from a database, and prepares them
+#          according to the specified format (CSV or Excel) as chosen by the user. The function dynamically handles
+#          errors related to missing data or incorrect format specifications. 
 #---
+
 def export_df():
     try:
         # Extract form data containing export options and the unique visualization identifier.
+        #  Parse the export form and URL from the request form data to get the user's export preferences and the ID of the data to export.
         export_form = json.loads(request.form['export_form'])
         url = json.loads(request.form['url'])
         db_entry = db.visualizations.find_one({"_id": ObjectId(url)}, {'_id': False})
 
         # Prepare dictionaries to hold filtered and unfiltered data for export.
+        # Find the visualization entry in the database using its unique ID but exclude the entry's own ID from the results.
+        
+        # Initialize a dictionary to store the dataframes to be exported, both filtered and unfiltered.
         dataframe_dict = {}
+        
+        
+        # Attempt to load the filtered dataframe if available and add it to the dataframe dictionary.
         try:
             df_filtered = pd.read_parquet(BytesIO(db_entry['filtered_dataframe']))
             dataframe_dict["filtered"] = {"df": df_filtered, "name": "Filtered Data"}
         except (KeyError, TypeError):
+            # If filtered data is not available or there's an error, skip without failing.
             pass  # Skip if no filtered data is available.
 
+        # Always attempt to add the unfiltered data to the export.
         dataframe_dict["unfiltered"] = {}
         try:
+            # Attempt to load the transformed dataframe as the unfiltered data.
             dataframe_dict["unfiltered"]["df"] = pd.read_parquet(BytesIO(db_entry['transformed_dataframe']))
-        except KeyError:  # This is probably unnecessary, as every entry should have a transformed_dataframe, in theory.
+        except KeyError:
+            # Fallback to the original dataframe if the transformed version isn't available.
             print("NOTE: 'transformed_dataframe' not found, using 'dataframe' instead.")
             dataframe_dict["unfiltered"]["df"] = pd.read_parquet(BytesIO(db_entry['dataframe']))
+        
+        # Assign a name to the unfiltered data for clarity in the export.
         dataframe_dict["unfiltered"]["name"] = "Source Data"
 
-        # Determine the file type for export and prepare the response.
+        # Determine the file type requested for the export and call the respective function to prepare the file.
         if export_form["file_type"] == 'excel':
             res = df_to_excel(dataframe_dict)
         elif export_form["file_type"] == 'csv':
             res = df_to_csv(dataframe_dict, export_form['csv_seperator'])
+
+        # Return the prepared file for download.
         return res
     except Exception as e:
+        # In case of any error during the process, log it and return a standardized error response.
         print(str(e))
         return respond_error(ERROR_MESSAGES['export_error']['expected']['type'], str(e))
+    
+
 
 #---
 # FUNCTION: df_to_excel
+# PURPOSE: Helper function to convert dataframes into an Excel file and return it as a Flask response.
 #---
-#Helper function to convert dataframes into an Excel file and return it as a Flask response.
+
 def df_to_excel(dataframe_dict):
     from io import BytesIO
     output = BytesIO()
@@ -240,8 +264,9 @@ def df_to_excel(dataframe_dict):
 
 #---
 # FUNCTION: df_to_csv
+# PURPOSE:  Helper function to convert a dataframe into a CSV file and return it as a Flask response.
 #---
-# Helper function to convert a dataframe into a CSV file and return it as a Flask response.
+
 # Only supports exporting a single dataframe due to the nature of CSV format.
 def df_to_csv(dataframe_dict, seperator):
     # CSV doesn't support multi-sheets, so only one dataframe can be exported.
@@ -254,8 +279,9 @@ def df_to_csv(dataframe_dict, seperator):
 
 #---
 # FUNCTION: upload_db_entry
+# PURPOSE:  Function to handle the uploading of database entries.
 #---
-# Function to handle the uploading of database entries.
+
 # It checks if the current db_entry is locked and creates a new entry if it is,
 # otherwise, it updates the existing entry with new information.
 def upload_db_entry(db_entry, mongo_update, url):
