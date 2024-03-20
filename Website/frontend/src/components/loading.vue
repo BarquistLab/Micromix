@@ -41,7 +41,7 @@ export default {
     }, 500);
   },
   beforeDestroy() {
-    console.log(this.loading.bar.timer);
+    //console.log(this.loading.bar.timer);
     clearInterval(this.loading.bar.timer);
     this.loading.bar.timer = null;
   }

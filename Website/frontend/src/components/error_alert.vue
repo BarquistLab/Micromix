@@ -3,24 +3,32 @@
     <div class="b-alert-parent">
       <b-alert variant="danger" dismissible fade :show="dismissCountDown" @dismissed="alertDismissed" @dismiss-count-down="countDownChanged">
         <strong class="alert-heading" style="display:inline">{{error.error_type}} </strong>
-        <span>{{error.error_message}}</span>
+        <span>{{error ? error.error_message : ''}}</span> 
       </b-alert>
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
   props: {
-    error: Object,
+    type: Object,
+    //error: Object,
+    default: () => ({ error_type: '', error_message: '' })
   },
   watch: {
-    error: {
-      handler() {
+  error: {
+    handler(newValue) {
+      if (newValue === null) {
+        // Handle the case where error is explicitly set to null.
+        this.alertDismissed();
+      } else {
         this.showAlert();
       }
     }
-  },
+  }
+},
   data() {
     return {
       dismissSecs: 16,
