@@ -2,6 +2,15 @@ import pandas as pd
 import numpy as np
 import operator
 
+
+#---
+# GLOBAL DICTIONARY: COMPARISON_OPERATORS
+# PURPOSE: Maps textual descriptions of comparison operations to their corresponding Python operator functions. This facilitates the dynamic application of comparison operations in data filtering and manipulation tasks.
+# CONTENTS:
+#   This dictionary contains key-value pairs where keys are string descriptions of comparison operators (e.g., '< less than') and values are the actual Python operator functions (e.g., operator.lt for less than).
+# USAGE: Utilized in filtering functions to apply user-specified comparison operations on DataFrame columns.
+#---
+
 #Can be added or removed
 COMPARISON_OPERATORS = {
     '< less than': operator.lt,
@@ -14,6 +23,18 @@ COMPARISON_OPERATORS = {
 
 
 #each filter appies a mask to the df - the more filters there are, the more rounds the df is filtered by subsequent masks
+
+#---
+# FUNCTION: calculate_gated_mask
+# PURPOSE: Generates a final composite mask for a DataFrame based on multiple individual condition masks and a logical gate (AND/OR logic). This allows for complex filtering logic across several conditions.
+# PARAMETERS:
+#   mask_length: Integer indicating the length of the masks to be combined.
+#   masks: List of individual condition masks (boolean arrays) to be combined using logical gate.
+#   df_mask_length: Integer indicating the length of the DataFrame mask to be generated.
+#   target_boolean: Boolean value (True or False) indicating the target condition for the mask combination logic (True for OR logic, False for AND logic).
+# RETURNS: A boolean array (mask) that represents the combined condition evaluation across all provided masks.
+# NOTES: This function is crucial for implementing complex query logic on DataFrames, enabling more sophisticated data filtering and analysis operations.
+#---
 
 # This function calculates a final gated mask for the DataFrame based on multiple condition masks and a target boolean value.
 # It's used to apply complex filter logic (like "AND" or "OR") across multiple conditions.
@@ -44,6 +65,17 @@ def calculate_gated_mask(mask_length, masks, df_mask_length, target_boolean):
 
 
 
+
+
+#---
+# FUNCTION: main
+# PURPOSE: Serves as the primary entry point for applying a series of user-defined queries (filters, transformations, etc.) to a pandas DataFrame, enabling comprehensive data manipulation and analysis.
+# PARAMETERS:
+#   query: A structured list of dictionaries, each representing a specific query (or operation) to be applied to the DataFrame.
+#   df: The pandas DataFrame to which the queries will be applied.
+# RETURNS: The modified DataFrame after all queries have been applied.
+# NOTES: This function orchestrates the application of various data manipulation tasks such as filtering, replacing values, hiding columns, and more, based on the specifications contained within the query parameter.
+#---
 
 def main(query, df):
     # Initial print statement to check the state of the DataFrame before any operations.
@@ -230,6 +262,19 @@ def main(query, df):
     return df
 
 
+
+
+
+#---
+# FUNCTION: setup_query_parameters
+# PURPOSE: Extracts and prepares the parameters required for executing a filter operation on a DataFrame. This includes determining the appropriate comparison operator, identifying the target columns (filter area), and setting flags for column selection logic.
+# PARAMETERS:
+#   forms: A dictionary containing the details of the filter form submitted by the user, including selected comparison operators and target columns.
+#   df: The pandas DataFrame on which the filter operation will be performed.
+# RETURNS: A tuple containing the determined comparison operator, the list of target columns (filter area), and a boolean flag indicating whether any column can satisfy the filter condition.
+# NOTES: Essential for translating user input into actionable parameters for DataFrame filtering, facilitating dynamic and customizable data analysis workflows.
+#---
+
 def setup_query_parameters(forms, df):
     # NOTE: This should be reworked. There should be at least 4 functions: 1 for "Filters", 1 for "Hide", 1 for "Transformation", 1 for "Replace"
     # If this is set to False, all columns must satisfy the filter value.
@@ -274,6 +319,21 @@ def setup_query_parameters(forms, df):
             filter_area = list(df.select_dtypes(include=[np.number]).columns)
     return comparison_operator, filter_area, any_column
 
+
+
+
+#---
+# FUNCTION: filter_for
+# PURPOSE: Applies a specified filter to a DataFrame based on user-defined criteria, such as matching expression values or annotation codes. Supports diverse filtering strategies including exact matches, range queries, and annotation-based selection.
+# PARAMETERS:
+#   forms: A dictionary detailing the filter form including the filter value and, if applicable, annotation codes.
+#   properties: A dictionary containing properties of the filter operation, such as the query type (e.g., 'expression', 'annotation_code').
+#   df: The pandas DataFrame to be filtered.
+#   comparison_operator: The Python operator function to use for comparison-based filtering.
+#   filter_area: The columns of the DataFrame to which the filter should be applied.
+# RETURNS: A mask (boolean array) indicating rows of the DataFrame that satisfy the filter criteria.
+# NOTES: Central to enabling flexible and powerful data filtering within the DataFrame, accommodating a wide range of user-defined filtering logic.
+#---
 
 def filter_for(forms, properties, df, comparison_operator, filter_area):
     if properties["query"] == "expression":  # Directly search for the entered string
