@@ -30,7 +30,7 @@ export default {
     };
   },
   mounted() {
-    console.log("###########");
+    //console.log("###########");
     this.loading.bar.timer = setInterval(() => {
       if (this.loading.bar.value >= this.loading.bar.max) {
         clearInterval();
