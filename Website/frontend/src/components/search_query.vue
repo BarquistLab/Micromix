@@ -86,7 +86,7 @@
          </b-dropdown>
 
 
-        <!-- dropdown image the plus button -->
+        <!-- dropdown image for the plus button -->
         <b-dropdown v-else-if="form_block_array[0].forms.properties.type === 'filter'" size="sm" variant="link" pill id="add-dropdown" text="Add..." class="m-md-2 rounded" no-caret toggle-class="text-decoration-none">
           <template v-slot:button-content>
             <b-icon icon="plus-circle"></b-icon>
@@ -98,17 +98,29 @@
 
 
           <!-- dropdown contents for the plus button -->
-          <!-- Filters -->
+          <!-- Add Filter -->
+          <b-dropdown-group v-for="(filter_template_group, index) in filters.items.templates" :key="index" :header="index" id="dropdown-group-numeric">
+            <b-dropdown-item v-for="(template, index) in filter_template_group" :key="index" v-on:click="add_query_block(template, index, guidGenerator(), true, false)">{{ index }}</b-dropdown-item>
+            <b-dropdown-divider></b-dropdown-divider>
+          </b-dropdown-group>
+
+          <!-- Preset Filters -->
           <b-dropdown-group v-for="(filter_preset_group, index) in filters.items.presets" :key="index" :header="index" id="dropdown-group-numeric">
-          <b-dropdown-item v-for="(preset, index) in filter_preset_group" :key="index" v-on:click="add_query_block(preset, index, guidGenerator(), true, false)">{{ index }}</b-dropdown-item>
-          <b-dropdown-divider></b-dropdown-divider>
-        </b-dropdown-group>
+            <b-dropdown-item v-for="(preset, index) in filter_preset_group" :key="index" v-on:click="add_query_block(preset, index, guidGenerator(), true, false)">{{ index }}</b-dropdown-item>
+            <b-dropdown-divider></b-dropdown-divider>
+          </b-dropdown-group>
+
+          <!-- Transformations -->
+          <b-dropdown-group v-for="(filter_preset_group, index) in filters.items.transformations" :key="index" :header="index" id="dropdown-group-numeric">
+            <b-dropdown-item v-for="(preset, index) in filter_preset_group" :key="index" v-on:click="add_query_block(preset, index, guidGenerator(), true, false)">{{ index }}</b-dropdown-item>
+            <b-dropdown-divider></b-dropdown-divider>
+          </b-dropdown-group>
           
           <!-- to add more options - populate here with additional dropdown groups -->
-         
         </b-dropdown>
 
         
+        <!-- Button to remove query -->
         <b-button size="sm" variant="link" v-on:click="remove_query_block(form_block_array)">
           <b-icon icon="trash"></b-icon>
         </b-button>
@@ -118,11 +130,12 @@
       <!-- If you need to add a new button or link to a new annotation category, change filters.items.presets
             The .presents links into the filters.json file and new annotation cateories can be added -->
 
+      <!-- The add filter dropdown -->
       <b-dropdown size="sm" variant="link" pill id="add-query-dropdown" text="Add..." class="m-md-2 rounded" no-caret toggle-class="text-decoration-none">
         <!-- This is the popover text that whows when the help button is pressed - repeats below -->
         <b-popover id="tutorial_popover" :no-fade="true" triggers placement="bottom" target="add-query-dropdown" title="2. Build filters"
-          >You can add multiple filters to search for all kinds of values, including GO terms, KEGG pathways, and COG categories.</b-popover
-        >
+          >You can add multiple filters to search for all kinds of values, including GO terms, KEGG pathways, and COG categories.</b-popover>
+
         <template v-slot:button-content><b-icon icon="plus-circle-fill"></b-icon> Add Filter </template>
         <b-dropdown-group v-for="(filter_template_group, index) in filters.items.templates" :key="index" :header="index" id="dropdown-group-numeric">
           <b-dropdown-item v-for="(template, index) in filter_template_group" :key="index" v-on:click="add_query_block(template, index, guidGenerator(), true, false)">{{ index }}</b-dropdown-item>
@@ -130,11 +143,12 @@
         </b-dropdown-group>
       </b-dropdown>
 
+
+      <!-- The Preset filter dropdown -->
       <b-dropdown size="sm" variant="link" pill id="load-query-dropdown" text="Add..." class="m-md-2 rounded" no-caret toggle-class="text-decoration-none">
         <b-popover id="tutorial_popover" :no-fade="true" triggers placement="rightbottom" target="load-query-dropdown" title="3. Load preset filters"
           >Load pre-filled filters to search for pathogenicity islands, sORF etc.</b-popover>
 
-         <!-- The preset filters button-->
         <template v-slot:button-content> <b-icon icon="intersect"></b-icon> Preset Filters </template>
         <b-dropdown-group v-for="(filter_preset_group, index) in filters.items.presets" :key="index" :header="index" id="dropdown-group-numeric">
           <b-dropdown-item v-for="(preset, index) in filter_preset_group" :key="index" v-on:click="add_query_block(preset, index, guidGenerator(), true, false)">{{ index }}</b-dropdown-item>
@@ -142,10 +156,12 @@
         </b-dropdown-group>
       </b-dropdown>
 
+
+      <!-- The Transform Data dropdown -->
       <b-dropdown size="sm" variant="link" pill id="load-query-dropdown" text="Add..." class="m-md-2 rounded" no-caret toggle-class="text-decoration-none">
         <b-popover id="tutorial_popover" :no-fade="true" triggers placement="rightbottom" target="load-query-dropdown" title="3. Load preset filters"
-          >Load pre-filled filters to search for pathogenicity islands, sORF etc.</b-popover
-        >
+          >Load pre-filled filters to search for pathogenicity islands, sORF etc.</b-popover>
+
         <template v-slot:button-content> <b-icon icon="calculator-fill"></b-icon>Transform Data </template>
         <b-dropdown-group v-for="(filter_preset_group, index) in filters.items.transformations" :key="index" :header="index" id="dropdown-group-numeric">
           <b-dropdown-item v-for="(preset, index) in filter_preset_group" :key="index" v-on:click="add_query_block(preset, index, guidGenerator(), true, false)">{{ index }}</b-dropdown-item>
@@ -153,7 +169,8 @@
         </b-dropdown-group>
       </b-dropdown>
 
-       <!-- The filter data button-->
+      
+      <!-- The filter data button (to submit the filter) -->
       <div class="submit-button-parent">
         <b-button type="submit" variant="primary" pill size="sm" class="submit-button">
           <!-- <b-spinner label="Loading..." class="search-spinner" v-if="loading"></b-spinner> -->
@@ -343,9 +360,17 @@ export default {
       this.post_query();
     },
     load_autocomplete_json() {
+
+      //If adding in a new annotation type, you will need to add a new line in here
+      //The contents are linked to two files (case-sensitive)
+      //pathways.json - which is where the pathways.go "go" part comes from - the high level entries
+      //filters.items.functional
+      //filter.json - this is where ["Filter by annotation"]["GO Term"] comes from - under the top category of functional (filters.items.functional)
+      //["Filter by annotation"] - this is the category in the dropdown and linked to the section in the filters.json
+      //["GO Term"] - the specific entry in the filters.json under the category "Filter by annotation"
+
       this.filters.items.templates["Filter by annotation"]["COG Category"].items.filter_annotation.source.items = this.pathways.cog;
       this.filters.items.templates["Filter by annotation"]["GO Term"].items.filter_annotation.source.items = this.pathways.go;
-      // this.filter_templates.items.templates["Filter by annotation"]["GO Namespace"].items.filter_annotation.source.items = this.salmonella_go_terms.items;
       this.filters.items.templates["Filter by annotation"]["KEGG Pathway"].items.filter_annotation.source.items = this.pathways.kegg;
     },
     load_categories_json(query_source) {
