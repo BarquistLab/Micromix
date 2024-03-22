@@ -24,47 +24,6 @@ COMPARISON_OPERATORS = {
 
 #each filter appies a mask to the df - the more filters there are, the more rounds the df is filtered by subsequent masks
 
-#---
-# FUNCTION: calculate_gated_mask
-# PURPOSE: Generates a final composite mask for a DataFrame based on multiple individual condition masks and a logical gate (AND/OR logic). This allows for complex filtering logic across several conditions.
-# PARAMETERS:
-#   mask_length: Integer indicating the length of the masks to be combined.
-#   masks: List of individual condition masks (boolean arrays) to be combined using logical gate.
-#   df_mask_length: Integer indicating the length of the DataFrame mask to be generated.
-#   target_boolean: Boolean value (True or False) indicating the target condition for the mask combination logic (True for OR logic, False for AND logic).
-# RETURNS: A boolean array (mask) that represents the combined condition evaluation across all provided masks.
-# NOTES: This function is crucial for implementing complex query logic on DataFrames, enabling more sophisticated data filtering and analysis operations.
-#---
-
-# This function calculates a final gated mask for the DataFrame based on multiple condition masks and a target boolean value.
-# It's used to apply complex filter logic (like "AND" or "OR") across multiple conditions.
-def calculate_gated_mask(mask_length, masks, df_mask_length, target_boolean):
-    # Initialize a default mask for the DataFrame with the specified length.
-    # All values are initially set to False
-    df_mask = [False] * df_mask_length
-    
-    # Iterate through each position in the mask (corresponding to DataFrame rows).
-    for i in range(mask_length):
-        # For each row, iterate through all condition masks to check their criteria.
-        for j in range(len(masks)):
-            # If the current condition mask at row 'i' matches the target_boolean (indicating a match for the condition),
-            # set the final mask at 'i' to match the target_boolean (True for inclusion, False for exclusion)
-            # and stop checking further conditions for this row (because one match is sufficient for "OR" logic).
-            if masks[j][i] == target_boolean:
-                df_mask[i] = target_boolean
-                break
-            # If the current condition mask at row 'i' does not match the target_boolean,
-            # set the final mask at 'i' to the opposite of the target_boolean. This is crucial for "AND" logic,
-            # where a non-match in any condition should lead to exclusion but is conditionally used based on logic implementation.
-            else:
-                df_mask[i] = not target_boolean
-                
-    # After evaluating all conditions for all rows, return the final composite mask.
-    # This mask can then be used to filter the DataFrame, keeping rows that meet the combined condition(s).
-    return df_mask
-
-
-
 
 
 #---
@@ -72,85 +31,75 @@ def calculate_gated_mask(mask_length, masks, df_mask_length, target_boolean):
 # PURPOSE: Serves as the primary entry point for applying a series of user-defined queries (filters, transformations, etc.) to a pandas DataFrame, enabling comprehensive data manipulation and analysis.
 # PARAMETERS:
 #   query: A structured list of dictionaries, each representing a specific query (or operation) to be applied to the DataFrame.
-#   df: The pandas DataFrame to which the queries will be applied.
+#   df: The pandas DataFrame containing the full dataframe, which the queries will be applied.
 # RETURNS: The modified DataFrame after all queries have been applied.
-# NOTES: This function orchestrates the application of various data manipulation tasks such as filtering, replacing values, hiding columns, and more, based on the specifications contained within the query parameter.
+# NOTES: This function orchestrates various data manipulation tasks such as filtering, replacing values, hiding columns, and more, based on the specifications contained within the query parameter.
 #---
 
 def main(query, df):
     # Initial print statement to check the state of the DataFrame before any operations.
-    print("Initial DataFrame:", df.head())  # Display first few rows for a quick overview
+    #print("Initial DataFrame:", df.head()) 
     
-    # Create a copy of the original DataFrame to maintain the original data for reference or further use.
-    unfiltered_df = df.copy()
-    # import experimental_features
-    # df = experimental_features.adjust_numeric_dtype(df) # This reduces the dataframe's size by around 50% but increases computation time by 30% and needs rounding due to lower FP precision
-    
+    #This is basically a check and is only true when queries have been added, 
+    #then all of those queries have been removed. So there are no queries, but the df is still filtered based
+    #upon the last filter. So this allows the full df to be reloaded
+    # - if excluded, there are no search queries and thus the following for loop with throw an error 
+    if len(query) == 0:
+        return df #retun the unfiltered df
+    else:
+        #Continue with filtering
 
-    # Loop through each query. Each 'sub_query' represents a set of conditions or operations to be applied to the DataFrame.
-    for sub_query in query:
-        print("Processing sub-query:", sub_query) # Debug print to indicate which sub-query is being processed.
-        masks = []  # Initialize an empty list to store masks generated by filter conditions within this sub-query.
-        logical_operator = ""  # Variable to store the logical operator (AND/OR) used to combine filter conditions.
+        # Create a copy of the original DataFrame to maintain the original data for reference or further use.
+        unfiltered_df = df.copy()
+        masks = [] #where all masks with be concatenated to
+        logics = [] #store the logical operator (AND/OR) used to combine filter conditions.
 
-        # Loop through elements of the sub_query. Each 'block' represents an individual condition or operation.
-        for i in range(len(sub_query)):
-            block = sub_query[i]
+        # import experimental_features
+        # df = experimental_features.adjust_numeric_dtype(df) # This reduces the dataframe's size by around 50% but increases computation time by 30% and needs rounding due to lower FP precision
 
-            # Check if the block is a filter condition (as opposed to a logical operator like AND/OR).
-            if block["properties"]["type"] != "logic":
-                # Extract comparison operator, area of the DataFrame to apply the filter, and any column flag.
-                comparison_operator, filter_area, any_column = setup_query_parameters(block["forms"], df)
+        # Loop through each query. Each 'sub_query' represents a set of conditions or operations to be applied to the DataFrame.
+        for sub_query in query:
 
-                # Generate a mask based on the filter condition described in 'block'.
-                df_mask = filter_for(block["forms"], block["properties"], df, comparison_operator, filter_area)
-                
-                # Attempt to handle masks that cover multiple columns.
-                # If the mask_area is larger than one column, we need to convert the mask from a 2D array to a 1D list.
-                try:
-                    if df_mask.shape[1] > 1:
-                        # Maybe bad. This converts the df_mask to a python list, only in certain circumstances. Replacing values in the 2D array isn't easy otherwise.
-                        df_mask = list(df_mask)
-                        # Modify mask based on 'any_column' flag, to indicate inclusion/exclusion in the filter.
-                        for j in range(len(df_mask)):
-                            if any_column in df_mask[j]:
-                                df_mask[j] = any_column
-                            else:
-                                df_mask[j] = not any_column
-                except Exception as e:
-                    print(e) # Print any exceptions for debugging.
-                    pass
-                
-                # Append the generated mask to the list of masks for this sub-query.
-                masks.append(df_mask)
-            else:
-                # If the block represents a logical operation, store its type (AND/OR).
-                logical_operator = block["forms"]["operator"]
+            # Loop through elements of the sub_query. Each 'block' represents an individual condition or operation.
+            for i in range(len(sub_query)):
+                block = sub_query[i]
 
-        
-        # After processing all blocks in the sub-query, combine the masks based on the logical operator.
-        if logical_operator == "or":
+                if block["properties"]["type"] != "logic":
+                    # Extract comparison operator, area of the DataFrame to apply the filter, and any column flag.
+                    comparison_operator, filter_area, any_column = setup_query_parameters(block["forms"], df)
 
-             # For OR logic, combine masks so that a row is included if it matches any condition.
-             df_mask = calculate_gated_mask(len(df_mask), masks, len(df_mask), True)
-        elif logical_operator == "and":
-             # For AND logic, combine masks so that a row is included only if it matches all conditions.
-             df_mask = calculate_gated_mask(len(df_mask), masks, len(df_mask), False)
-        
+                    # Generate a mask based on the filter condition described in 'block'.
+                    df_mask = filter_for(block["forms"], block["properties"], unfiltered_df, comparison_operator, filter_area)
 
-        # Apply the final combined mask to the DataFrame, or perform other operations based on the block type.
-        block = sub_query[0] # Reference to the first block in the sub-query, used for determining operation type.
+                    #append each mask to masks
+                    masks.append(df_mask)
+                    #useful for debugging to make sure each mark is being captured
+                    #print(f"Appended mask for filter {i+1}. Current number of masks in list: {len(masks)}")
+                else:
+
+                    logics.append(block["forms"]["operator"])
+
+                    
+        # Reference to the first block in the sub-query, used for determining operation type. (AND/OR)
+        block = sub_query[0] 
         block_type = block["properties"]["type"]
-        
 
+        
+        #--
         # Apply different operations based on the block type specified in the sub-query.
-        if block_type == "filter":
-            # Apply the filter to the DataFrame.
-            # If the operation is 'filter', apply the previously calculated mask to the DataFrame to retain rows that match the filter criteria.
-            df = df[df_mask]
-            print("DataFrame after filter:", df.head()) # Debugging: Print the first few rows of the DataFrame after applying the filter.
+        #--
 
-        
+        #Filter - which is most of the dropdown boxes below the search area containing lists of genes (GO, KEGG, manual gene lists etc)
+        if block_type == "filter":
+            #make sure there are more than 2 masks - which will require combining into a single mask 
+            if len(masks) > 1:
+                final_mask = apply_logics(masks, logics)
+            else:
+                #no masks, which means there is only a single search query and no AND/OR - so just take the first mask (T/F)
+                final_mask = masks[0]
+            df = unfiltered_df[final_mask]
+
+
         # Replace operation: modify values in the DataFrame based on the mask and target value.
         elif block_type == "replace":
             # If the operation is 'replace', attempt to convert the target value for replacement to float, falling back to string if conversion fails.
@@ -257,9 +206,9 @@ def main(query, df):
                         pass
     
     
-    # After all sub-queries have been processed, print the final state of the DataFrame.
-    print("Final DataFrame after all sub-queries:", df.head())
-    return df
+        # After all sub-queries have been processed, print the final state of the DataFrame.
+        #print("Final DataFrame after all sub-queries:", df.head())
+        return df
 
 
 
@@ -380,3 +329,49 @@ def filter_for(forms, properties, df, comparison_operator, filter_area):
     else:  # If the filter does not rely on a mask (e.g. dropping a column)
         df_mask = None
     return df_mask
+
+
+
+#---
+# FUNCTION: apply_logics
+# PURPOSE: Generates a final list containing True/False values to use to subset the dataframe
+# PARAMETERS:
+#   masks: An array containing T/F masks for each query
+#   logics: another dict containing the logic (AND/OR)
+# RETURNS: A final mask of T/F taking into consideration the order of AND/OR that was applied
+#---
+
+def apply_logics(masks, logics):
+    #not using this code, as can end up having differering sizes - esp. when removing queries
+    # Ensure there's at least one mask and the number of logics is one less than the number of masks
+    #assert len(masks) > 0 and len(logics) == len(masks) - 1, "Invalid input sizes."
+
+    # Start with the first mask as the base for subsequent logical operations.
+    # This is because we need an initial condition to start applying logical operations ("and", "or").
+    result_mask = masks[0]
+
+    # Iterate over each logical operator provided in the 'logics' list.
+    # 'enumerate' is used here to get both the index and the value of each item in the list,
+    # allowing us to access the corresponding masks by their index.
+    for i, logic in enumerate(logics):
+        # If the current logical operator is "or", combine the current result_mask with the next mask in the list using a logical OR operation.
+        # np.logical_or performs a logical OR operation between two arrays element-wise.
+        # This means for each position in the arrays, if either is True, the result at that position is True.
+        if logic == "or":
+            result_mask = np.logical_or(result_mask, masks[i + 1])
+        
+        # If the current logical operator is "and", combine the current result_mask with the next mask in the list using a logical AND operation.
+        # np.logical_and performs a logical AND operation between two arrays element-wise.
+        # This means for each position in the arrays, both must be True for the result at that position to be True.
+        elif logic == "and":
+            result_mask = np.logical_and(result_mask, masks[i + 1])
+        
+        # If an unsupported logical operator is encountered, raise an error.
+        # This is a safety check to ensure only "and" and "or" operations are allowed.
+        # It helps prevent unexpected behavior from incorrect input.
+        else:
+            raise ValueError(f"Unsupported logical operator: {logic}")
+
+    # Return the final result_mask after applying all logical operations.
+    # This mask can then be used to filter or select data from a DataFrame or array.
+    return result_mask
