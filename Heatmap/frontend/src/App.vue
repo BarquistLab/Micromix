@@ -8,7 +8,10 @@
 
 <script>
 // @ is an alias to /src
+
+// The Heatmap canvas
 import deckglCanvas from './components/deckglCanvas.vue';
+//The loading screen
 import loadingOverlay from './components/loadingOverlay.vue';
 
 export default {

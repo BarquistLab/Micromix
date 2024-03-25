@@ -1,7 +1,10 @@
 <!-- App / deckglCanvas -->
 <template>
   <div>
-    <div id="export_svg"></div>
+     <!-- Container for SVG exports -->
+     <div id="export_svg"></div>
+    
+    <!-- Main Menu Component: Controls and settings -->
     <mainMenu
       v-if="layerSettings.gridCellLayer.data"
       class="main_menu menu_c"
@@ -14,31 +17,43 @@
       :colorGradientDict="colorGradientDict"
       :minMaxValues="[this.lowestValue, this.highestValue]"
     />
+    
+    
+    <!-- Camera Menu Component: Controls for changing camera views -->
     <cameraMenu
       class="camera_menu menu_c"
       :activeCamera="activeCamera"
       :elevationScale="layerSettings.gridCellLayer.elevationScale"
       @active-camera-selected="changeCamera"
     />
+
+    <!-- Container for the Deck.gl canvas -->
     <div class="deck-container" id="deck-container">
       <canvas id="deck-canvas" ref="canvas"></canvas>
     </div>
   </div>
 </template>
 
+
+
 <script>
+
+
+// Importing necessary modules from Deck.gl and other libraries
 import {
   Deck,
   LightingEffect,
   AmbientLight,
   DirectionalLight,
 } from '@deck.gl/core';
+
 import { GridCellLayer, TextLayer } from '@deck.gl/layers';
-import axios from 'axios';
-import chroma from 'chroma-js';
-import cameraMenu from './cameraMenu.vue';
-import mainMenu from './mainMenu.vue';
-import settingsTemplate from '../assets/settingsTemplate.json';
+import axios from 'axios'; //For HTTP requests
+import chroma from 'chroma-js';  // For color manipulation
+import cameraMenu from './cameraMenu.vue';  // Custom Vue component for camera menu
+import mainMenu from './mainMenu.vue';  // Custom Vue component for main settings menu
+import settingsTemplate from '../assets/settingsTemplate.json';  // Load in the template for initial settings
+
 
 export default {
   components: {
@@ -47,10 +62,8 @@ export default {
   },
   data() {
     return {
-      // backendUrl: 'http://127.0.0.1:5000',
-      // backendUrl: 'https://hp-heatmap-backend-44nub6ij6q-ez.a.run.app',
-      // backendUrl: 'http://hiri-heatmap-backend.test.fedcloud.eu',
-      backendUrl: 'http://127.0.0.1:3000',
+      // Initial data properties including URL, camera settings, layer configurations, etc.
+      backendUrl: 'http://127.0.0.1:3000',  //this will need to be changed to where micrimix is hosted
       activeCamera: '3D',
       constants: {
         textMarginRight: -0.003,
@@ -133,12 +146,18 @@ export default {
       settings: null,
     };
   },
+
+
+  // Fetches initial configuration data and sets up the deck instance
   created() {
     this.fetchData(`${this.backendUrl}/config`);
     this.deck = null;
     this.settings = this.generateSettings();
   },
-  mounted() {
+  
+  
+   // Initializes the Deck.gl instance on component mount
+   mounted() {
     this.deck = new Deck({
       // Disable Retina rendering for better performance:
       // useDevicePixels: false,
@@ -153,7 +172,12 @@ export default {
     });
     // this.deck.layerManager.layers[0].props.elevationScale = 10
   },
+
+
+
   methods: {
+    
+     // Allows users to take a screenshot of the current heatmap
     takeScreenshot() {
       this.deck.redraw(true);
       const { canvas } = this.deck;
@@ -167,6 +191,8 @@ export default {
       // a.download = 'Heatmap_screenshot.jpeg';
       a.click();
     },
+    
+    // Generates initial settings based on the settings template
     generateSettings() {
       const settings = {
         layer: {},
@@ -188,6 +214,8 @@ export default {
       });
       return settings;
     },
+    
+    // Handles camera view changes
     changeCamera(e) {
       this.activeCamera = e.id;
       this.currentViewState = { ...this.currentViewState, ...e.viewState };
@@ -203,6 +231,8 @@ export default {
         ...e.layerSettings.gridCellLayer,
       };
     },
+    
+    // Updates heatmap settings based on user interaction
     updateSettings(updatedSettings) {
       const s = updatedSettings.settings;
       // It might be useful to use a switch case instead,
@@ -325,6 +355,8 @@ export default {
       }
       this.$emit('long-loading-finished');
     },
+    
+    // Fetches data for the heatmap visualization
     fetchData(url) {
       const payload = new FormData();
       payload.append('url', JSON.stringify(this.$route.query.config));
@@ -348,6 +380,8 @@ export default {
           console.log(error);
         });
     },
+    
+    // Processes JSON data into a format suitable for Deck.gl layers
     processJsonData(json) {
       // This could be moved to the python backend for performace reasons.
       const gridCellLayerData = [];
@@ -457,6 +491,8 @@ export default {
         lowestValue,
       ];
     },
+    
+    // Adjusts settings for handling negative values in data
     configureNegativeValues() {
       this.layerSettings.gridCellLayer.getPosition = (d) => [d.COORDINATES[0],
         d.COORDINATES[1], d.VALUE * (this.updateTriggerObjects.elevationScale * d.ORIENTATION)];
@@ -464,6 +500,8 @@ export default {
         ? this.colorGradientDict[d.TITLE](d.VALUE).rgb()
         : this.colorGradientDict[d.TITLE](d.VALUE * d.ORIENTATION).rgb());
     },
+    
+    // Dynamically creates gradient settings forms based on data
     createSubTableGradientForms() {
       for (let i = 0; i < this.settingsTemplate.basicSettings.settings.length; i += 1) {
         if (this.settingsTemplate.basicSettings.settings[i].label === 'Color Gradient') {
@@ -502,6 +540,8 @@ export default {
         }
       }
     },
+    
+    // Calculates gradient domain for color scaling
     calculateGradientDomain(form, lowestValue, highestValue) {
       // Calculate order of magnitude of the value range between data min and max.
       const gradientFormTemplate = form;
@@ -532,7 +572,9 @@ export default {
       ];
       return gradientFormTemplate;
     },
-    getTooltip({ object }) {
+    
+     // Generates tooltip content for grid cells
+     getTooltip({ object }) {
       if (!object) {
         return null;
       }
