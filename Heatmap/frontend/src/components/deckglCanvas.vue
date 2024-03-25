@@ -64,7 +64,7 @@ export default {
     return {
       // Initial data properties including URL, camera settings, layer configurations, etc.
       backendUrl: 'http://127.0.0.1:3000',  //this will need to be changed to where micrimix is hosted
-      activeCamera: '3D',
+      activeCamera: 'Top',
       constants: {
         textMarginRight: -0.003,
         textMarginTop: 0.5 / 140,
@@ -133,14 +133,17 @@ export default {
             '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Open Sans, Helvetica Neue, sans-serif',
         },
       },
+
+      //These are the default view settings for the heatmap.
+      //If you want to change from Top to something else, you will also have to change values in settingsTemplate.json - for example line 26 for the 3d view enabled/disabled
       currentViewState: {
         latitude: 0.02,
         longitude: 0.05,
         zoom: 11,
         minZoom: 4,
-        pitch: 40,
+        pitch: 0,
         maxPitch: 89,
-        bearing: -40,
+        bearing: -90,
       },
       settingsTemplate,
       settings: null,

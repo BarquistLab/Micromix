@@ -23,7 +23,7 @@
             "label": "3D Extrusion",
             "type": "checkbox",
             "labelCols": 6,
-            "value": true,
+            "value": false,
             "propertyType": "layer"
           },
           {

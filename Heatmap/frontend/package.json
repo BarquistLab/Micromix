@@ -1,6 +1,6 @@
 {
-  "name": "deck-gl-vue",
-  "version": "0.1.0",
+  "name": "HIRI heatmap",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --fix --host 127.1.1.1",
