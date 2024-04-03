@@ -248,7 +248,7 @@
       "Filter": {
         "Filter values": {
           "properties": {
-            "type": "filter",
+            "type": "row_filter",
             "query": "expression"
           },
           "items": {

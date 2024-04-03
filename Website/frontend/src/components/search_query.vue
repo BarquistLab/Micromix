@@ -23,15 +23,36 @@
               class="mb-2 mr-sm-2 mb-sm-0"
               required
             ></input_autocomplete>
+
+
             <!-- tag select dropdown -->
-            <b-form-tags v-else-if="form.type === 'b-form-tags'" :id="form.id" v-model="form.selected" add-on-change no-outer-focus required class="mb-2 mr-sm-2 mb-sm-0 tags-form">
+            <b-form-tags v-else-if="form.type === 'b-form-tags'" 
+              :id="form.id" 
+              v-model="form.selected" 
+              add-on-change 
+              no-outer-focus 
+              required 
+              class="mb-2 mr-sm-2 mb-sm-0 tags-form">
+              
               <template v-slot="{ tags, inputAttrs, inputHandlers, disabled, removeTag }">
                 <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-0">
                   <li v-for="tag in tags" :key="tag" class="list-inline-item">
-                    <b-form-tag @remove="removeTag(tag)" :title="tag" :disabled="disabled" variant="secondary">{{ tag }}</b-form-tag>
+                    
+                    <b-form-tag @remove="removeTag(tag)" 
+                      :title="tag" 
+                      :disabled="disabled" 
+                      variant="secondary">{{ tag }}
+                    </b-form-tag>
                   </li>
                 </ul>
-                <b-form-select size="sm" v-bind="inputAttrs" v-on="inputHandlers" :disabled="disabled || availableOptions(form).length === 0" :options="availableOptions(form)" class="mb-0 mr-sm-0 mb-sm-0 tags-select">
+                
+                <b-form-select 
+                  size="sm" 
+                  v-bind="inputAttrs" 
+                  v-on="inputHandlers" 
+                  :disabled="disabled || availableOptions(form).length === 0" 
+                  :options="availableOptions(form)" 
+                  class="mb-0 mr-sm-0 mb-sm-0 tags-select">
                   <template v-slot:first>
                     <!-- This is required to prevent bugs with Safari -->
                     <option disabled value>Add columns...</option>
@@ -39,11 +60,26 @@
                 </b-form-select>
               </template>
             </b-form-tags>
+
+
             <!-- log-input and -preview -->
             <div v-else-if="form.type === 'int-input'">
-              <b-form-input :id="form.id" v-model="form.selected" size="sm" class="mb-2 mr-sm-2 mb-sm-0 short-form" :style="form.style" type="number" :min="form.min" :max="form.max" required></b-form-input>
-              <div v-if="form.formula" class="log-preview">
-                <b-badge variant="dark" class="log-preview-badge">
+              <b-form-input 
+                :id="form.id" 
+                v-model="form.selected" 
+                size="sm" 
+                class="mb-2 mr-sm-2 mb-sm-0 short-form" 
+                :style="form.style" 
+                type="number" 
+                :min="form.min" 
+                :max="form.max" 
+                required>
+              </b-form-input>
+              <div v-if="form.formula" 
+                class="log-preview">
+                <b-badge 
+                  variant="dark" 
+                  class="log-preview-badge">
                   <span class="supsub">
                     <span class="base formula">
                       log
@@ -58,7 +94,15 @@
                 </b-badge>
               </div>
             </div>
-            <b-form-select v-else-if="form.type === 'b-form-select-sync' && form_block_array[1].forms.items.operator" :options="form.options" :value="null" :id="form.id" v-model="form_block_array[1].forms.items.operator.selected" size="sm" class="mb-2 mr-sm-2 mb-sm-0" required></b-form-select>
+            <b-form-select v-else-if="form.type === 'b-form-select-sync' && form_block_array[1].forms.items.operator" 
+              :options="form.options" 
+              :value="null" 
+              :id="form.id" 
+              v-model="form_block_array[1].forms.items.operator.selected" 
+              size="sm" 
+              class="mb-2 mr-sm-2 mb-sm-0" 
+              required>
+            </b-form-select>
           </div>
         </div>
 
@@ -68,7 +112,8 @@
           ------------ 
         -->
         
-        <!-- The dropdown for adding logical operators between query blocks, allowing users to specify how multiple conditions relate to each other (e.g., "AND", "OR"). 
+        <!-- The dropdown for adding logical operators between query blocks, 
+          allowing users to specify how multiple conditions relate to each other (e.g., "AND", "OR"). 
           Visible only if the last query block has a logical operator and the form blocks are of type 'filter'. -->
         <b-dropdown
           v-if="form_block_array[form_block_array.length - 1]['logic'] && form_block_array[0].forms.properties.type === 'filter'"
@@ -125,7 +170,7 @@
           -->
 
 
-          <!-- Add Filter -->
+          <!-- Add Filter 
           <b-dropdown-group v-for="(filter_template_group, index) in filters.items.templates" 
             :key="index" 
             :header="index" 
@@ -135,7 +180,7 @@
             v-on:click="add_query_block(template, index, guidGenerator(), true, false)">{{ index }}
           </b-dropdown-item>
             <b-dropdown-divider></b-dropdown-divider>
-          </b-dropdown-group>
+          </b-dropdown-group> -->
 
           <!-- Preset Filters -->
           <b-dropdown-group v-for="(filter_preset_group, index) in filters.items.presets" 
@@ -149,7 +194,7 @@
             <b-dropdown-divider></b-dropdown-divider>
           </b-dropdown-group>
 
-          <!-- Transformations -->
+          <!-- Transformations 
           <b-dropdown-group v-for="(filter_preset_group, index) in filters.items.transformations" 
             :key="index" 
             :header="index" 
@@ -159,7 +204,7 @@
             v-on:click="add_query_block(preset, index, guidGenerator(), true, false)">{{ index }}
           </b-dropdown-item>
             <b-dropdown-divider></b-dropdown-divider>
-          </b-dropdown-group>
+          </b-dropdown-group> -->
           
           <!-- to add more options - populate here with additional dropdown groups -->
         </b-dropdown>
@@ -196,7 +241,7 @@
         class="m-md-2 rounded" 
         no-caret 
         toggle-class="text-decoration-none"
-        :disabled="query.length > 0">  <!-- greys out the button once a query has been loaded-->
+        :disabled="isDropdownDisabled">  <!-- greys out the button once a filter query has been loaded-->
 
         <!-- This is the popover text that whows when the help button is pressed - repeats below -->
         <b-popover 
@@ -241,7 +286,7 @@
         class="m-md-2 rounded" 
         no-caret 
         toggle-class="text-decoration-none"
-        :disabled="query.length > 0">  <!-- greys out the button once a query has been loaded-->
+        :disabled="isDropdownDisabled">  <!-- greys out the button once a filter query has been loaded-->
         
         <!-- This is the popover text that whows when the help button is pressed - repeats below -->
         <b-popover 
@@ -340,25 +385,53 @@ import loading from "./loading";
 
 export default {
   name: "search_query",
+  
+  // Props are used to pass data from parent to child components
   props: {
-    df_categories: Array,
-    server_queries: Array,
-    backend_url: String,
-    table_titles: Array,
-    active_organism: Object,
+    df_categories: Array, // Array of data frame categories for dropdown options
+    server_queries: Array, // Array of server queries to convert into query blocks
+    backend_url: String, // URL for backend queries
+    table_titles: Array, // Array of table titles for dropdown options
+    active_organism: Object, // Object representing the currently active organism
   },
+
+
   components: {
+    // Declaring local components used within this component
     input_autocomplete,
     loading,
   },
+
+  computed: {
+    //This is for the filter dropdowns - disabling the dropdowns if there is an existing query that is a filter,
+    //otherwise, enable the dropdown.
+    //The idea here is that all gene filtering (filter) should be linked to a conditional filter and need to be
+    //combined within the same region - because having blocks in different locations is confusing to work out the logic
+    isDropdownDisabled() {
+    // Check if query length is greater than 0
+    const hasQueries = this.query.length > 0;
+    // Check if there is at least one 'filter' type block in the query array
+    const hasFilterTypeBlock = this.query.some(queryBlockArray => {
+      return queryBlockArray.some(block => block.forms.properties.type === 'filter');
+      });
+    // Disable the dropdown if there are queries and at least one of them is a filter type
+    return hasQueries && hasFilterTypeBlock;
+    }
+  },
+
   methods: {
+    // Syncs the form block with the form, used for keeping form inputs in sync
     syncedForm(form_block, form) {
       print(form_block, form);
       return form.selected;
     },
+    
+    // Returns available options by filtering out selected options from the full options list
     availableOptions(form) {
       return form.options.filter((opt) => form.selected.indexOf(opt) === -1);
     },
+
+    // Deeply copies an input object or array to prevent mutating the original data
     deep_copy(input) {
       let output, value, key;
       if (typeof input !== "object" || input === null) {
@@ -371,9 +444,13 @@ export default {
       }
       return output;
     },
+
+    // Converts server query blocks to template blocks for rendering in the UI
     convert_server_query_blocks(templates) {
       for (var i = 0; i < this.server_queries.length; i++) {
         for (var j = 0; j < this.server_queries[i].length; j++) {
+          
+          // Process each server query block, converting to UI-friendly blocks
           let block_name = this.server_queries[i][j].name;
           template_type: for (let type in templates) {
             for (let query_group in templates[type]) {
@@ -396,6 +473,8 @@ export default {
         }
       }
     },
+   
+    // Prepares a new query block with provided parameters
     prepare_query_block(forms, index, id, logic, inline_coordinates) {
       let added_block = {};
       added_block["forms"] = this.deep_copy(forms);
@@ -405,29 +484,25 @@ export default {
       added_block["inline_coordinates"] = inline_coordinates;
       return added_block;
     },
+
+    // Adds a new query block to the query array for rendering in the UI
+    //This method is responsible for adding new query blocks to the query structure. 
+    //It checks if inline_coordinates are provided. 
+    //If not, the new block is pushed to the end of the query structure; 
+    //if inline_coordinates are provided, it inserts the new block at a specified position within an existing block.
     add_query_block(forms, index, id, logic, inline_coordinates) {
       if (!inline_coordinates) {
+        //add to the end
         this.query.push([this.prepare_query_block(forms, index, id, logic, inline_coordinates)]);
       } else {
+        //insert within an existing block
         this.query[inline_coordinates[0]].splice(inline_coordinates[1], 0, this.prepare_query_block(forms, index, id, logic, inline_coordinates));
       }
     },
-    // add_inline_query_block(block, form) {
-    //   console.log(block);
-    //   console.log(form);
-    //   console.log(this.query);
-    //   let added_block = this.query.find(x => x.id === form.id)[0];
-    //   console.log(added_block);
-    //   if (block === "or" || block === "and") {
-    //     added_block["logic"] = false;
-    //   } else {
-    //     added_block["logic"] = true;
-    //   }
-    //   console.log(this.query);
-    //   this.query[this.query.indexOf(form)].push(added_block);
-    //   console.log(this.query);
-    //   this.id++;
-    // },
+
+
+    
+    // Generates a unique ID for query blocks
     guidGenerator() {
       return (
         "_" +
@@ -437,6 +512,9 @@ export default {
       );
       // return (Math.random() * 1001) | 0;
     },
+    
+    
+    // Restructures the query for submission to the backend
     restructure_query() {
       let structured_query = [];
       for (let array in this.query) {
@@ -461,6 +539,8 @@ export default {
       }
       return structured_query;
     },
+    
+    // Removes a query block from the query array
     remove_query_block(block_array) {
       const index = this.query.indexOf(block_array);
       if (index > -1) {
@@ -475,6 +555,8 @@ export default {
         }
       }
     },
+    
+    // Submits the query to the backend and handles the response
     post_query() {
       const path = `${this.backend_url}/query`;
       var data = new FormData();
@@ -496,7 +578,8 @@ export default {
             self.$emit("dataframe_filtered", res);
             this.$nextTick(() => {
               setTimeout(() => {
-                // This forces the loading bar to stay alive for 2 additional seconds, to compensate the delay between backend work and frontend rendering of the dataframe table. This isn't very good.
+                // This forces the loading bar to stay alive for 2 additional seconds, 
+                //to compensate the delay between backend work and frontend rendering of the dataframe table. This isn't very good.
                 this.loading = false;
               }, 2500);
             });
@@ -506,11 +589,16 @@ export default {
           console.log(error);
         });
     },
+    
+    // Form submission handler
     onSubmit(evt) {
       this.loading = true;
       evt.preventDefault();
       this.post_query();
     },
+    
+    
+    // Loads autocomplete options from JSON files
     load_autocomplete_json() {
 
       //If adding in a new annotation type, you will need to add a new line in here
@@ -525,6 +613,8 @@ export default {
       this.filters.items.templates["Filter by annotation"]["GO Term"].items.filter_annotation.source.items = this.pathways.go;
       this.filters.items.templates["Filter by annotation"]["KEGG Pathway"].items.filter_annotation.source.items = this.pathways.kegg;
     },
+    
+    
     load_categories_json(query_source) {
       for (let query_cat in query_source) {
         for (let query in query_source[query_cat]) {
@@ -553,6 +643,11 @@ export default {
       }
     },
   },
+  
+  
+  
+  // Lifecycle hook called after the component is created
+  // Loads filters, pathways, and initializes component data
   created() {
     this.filters = require(`../assets/organisms${this.active_organism.path}/filters.json`);
     try {
@@ -566,16 +661,23 @@ export default {
     }
     this.convert_server_query_blocks(this.filters.items);
   },
+  
+  
+  // The component's reactive data properties
   data() {
     return {
-      loading: false,
-      query: [],
-      filters: null,
-      pathways: null,
+      loading: false, // Indicates whether the component is in a loading state
+      query: [], // Array of query blocks for building the query UI
+      filters: null, // Object containing filter options loaded from JSON
+      pathways: null, // Object containing pathway options loaded from JSON
     };
   },
 };
 </script>
+
+
+
+
 
 <style scoped>
 label {
