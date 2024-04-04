@@ -250,13 +250,13 @@
           triggers placement="bottom" 
           target="add-query-dropdown" 
           title="2. Build filters">
-          You can add multiple filters to search for all kinds of values, including GO terms, KEGG pathways, and COG categories.
+          You can add different row filters.
         </b-popover>
 
         <!-- The image and text -->
         <template v-slot:button-content>
           <b-icon icon="plus-circle-fill"></b-icon> 
-          Add Filter 
+          Row Filter 
         </template>
         
         <!-- The contents -->
@@ -275,7 +275,7 @@
 
 
       <!-- 
-        The Preset filter dropdown 
+        The functional annotation dropdown 
       -->
       <b-dropdown 
         size="sm" 
@@ -296,13 +296,58 @@
           placement="rightbottom" 
           target="load-query-dropdown" 
           title="3. Load preset filters"
+          >Search for KEGG, GO or other annotation-based pathways.
+        </b-popover>
+
+        <!-- The image and text -->
+        <template v-slot:button-content> 
+          <b-icon icon="intersect"></b-icon> 
+          Functional annotation 
+        </template>
+
+        <!-- The contents -->
+        <b-dropdown-group v-for="(filter_preset_group, index) in filters.items.functional" 
+          :key="index" 
+          :header="index" 
+          id="dropdown-group-numeric">
+        <b-dropdown-item v-for="(preset, index) in filter_preset_group" 
+          :key="index" 
+          v-on:click="add_query_block(preset, index, guidGenerator(), true, false)">{{ index }}
+        </b-dropdown-item>
+          <b-dropdown-divider></b-dropdown-divider>
+        </b-dropdown-group>
+      </b-dropdown>
+
+
+      <!-- 
+        The ncRNA or SPI gene lists 
+      -->
+      <b-dropdown 
+        size="sm" 
+        variant="link" 
+        pill 
+        id="load-query-dropdown" 
+        text="Add..." 
+        class="m-md-2 rounded" 
+        no-caret 
+        toggle-class="text-decoration-none"
+        :disabled="isDropdownDisabled">  <!-- greys out the button once a filter query has been loaded-->
+        
+        <!-- This is the popover text that whows when the help button is pressed - repeats below -->
+        <b-popover 
+          id="tutorial_popover" 
+          :no-fade="true" 
+          triggers 
+          placement="rightbottom" 
+          target="load-query-dropdown" 
+          title="4. Load preset filters"
           >Load pre-filled filters to search for pathogenicity islands, sORF etc.
         </b-popover>
 
         <!-- The image and text -->
         <template v-slot:button-content> 
           <b-icon icon="intersect"></b-icon> 
-          Preset Filters 
+          ncRNA 
         </template>
 
         <!-- The contents -->
@@ -331,8 +376,7 @@
         text="Add..." 
         class="m-md-2 rounded" 
         no-caret 
-        toggle-class="text-decoration-none"
-        :disabled="query.length > 0">  <!-- greys out the button once a query has been loaded-->
+        toggle-class="text-decoration-none"> 
 
         <!-- This is the popover text that whows when the help button is pressed - repeats below -->
         <b-popover 
@@ -341,8 +385,8 @@
           triggers 
           placement="rightbottom" 
           target="load-query-dropdown" 
-          title="3. Load preset filters">
-          Load pre-filled filters to search for pathogenicity islands, sORF etc.
+          title="4. Transform data">
+          Transform columns and values, such as hiding columns and rounding values.
         </b-popover>
 
         <!-- The image and text -->
