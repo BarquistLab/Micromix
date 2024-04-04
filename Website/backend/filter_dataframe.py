@@ -26,6 +26,7 @@ import pprint
 def main(query, df):
     
     #Debugging: The initial user filter (query) - pprint displays the dictionary in a readable format
+    print("The user query:")
     pprint.pprint(query)
 
     
@@ -102,9 +103,8 @@ def main(query, df):
         #This script is automatically run, as most users filter for gene lists
         #Within filter_genelists.py, only genelist-based blocks are processed, which is found in properties["query"] 
         #These include hard coded genelists (PULs, SPI1 etc), and also annotation-based genelists (KEGG, GO etc)
-        print("111")
         filtered_df = filter_genelists.filter_genelists(query, df2)
-        print("1112")
+        
         
         #check if filtered_df was created - which will only happen if a genelist filter is user selected
         if 'filtered_df' in locals() and filtered_df is not None:
