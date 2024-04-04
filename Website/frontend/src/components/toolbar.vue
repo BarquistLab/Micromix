@@ -13,7 +13,7 @@
         class="mr-1"
         id="toolbar_group"
       >
-        <b-popover id="tutorial_popover" :no-fade="true" triggers="" placement="top" target="toolbar_group" title="6. Save and download">Click the Lock button to save this session indefinitely. You can then share the URL to friends or in publications. A locked session is still interactive but any modification will generate a new URL and leave the locked session untouched. Click the download icon to download an Excel or CSV file.</b-popover>
+        <b-popover id="tutorial_popover" :no-fade="true" triggers="" placement="top" target="toolbar_group" title="Save and download">Click the Lock button to save this session indefinitely. You can then share the URL to friends or in publications. A locked session is still interactive but any modification will generate a new URL and leave the locked session untouched. Click the download icon to download an Excel or CSV file.</b-popover>
         <b-button
           :disabled="disabled_lock"
           title="Save session"

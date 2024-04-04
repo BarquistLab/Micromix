@@ -43,7 +43,7 @@
         <b-form-group class="inline-element" id="toggle-filtered">
           <span id="toggle_filtered_span" class="col-form-label-sm">Show filtered</span>
           <label class="switch switch-label bv-no-focus-ring">
-            <b-popover id="tutorial_popover" :no-fade="true" triggers="" placement="bottom" target="toggle_filtered_span" title="4. Toggle filtered table">Click on the slider to toggle between your source data and the filtered table.</b-popover>
+            <b-popover id="tutorial_popover" :no-fade="true" triggers="" placement="bottom" target="toggle_filtered_span" title="Toggle filtered table">Click on the slider to toggle between your source data and the filtered table.</b-popover>
             <input type="checkbox" v-model="filtered" value="false" unchecked-value="true" />
             <span class="slider round"></span>
           </label>

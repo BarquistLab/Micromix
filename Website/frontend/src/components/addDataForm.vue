@@ -179,12 +179,34 @@
               </b-form-group>
               <b-alert v-model="showErrorAlert" variant="danger" dismissible>{{sourceErrMsg}}</b-alert>
               <pre class="mt-3 mb-0">{{ text }}</pre>
-              <b-button type="submit" variant="primary" class="margin-right">Add</b-button>
-              <b-button type="reset" variant="danger">Cancel</b-button>
+              <b-button 
+                type="submit" 
+                variant="primary" 
+                class="margin-right">
+                Add
+              </b-button>
+              <b-button 
+                type="reset" 
+                variant="danger">
+                Cancel
+              </b-button>
             </b-form>
           </b-col>
-          <b-col class="center">
-            <h2 style="cursor:help;" v-b-popover.hover.top="'Choose where your dataframe should be placed. Select an existing matrix to replace it with your uploaded data or to remove it.'" title="Place your data">Matrix Preview<span style="font-size:1rem;"><sup><b-icon style="cursor:help;" icon="question-circle-fill"></b-icon></sup></span></h2>
+          <b-col 
+            class="center">
+            <h2 style="cursor:help;" 
+              v-b-popover.hover.top="'Choose where your dataframe should be placed. Select an existing matrix to replace it with your uploaded data or to remove it.'" 
+              title="Place your data">
+              Matrix Preview
+              <span style="font-size:1rem;">
+                <sup>
+                  <b-icon 
+                    style="cursor:help;" 
+                    icon="question-circle-fill">
+                  </b-icon>
+                </sup>
+              </span>
+            </h2>
             <matrix
               @delete="delete_matrix"
               v-bind:matrices="matrices"

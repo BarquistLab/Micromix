@@ -248,8 +248,8 @@
           :no-fade="true" 
           triggers placement="bottom" 
           target="add-query-dropdown" 
-          title="2. Build filters">
-          You can add different row filters.
+          title="Build filters">
+          Different filters can be applied or chained together to filter rows, columns, gene sets and functional annotations such as KEGG and GO.
         </b-popover>
 
         <!-- The image and text -->
@@ -293,9 +293,9 @@
           :no-fade="true" 
           triggers 
           placement="rightbottom" 
-          target="load-query-dropdown" 
-          title="3. Load preset filters"
-          >Search for KEGG, GO or other annotation-based pathways.
+          target="load-query-dropdown" >
+          <!--title="3. Load preset filters"
+          >Search for KEGG, GO or other annotation-based pathways. -->
         </b-popover>
 
         <!-- The image and text -->
@@ -338,9 +338,9 @@
           :no-fade="true" 
           triggers 
           placement="rightbottom" 
-          target="load-query-dropdown" 
+          target="load-query-dropdown"> <!--
           title="4. Load preset filters"
-          >Load pre-filled filters to search for pathogenicity islands, sORF etc.
+          >Load pre-filled filters to search for pathogenicity islands, sORF etc. -->
         </b-popover>
 
         <!-- The image and text -->
@@ -383,9 +383,9 @@
           :no-fade="true" 
           triggers 
           placement="rightbottom" 
-          target="load-query-dropdown" 
+          target="load-query-dropdown" > <!--
           title="4. Transform data">
-          Transform columns and values, such as hiding columns and rounding values.
+          Transform columns and values, such as hiding columns and rounding values. -->
         </b-popover>
 
         <!-- The image and text -->

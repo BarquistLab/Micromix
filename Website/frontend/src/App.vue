@@ -49,7 +49,7 @@
                 triggers
                 placement="right"
                 target="upload_data_parent"
-                title="1. Upload your data"
+                title="Upload your data"
               >Click on the + to upload, merge, or remove multiple datasets from our databases or your computer.</b-popover>
               <addDataButton v-on:plugin_clicked="show_modal('modal_add_plugin')" />
               <!-- <b-button variant="secondary"><b-icon icon="table"></b-icon>Upload</b-button> -->
@@ -92,7 +92,7 @@
                 triggers
                 placement="top"
                 target="select_plugin_parent"
-                title="5. Visualize your data"
+                title="Visualize your data"
               >Click on one of the plugins (e.g. Clustergrammer) above to generate a plot.</b-popover>
 
               <!-- This is where we structure and display the plugins that we have loaded either from the mongoDB or from the local plugins.json into the "config.plugins" variable. -->
