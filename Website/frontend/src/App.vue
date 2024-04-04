@@ -16,10 +16,10 @@
       <div>
         <div class="ball-grid-pulse"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
         <h5 class="title initial_load_text">Loading Session</h5>
-        <small>v1.0.0-container</small>
+        <small>v1.0.0</small>
       </div>
     </div>
-    <b-alert variant="info" show dismissible><strong class="alert-heading">Update v1.0.0-local: </strong>
+    <b-alert variant="info" show dismissible><strong class="alert-heading">Update v1.0.0</strong>
        Deployment on Docker.
     </b-alert>
     <!-- <b-progress v-if="loading.state" :value="loading.bar.value" :variant="loading.bar.variant" :key="loading.bar.variant" height="6px"></b-progress> -->
@@ -71,6 +71,8 @@
                 target="select_organism_parent"
                 title="Configure the organism"
               >Specify an organism before uploading if you want to upload biological data and use specific features. The application offers a wide range of general-purpose features for non-biological data.</b-popover>
+              
+              
               <organism_selection
                 @click.native="set_local_organism(organism.id), show_modal('bv_modal_addData')"
                 v-for="organism in organisms.items"
@@ -91,7 +93,7 @@
                 placement="top"
                 target="select_plugin_parent"
                 title="5. Visualize your data"
-              >Click on one of the plugins (e.g. Clustergrammer, Plotly) above to generate a plot.</b-popover>
+              >Click on one of the plugins (e.g. Clustergrammer) above to generate a plot.</b-popover>
 
               <!-- This is where we structure and display the plugins that we have loaded either from the mongoDB or from the local plugins.json into the "config.plugins" variable. -->
               <plugins
@@ -127,7 +129,9 @@
             />
           </div>
           <div>
-            <visualization v-bind:vis_link="this.active_vis_link" v-if="this.active_vis_link" />
+            <!-- This is the iframe where the visualisation appears after clicking on the viz-plugin -->
+            <visualization 
+              v-bind:vis_link="this.active_vis_link" v-if="this.active_vis_link" />
           </div>
           <div class="html_dataframe" v-if="config.transformed_dataframe.length > 0">
             <dataframe
@@ -155,6 +159,21 @@
             @close='hide_modal("bv_modal_addData")'
           />
         </b-modal>
+
+        <b-modal id="bv_modal_addData1" hide-footer>
+          <addDataForm1
+            v-bind:matrices="this.config.preview_matrices"
+            v-bind:plugins="this.config.plugins"
+            v-bind:df_categories="Object.keys(this.config.transformed_dataframe)"
+            v-bind:backend_url="backend_url"
+            v-bind:local_active_organism_id="config.active_organism_id"
+            v-bind:active_organism="configure_active_organism"
+            @dataframe_change="redirect_to_config($event); update_filtered(false);"
+            @error_occured="error_occured"
+            @close='hide_modal("bv_modal_addData1")'
+          />
+        </b-modal>
+
         <b-modal id="modal_add_plugin" hide-footer>
           <add_plugin @plugins_change="redirect_to_config" :backend_url="backend_url" />
         </b-modal>
@@ -168,6 +187,7 @@ import axios from "axios";
 import organisms from "./assets/json/organisms.json";
 import addDataButton from "./components/addDataButton";
 import addDataForm from "./components/addDataForm.vue";
+import addDataForm1 from "./components/addDataForm1.vue";
 import add_plugin from "./components/add_plugin";
 import dataframe from "./components/dataframe";
 import error_alert from "./components/error_alert";
@@ -186,6 +206,7 @@ export default {
   name: "App",
   components: {
     addDataForm,
+    addDataForm1,
     visualization,
     plugins,
     add_plugin,
@@ -199,7 +220,7 @@ export default {
   },
   data() {
     return {
-         backend_url: 'http://127.0.0.1:5000', 
+         backend_url: 'http://127.0.0.1:5000', //This should be changed in production
       organisms,
       loading: {
         state: true,

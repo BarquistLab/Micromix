@@ -609,9 +609,27 @@ export default {
       //["Filter by annotation"] - this is the category in the dropdown and linked to the section in the filters.json
       //["GO Term"] - the specific entry in the filters.json under the category "Filter by annotation"
 
-      this.filters.items.templates["Filter by annotation"]["COG Category"].items.filter_annotation.source.items = this.pathways.cog;
-      this.filters.items.templates["Filter by annotation"]["GO Term"].items.filter_annotation.source.items = this.pathways.go;
-      this.filters.items.templates["Filter by annotation"]["KEGG Pathway"].items.filter_annotation.source.items = this.pathways.kegg;
+      //Check for the active organism and load in the corresponding annotations
+      if (this.active_organism.name == "Salmonella") {
+                
+                console.log("active=Sal");
+                this.filters.items.functional["Filter by annotation"]["GO Terms"].items.filter_annotation.source.items = this.pathways.go;
+                this.filters.items.functional["Filter by annotation"]["KEGG Pathways"].items.filter_annotation.source.items = this.pathways.kegg;
+
+            } else {
+                
+                console.log("active=other"); //NOTE: if you have more than 2 organisms or strains - if-else should be added
+                this.filters.items.functional["Filter by annotation"]["GO Terms"].items.filter_annotation.source.items = this.pathways.go;
+                this.filters.items.functional["Filter by annotation"]["KEGG Pathways"].items.filter_annotation.source.items = this.pathways.kegg;
+                this.filters.items.functional["Filter by annotation"]["KEGG Modules"].items.filter_annotation.source.items = this.pathways.kegg_module;
+                this.filters.items.functional["Filter by annotation"]["Polysaccharide utilization loci (PUL)"].items.filter_annotation.source.items = this.pathways.pul;
+                this.filters.items.functional["Filter by annotation"]["Capsular polysaccharides (CPS)"].items.filter_annotation.source.items = this.pathways.cps;
+                this.filters.items.functional["Filter by annotation"]["Conjugative transposons (CTn)"].items.filter_annotation.source.items = this.pathways.ctn;
+                this.filters.items.functional["Filter by annotation"]["Promoter motifs"].items.filter_annotation.source.items = this.pathways.promoter_motif;
+                this.filters.items.functional["Filter by annotation"]["RegPrecise regulons"].items.filter_annotation.source.items = this.pathways.regprecise;
+                this.filters.items.functional["Filter by annotation"]["CRP regulation"].items.filter_annotation.source.items = this.pathways.crp_regulation;
+
+            }
     },
     
     

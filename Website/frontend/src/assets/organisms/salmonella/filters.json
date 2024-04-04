@@ -105,16 +105,16 @@
             "target_table": {
               "label": "Show fold-change between table",
               "type": "b-form-select",
-              "options": [],
               "default_options": [],
+              "options": [],
               "id": "change_values_target-table",
               "selected": null
             },
             "target_column": {
               "label": "and base column",
               "type": "b-form-select",
-              "options": [],
               "default_options": [],
+              "options": [],
               "id": "change_values_base-column",
               "selected": null
             }
@@ -129,8 +129,8 @@
             "target_table": {
               "label": "Convert the table",
               "type": "b-form-select",
-              "options": [],
               "default_options": [],
+              "options": [],
               "id": "change_values_target-table",
               "selected": null
             },
@@ -140,8 +140,8 @@
               "formula": true,
               "id": "change_values_log-base",
               "selected": 2,
-              "min": null,
-              "max": 1001
+              "min": 1,
+              "max": 100
             }
           }
         },
@@ -154,16 +154,16 @@
             "target_table": {
               "label": "Show fold-change between table",
               "type": "b-form-select",
-              "options": [],
               "default_options": [],
+              "options": [],
               "id": "change_values_target-table",
               "selected": null
             },
             "target_column": {
               "label": "and base column",
               "type": "b-form-select",
-              "options": [],
               "default_options": [],
+              "options": [],
               "id": "change_values_base-column",
               "selected": null
             },
@@ -173,8 +173,8 @@
               "id": "change_values_log-base",
               "selected": 2,
               "formula": true,
-              "min": null,
-              "max": 1001
+              "min": 1,
+              "max": 100
             }
           }
         }
@@ -189,16 +189,16 @@
             "filter_area": {
               "label": "Calculate length between transcript start column ",
               "type": "b-form-select",
-              "options": [{ "value": null, "text": "Select 'start' column" }],
               "default_options": [{ "value": null, "text": "Select 'start' column" }],
+              "options": [{ "value": null, "text": "Select 'start' column" }],
               "id": "filter_values_area",
               "selected": null
             },
             "target_column": {
               "label": "and transcript end column",
               "type": "b-form-select",
-              "options": [{ "value": null, "text": "Select 'end' column" }],
               "default_options": [{ "value": null, "text": "Select 'end' column" }],
+              "options": [{ "value": null, "text": "Select 'end' column" }],
               "id": "filter_values_area",
               "selected": null
             },
@@ -219,24 +219,24 @@
             "counts_column": {
               "label": "Calculate TPM for column ",
               "type": "b-form-select",
-              "options": [{ "value": null, "text": "Select counts column" }],
               "default_options": [{ "value": null, "text": "Select counts column" }],
+              "options": [{ "value": null, "text": "Select counts column" }],
               "id": "filter_values_area",
               "selected": null
             },
             "start_column": {
               "label": "Transcript start column",
               "type": "b-form-select",
-              "options": [{ "value": null, "text": "Select 'start' column" }],
               "default_options": [{ "value": null, "text": "Select 'start' column" }],
+              "options": [{ "value": null, "text": "Select 'start' column" }],
               "id": "filter_values_area",
               "selected": null
             },
             "end_column": {
               "label": "Transcript end column",
               "type": "b-form-select",
-              "options": [{ "value": null, "text": "Select 'end' column" }],
               "default_options": [{ "value": null, "text": "Select 'end' column" }],
+              "options": [{ "value": null, "text": "Select 'end' column" }],
               "id": "filter_values_area",
               "selected": null
             }
@@ -248,7 +248,7 @@
       "Filter": {
         "Filter values": {
           "properties": {
-            "type": "filter",
+            "type": "row_filter",
             "query": "expression"
           },
           "items": {
@@ -275,9 +275,11 @@
             }
           }
         }
-      },
+      }
+    },
+    "functional": {
       "Filter by annotation": {
-        "GO Term": {
+        "GO Terms": {
           "properties": {
             "type": "filter",
             "query": "annotation_code",
@@ -285,7 +287,7 @@
           },
           "items": {
             "filter_annotation": {
-              "label": "Show genes associated with GO annotation:",
+              "label": "Show genes associated with GO Terms:",
               "type": "input-autocomplete",
               "id": "go_term_search",
               "source": {
@@ -297,14 +299,14 @@
             "filter_area": {
               "label": "for ",
               "type": "b-form-select",
-              "options": ["any column", "all columns"],
               "default_options": ["any column", "all columns"],
+              "options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "locus tag"
+              "selected": "locus_tag"
             }
           }
         },
-        "KEGG Pathway": {
+        "KEGG Pathways": {
           "properties": {
             "type": "filter",
             "query": "annotation_code",
@@ -312,7 +314,7 @@
           },
           "items": {
             "filter_annotation": {
-              "label": "Show genes associated with KEGG pathway:",
+              "label": "Show genes associated with KEGG pathways:",
               "type": "input-autocomplete",
               "id": "kegg_pathway_search",
               "source": {
@@ -324,67 +326,17 @@
             "filter_area": {
               "label": "for ",
               "type": "b-form-select",
-              "options": ["any column", "all columns"],
               "default_options": ["any column", "all columns"],
-              "id": "filter_annotation_area",
-              "selected": "locus tag"
-            }
-          }
-        },
-        "COG Category": {
-          "properties": {
-            "type": "filter",
-            "query": "annotation_code",
-            "code_type": "cog_cat"
-          },
-          "items": {
-            "filter_annotation": {
-              "label": "Show genes associated with the COG category:",
-              "type": "input-autocomplete",
-              "id": "cog_category_search",
-              "source": {
-                "items": null,
-                "key": "name"
-              },
-              "selected": null
-            },
-            "filter_area": {
-              "label": "for ",
-              "type": "b-form-select",
               "options": ["any column", "all columns"],
-              "default_options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "locus tag"
+              "selected": "locus_tag"
             }
           }
         }
-      }
+       }
+  
     },
     "presets": {
-      "Gene Type": {
-        "Filter sORF": {
-          "properties": {
-            "type": "filter",
-            "query": "expression"
-          },
-          "items": {
-            "filter_value": {
-              "label": "Show sORF's ",
-              "type": "b-form-input",
-              "id": "filter_values",
-              "selected": "STsORF61; STsORF244; STsORF221; STsORF52; STsORF73; STsORF177; STsORF80; STsORF222; STsORF157; STsORF160; STsORF166; STsORF199; STsORF232; STsORF4; STsORF24; STsORF36; STsORF62; STsORF84; STsORF129; STsORF178; STsORF204; STsORF214; STsORF246; STsORF47; STsORF139; STsORF229; STsORF241; STsORF247; STsORF15; STsORF64; STsORF128; STsORF208; STsORF126; STsORF141; STsORF176; STsORF195; STsORF77; STsORF95; STsORF167; STsORF196; STsORF144; STsORF225; STsORF56; STsORF183; STsORF53; STsORF117; STsORF120; STsORF122; STsORF18; STsORF41; STsORF68; STsORF94; STsORF233; STsORF23; STsORF48; STsORF124; STsORF150; STsORF203; STsORF224; STsORF228; STsORF16; STsORF22; STsORF90; STsORF119; STsORF220; STsORF91; STsORF134; STsORF174; STsORF138; STsORF212; STsORF250; STsORF169; STsORF185; STsORF235; STsORF49; STsORF67; STsORF85; STsORF106; STsORF109; STsORF17; STsORF69; STsORF86; STsORF88; STsORF145; STsORF25; STsORF105; STsORF164; STsORF236; STsORF39; STsORF55; STsORF63; STsORF237; STsORF11; STsORF42; STsORF72; STsORF135; STsORF197; STsORF242; STsORF130; STsORF198; STsORF82; STsORF143; STsORF70; STsORF156; STsORF44; STsORF89; STsORF179; STsORF57; STsORF19; STsORF190; STsORF40; STsORF45; STsORF115; STsORF7; STsORF162; STsORF58; STsORF121; STsORF209; STsORF83; STsORF113; STsORF51; STsORF223; STsORF248; STsORF191; STsORF14; STsORF43; STsORF158; STsORF101; STsORF202; STsORF187; STsORF100; STsORF107; STsORF168; STsORF93; STsORF123; STsORF153; STsORF31; STsORF155; STsORF46; STsORF127; STsORF186; STsORF74; STsORF240; STsORF112; STsORF60; STsORF215; STsORF75; STsORF76; STsORF193; STsORF219; STsORF245; STsORF142; STsORF5; STsORF188; STsORF227; STsORF81; STsORF172; STsORF50; STsORF116; STsORF163; STsORF132; STsORF108; STsORF125; STsORF30; STsORF66; STsORF59"
-            },
-            "filter_area": {
-              "label": "in ",
-              "type": "b-form-select",
-              "options": ["any column", "all columns"],
-              "default_options": ["any column", "all columns"],
-              "id": "filter_annotation_area",
-              "selected": "any column"
-            }
-          }
-        }
-      },
       "Pathogenicity Islands": {
         "Filter SPI1": {
           "properties": {
@@ -404,7 +356,7 @@
               "options": ["any column", "all columns"],
               "default_options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "any column"
+              "selected": "locus_tag"
             }
           }
         },
@@ -426,7 +378,7 @@
               "options": ["any column", "all columns"],
               "default_options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "any column"
+              "selected": "locus_tag"
             }
           }
         },
@@ -448,7 +400,7 @@
               "options": ["any column", "all columns"],
               "default_options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "any column"
+              "selected": "locus_tag"
             }
           }
         },
@@ -470,7 +422,7 @@
               "options": ["any column", "all columns"],
               "default_options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "any column"
+              "selected": "locus_tag"
             }
           }
         },
@@ -492,7 +444,7 @@
               "options": ["any column", "all columns"],
               "default_options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "any column"
+              "selected": "locus_tag"
             }
           }
         },
@@ -514,7 +466,7 @@
               "options": ["any column", "all columns"],
               "default_options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "any column"
+              "selected": "locus_tag"
             }
           }
         },
@@ -536,7 +488,7 @@
               "options": ["any column", "all columns"],
               "default_options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "any column"
+              "selected": "locus_tag"
             }
           }
         },
@@ -558,7 +510,7 @@
               "options": ["any column", "all columns"],
               "default_options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "any column"
+              "selected": "locus_tag"
             }
           }
         },
@@ -580,12 +532,13 @@
               "options": ["any column", "all columns"],
               "default_options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "any column"
+              "selected": "locus_tag"
             }
           }
         }
       }
     },
+
     "other": {
       "logical_operators": {
         "or": {

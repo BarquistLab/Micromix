@@ -13,26 +13,19 @@
       <b-container class="bv-example-row">
         <b-row>
           <b-col>
-            <h2 style="cursor:help; display:inline-block;" id="upload-dataset-popover-target">Add Data
-              <span style="font-size:1rem;"><sup><b-icon style="cursor:help;" icon="question-circle-fill"></b-icon></sup></span>
-            </h2>
-              <b-popover target="upload-dataset-popover-target" triggers="hover" placement="top">
-                <template v-slot:title>Upload a dataset
-                </template>Upload various datasets from our databases or your local machine. If you give datasets the same title, the tool will automatically merge them without data-loss. The first column and all columns with non-numeric values will be turned into index columns. <strong>Uploading multiple tables requires 1 or more index column with the same column name.</strong>
-              </b-popover>
+            <h2 style="cursor:help; display:inline-block;" id="upload-dataset-popover-target">Add Data<span style="font-size:1rem;"><sup><b-icon style="cursor:help;" icon="question-circle-fill"></b-icon></sup></span></h2>
+              <b-popover target="upload-dataset-popover-target" triggers="hover" placement="top"><template v-slot:title>Upload a dataset</template>Upload various datasets from our databases or your local machine. If you give datasets the same title, the tool will automatically merge them without data-loss. The first column and all columns with non-numeric values will be turned into index columns. <strong>Uploading multiple tables requires 1 or more index column with the same column name.</strong></b-popover>
             <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-              
-              <b-form-group id="input-group-2" label="Title:" label-for="input-2">
+               <b-form-group id="input-group-2" label="Title:" label-for="input-2">
                 <b-form-input id="input-2" v-model="form.title" required></b-form-input>
               </b-form-group>
-              
               <b-form-group id="input-group-6" label="Source:" label-for="source-card">
                 <b-card no-body id="source-card">
                   <b-tabs card>
-                    <b-tab title="Datasets" active>
+                    <b-tab title="Datasets">
                       <b-form-group
                         id="input-group-3"
-                        description="Use our database of experimental results (e.g. Salmonella RNA-seq) for the organism you specified."
+                        description="Use our database of experimental results."
                       >
                         <b-form-select
                           id="input-3"
@@ -112,7 +105,7 @@
                         </b-form-group>
                       </b-form>
                     </b-tab>
-                    <b-tab title="Upload file">
+                    <b-tab title="Upload file" active>
                       <b-form-group
                         id="input-group-4"
                         description="Upload a .csv, .txt (tab-seperated), .tsv, or .xlsx (Excel) file from your machine."
@@ -208,7 +201,7 @@ import axios from "axios";
 import datasets from "../assets/json/datasets.json";
 
 export default {
-  name: "addDataForm",
+  name: "addDataForm1",
   props: {
     matrices: Array,
     df_categories: Array,
@@ -315,6 +308,7 @@ export default {
       }, 2000);
     },
 
+    
     change_matrix(path, payload) {
       this.show_loading_overlay = true;
       if (this.$route.query.config) {
@@ -348,7 +342,7 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.progress_bar();
-      // console.log(this.form.source);
+      console.log(this.form.source);
       this.validateForm(this.form.source);
     },
     onReset(evt) {

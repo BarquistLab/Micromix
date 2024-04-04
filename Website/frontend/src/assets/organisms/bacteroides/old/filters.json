@@ -275,11 +275,9 @@
             }
           }
         }
-      }
-    },
-    "functional": {
+      },
       "Filter by annotation": {
-        "GO Terms": {
+        "GO Term": {
           "properties": {
             "type": "filter",
             "query": "annotation_code",
@@ -287,7 +285,7 @@
           },
           "items": {
             "filter_annotation": {
-              "label": "Show genes associated with GO Terms:",
+              "label": "Show genes associated with GO annotation:",
               "type": "input-autocomplete",
               "id": "go_term_search",
               "source": {
@@ -306,15 +304,15 @@
             }
           }
         },
-        "KEGG Pathways": {
+        "KEGG Pathway": {
           "properties": {
             "type": "filter",
             "query": "annotation_code",
-            "code_type": "kegg_pathway_id"
+            "code_type": "kegg_id"
           },
           "items": {
             "filter_annotation": {
-              "label": "Show genes associated with KEGG pathways:",
+              "label": "Show genes associated with KEGG pathway:",
               "type": "input-autocomplete",
               "id": "kegg_pathway_search",
               "source": {
@@ -333,180 +331,15 @@
             }
           }
         },
-        "KEGG Modules": {
+        "COG Category": {
           "properties": {
             "type": "filter",
             "query": "annotation_code",
-            "code_type": "kegg_module_id"
+            "code_type": "cog_cat"
           },
           "items": {
             "filter_annotation": {
-              "label": "Show genes associated with KEGG modules:",
-              "type": "input-autocomplete",
-              "id": "kegg_pathway_search",
-              "source": {
-                "items": null,
-                "key": "name"
-              },
-              "selected": null
-            },
-            "filter_area": {
-              "label": "for ",
-              "type": "b-form-select",
-              "default_options": ["any column", "all columns"],
-              "options": ["any column", "all columns"],
-              "id": "filter_annotation_area",
-              "selected": "locus tag"
-            }
-          }
-        },
-        "Polysaccharide utilization loci (PUL)": {
-          "properties": {
-            "type": "filter",
-            "query": "annotation_code",
-            "code_type": "PUL_id"
-          },
-          "items": {
-            "filter_annotation": {
-              "label": "Show genes associated with Polysaccharide utilization loci (PUL):",
-              "type": "input-autocomplete",
-              "id": "cog_category_search",
-              "source": {
-                "items": null,
-                "key": "name"
-              },
-              "selected": null
-            },
-            "filter_area": {
-              "label": "for ",
-              "type": "b-form-select",
-              "default_options": ["any column", "all columns"],
-              "options": ["any column", "all columns"],
-              "id": "filter_annotation_area",
-              "selected": "locus tag"
-            }
-          }
-        },
-        "Capsular polysaccharides (CPS)": {
-          "properties": {
-            "type": "filter",
-            "query": "annotation_code",
-            "code_type": "CPS_id"
-          },
-          "items": {
-            "filter_annotation": {
-              "label": "Show genes associated with Capsular polysaccharides (CPS):",
-              "type": "input-autocomplete",
-              "id": "cog_category_search",
-              "source": {
-                "items": null,
-                "key": "name"
-              },
-              "selected": null
-            },
-            "filter_area": {
-              "label": "for ",
-              "type": "b-form-select",
-              "default_options": ["any column", "all columns"],
-              "options": ["any column", "all columns"],
-              "id": "filter_annotation_area",
-              "selected": "locus tag"
-            }
-          }
-        },
-        "Conjugative transposons (CTn)": {
-          "properties": {
-            "type": "filter",
-            "query": "annotation_code",
-            "code_type": "Ctn_id"
-          },
-          "items": {
-            "filter_annotation": {
-              "label": "Show genes associated with Conjugative transposons (CTn):",
-              "type": "input-autocomplete",
-              "id": "cog_category_search",
-              "source": {
-                "items": null,
-                "key": "name"
-              },
-              "selected": null
-            },
-            "filter_area": {
-              "label": "for ",
-              "type": "b-form-select",
-              "default_options": ["any column", "all columns"],
-              "options": ["any column", "all columns"],
-              "id": "filter_annotation_area",
-              "selected": "locus tag"
-            }
-          }
-        },
-        "Promoter motifs": {
-          "properties": {
-            "type": "filter",
-            "query": "annotation_code",
-            "code_type": "promoter_motif_id"
-          },
-          "items": {
-            "filter_annotation": {
-              "label": "Show genes associated within promoter motifs:",
-              "type": "input-autocomplete",
-              "id": "cog_category_search",
-              "source": {
-                "items": null,
-                "key": "name"
-              },
-              "selected": null
-            },
-            "filter_area": {
-              "label": "for ",
-              "type": "b-form-select",
-              "default_options": ["any column", "all columns"],
-              "options": ["any column", "all columns"],
-              "id": "filter_annotation_area",
-              "selected": "locus tag"
-            }
-          }
-        },
-        "RegPrecise regulons": {
-          "properties": {
-            "type": "filter",
-            "query": "annotation_code",
-            "code_type": "RegPrecise_id"
-          },
-          "items": {
-            "filter_annotation": {
-              "label": "Show genes associated with RegPrecise regulons:",
-              "type": "input-autocomplete",
-              "id": "cog_category_search",
-              "source": {
-                "items": null,
-                "key": "name"
-              },
-              "selected": null
-            },
-            "filter_area": {
-              "label": "for ",
-              "type": "b-form-select",
-              "default_options": ["any column", "all columns"],
-              "options": ["any column", "all columns"],
-              "id": "filter_annotation_area",
-              "selected": "locus tag"
-            }
-          }
-        },
-        
-        
-        
-        "CRP regulation": {
-          "properties": {
-            "type": "filter",
-            "query": "annotation_code",
-            "code_type": "crp_regulation_id"
-          },
-          "items": {
-            "filter_annotation": {
-              "label": "Show genes associated with CRP regulation:",
+              "label": "Show genes associated with the COG category:",
               "type": "input-autocomplete",
               "id": "cog_category_search",
               "source": {
@@ -528,8 +361,186 @@
       }
     },
     "presets": {
+      "Capsular Poly. Loci": {
+        "Filter CPS1": {
+          "properties": {
+            "type": "filter",
+            "query": "expression"
+          },
+          "items": {
+            "filter_value": {
+              "label": "Show genes that are part of CPS1 ",
+              "type": "b-form-input",
+              "id": "filter_values",
+              "selected": "BT_0377; BT_0378; BT_0379; BT_0380; BT_0381; BT_0382; BT_0383; BT_0384; BT_0385; BT_0386; BT_0387; BT_0388; BT_0389; BT_0390; BT_0391; BT_0392; BT_0393; BT_0394; BT_0395; BT_0396; BT_0397; BT_0398; BT_0399; BT_0400"
+            },
+            "filter_area": {
+              "label": "in ",
+              "type": "b-form-select",
+              "default_options": ["any column", "all columns"],
+              "options": ["any column", "all columns"],
+              "id": "filter_annotation_area",
+              "selected": "locus tag"
+            }
+          }
+        },
+        "Filter CPS2": {
+          "properties": {
+            "type": "filter",
+            "query": "expression"
+          },
+          "items": {
+            "filter_value": {
+              "label": "Show genes that are part of CPS2 ",
+              "type": "b-form-input",
+              "id": "filter_values",
+              "selected": "BT_0462; BT_0463; BT_0464; BT_0465; BT_0466; BT_0467; BT_0468; BT_0469; BT_0470; BT_0471; BT_0472; BT_0473; BT_0474; BT_0475; BT_0476; BT_0477; BT_0478; BT_0479; BT_0480; BT_0481"
+            },
+            "filter_area": {
+              "label": "in ",
+              "type": "b-form-select",
+              "default_options": ["any column", "all columns"],
+              "options": ["any column", "all columns"],
+              "id": "filter_annotation_area",
+              "selected": "locus tag"
+            }
+          }
+        },
+        "Filter CPS3": {
+          "properties": {
+            "type": "filter",
+            "query": "expression"
+          },
+          "items": {
+            "filter_value": {
+              "label": "Show genes that are part of CPS3 ",
+              "type": "b-form-input",
+              "id": "filter_values",
+              "selected": "BT_0597; BT_0598; BT_0599; BT_0600; BT_0601; BT_0602; BT_0603; BT_0604; BT_0605; BT_0606; BT_0607; BT_0608; BT_0609; BT_0610"
+            },
+            "filter_area": {
+              "label": "in ",
+              "type": "b-form-select",
+              "default_options": ["any column", "all columns"],
+              "options": ["any column", "all columns"],
+              "id": "filter_annotation_area",
+              "selected": "locus tag"
+            }
+          }
+        },
+        "Filter CPS4": {
+          "properties": {
+            "type": "filter",
+            "query": "expression"
+          },
+          "items": {
+            "filter_value": {
+              "label": "Show genes that are part of CPS4 ",
+              "type": "b-form-input",
+              "id": "filter_values",
+              "selected": "BT_1338; BT_1339; BT_1340; BT_1341; BT_1342; BT_1343; BT_1344; BT_1345; BT_1346; BT_1347; BT_1348; BT_1349; BT_1350; BT_1351; BT_1352; BT_1353; BT_1354; BT_1355; BT_1356; BT_1357; BT_1358"
+            },
+            "filter_area": {
+              "label": "in ",
+              "type": "b-form-select",
+              "default_options": ["any column", "all columns"],
+              "options": ["any column", "all columns"],
+              "id": "filter_annotation_area",
+              "selected": "locus tag"
+            }
+          }
+        },
+        "Filter CPS5": {
+          "properties": {
+            "type": "filter",
+            "query": "expression"
+          },
+          "items": {
+            "filter_value": {
+              "label": "Show genes that are part of CPS5 ",
+              "type": "b-form-input",
+              "id": "filter_values",
+              "selected": "BT_1642; BT_1643; BT_1644; BT_1645; BT_1646; BT_1647; BT_1648; BT_1649; BT_1650; BT_1651; BT_1652; BT_1653; BT_1654; BT_1655; BT_1656; BT_1657"
+            },
+            "filter_area": {
+              "label": "in ",
+              "type": "b-form-select",
+              "default_options": ["any column", "all columns"],
+              "options": ["any column", "all columns"],
+              "id": "filter_annotation_area",
+              "selected": "locus tag"
+            }
+          }
+        },
+        "Filter CPS6": {
+          "properties": {
+            "type": "filter",
+            "query": "expression"
+          },
+          "items": {
+            "filter_value": {
+              "label": "Show genes that are part of CPS6 ",
+              "type": "b-form-input",
+              "id": "filter_values",
+              "selected": "BT_1707; BT_1708; BT_1709; BT_1710; BT_1711; BT_1712; BT_1713; BT_1714; BT_1715; BT_1716; BT_1717; BT_1718; BT_1719; BT_1720; BT_1721; BT_1722; BT_1723; BT_1724; BT_1725; BT_1726"
+            },
+            "filter_area": {
+              "label": "in ",
+              "type": "b-form-select",
+              "default_options": ["any column", "all columns"],
+              "options": ["any column", "all columns"],
+              "id": "filter_annotation_area",
+              "selected": "locus tag"
+            }
+          }
+        },
+        "Filter CPS7": {
+          "properties": {
+            "type": "filter",
+            "query": "expression"
+          },
+          "items": {
+            "filter_value": {
+              "label": "Show genes that are part of CPS7 ",
+              "type": "b-form-input",
+              "id": "filter_values",
+              "selected": "BT_2862; BT_2863; BT_2864; BT_2865; BT_2866; BT_2867; BT_2868; BT_2869; BT_2870; BT_2871; BT_2872; BT_2873; BT_2874; BT_2875; BT_2876; BT_2877; BT_2878; BT_2879; BT_2880; BT_2881; BT_2882; BT_2883; BT_2884; BT_2885; BT_2886"
+            },
+            "filter_area": {
+              "label": "in ",
+              "type": "b-form-select",
+              "default_options": ["any column", "all columns"],
+              "options": ["any column", "all columns"],
+              "id": "filter_annotation_area",
+              "selected": "locus tag"
+            }
+          }
+        },
+        "Filter CPS8": {
+          "properties": {
+            "type": "filter",
+            "query": "expression"
+          },
+          "items": {
+            "filter_value": {
+              "label": "Show genes that are part of CPS8 ",
+              "type": "b-form-input",
+              "id": "filter_values",
+              "selected": "BT_0037; BT_0038; BT_0039; BT_0040; BT_0041; BT_0042; BT_0043; BT_0044; BT_0045; BT_0046; BT_0047; BT_0048; BT_0049; BT_0050; BT_0051; BT_0052; BT_0053; BT_0054; BT_0055; BT_0056; BT_0057; BT_0058; BT_0059; BT_0060; BT_0061; BT_0062; BT_0063; BT_0064; BT_0065; BT_0066; BT_0067; BT_0068"
+            },
+            "filter_area": {
+              "label": "in ",
+              "type": "b-form-select",
+              "default_options": ["any column", "all columns"],
+              "options": ["any column", "all columns"],
+              "id": "filter_annotation_area",
+              "selected": "locus tag"
+            }
+          }
+        }
+      },
       "Non coding RNA": {
-        "Filter High-confidence Intergenic sRNAs": {
+        "Filter High-confidence intergenic sRNAs": {
           "properties": {
             "type": "filter",
             "query": "expression"
@@ -539,7 +550,7 @@
               "label": "Show High-confidence intergenic sRNAs ",
               "type": "b-form-input",
               "id": "filter_values",
-              "selected": "BTnc005; BTnc022; BTnc023; BTnc026; BTnc032; BTnc033; BTnc034; BTnc035; BTnc048; BTnc049; BTnc060; BTnc064; BTnc067; BTnc079; BTnc081; BTnc095; BTnc098; BTnc114; BTnc119; BTnc129; BTnc139; BTnc145; BTnc149; BTnc151; BTnc159; BTnc160; BTnc162; BTnc164; BTnc166; BTnc167; BTnc173; BTnc175; BTnc183; BTnc191; BTnc201; BTnc208; BTnc227; BTnc228; BTnc229; BTnc231; BTnc263; BTnc264; BTnc267; BTnc270; BTnc274; BTnc280; BTnc286; BTnc290; BTnc301; BTnc302; BTnc318; BTnc324; BTnc334; BTnc378"
+              "selected": "BTnc005; BTnc022; BTnc026; BTnc032; BTnc033; BTnc034; BTnc035; BTnc037; BTnc048; BTnc049; BTnc060; BTnc064; BTnc067; BTnc079; BTnc081; BTnc095; BTnc098; BTnc114; BTnc122; BTnc129; BTnc145; BTnc149; BTnc151; BTnc159; BTnc160; BTnc162; BTnc164; BTnc166; BTnc167; BTnc173; BTnc175; BTnc180; BTnc183; BTnc191; BTnc201; BTnc208; BTnc228; BTnc229; BTnc231; BTnc253; BTnc263; BTnc001; BTnc023; BTnc107; BTnc119; BTnc130; BTnc146; BTnc264; BTnc267; BTnc270; BTnc274; BTnc276; BTnc280; BTnc286; BTnc301; BTnc318; BTnc324; BTnc334; BTnc350"
             },
             "filter_area": {
               "label": "in ",
@@ -561,7 +572,7 @@
               "label": "Show intergenic sRNAs ",
               "type": "b-form-input",
               "id": "filter_values",
-              "selected": "BTnc001; BTnc002; BTnc003; BTnc005; BTnc006; BTnc007; BTnc008; BTnc018; BTnc022; BTnc023; BTnc025; BTnc026; BTnc032; BTnc033; BTnc034; BTnc035; BTnc041; BTnc042; BTnc043; BTnc048; BTnc049; BTnc056 BTnc060; BTnc064; BTnc067; BTnc079; BTnc081; BTnc084; BTnc094; BTnc095; BTnc097; BTnc098; BTnc107; BTnc109; BTnc114; BTnc119; BTnc126; BTnc127; BTnc129; BTnc130; BTnc133; BTnc135; BTnc137; BTnc139 BTnc140; BTnc145; BTnc148; BTnc149; BTnc151; BTnc152; BTnc159; BTnc160; BTnc162; BTnc163; BTnc164; BTnc165; BTnc166; BTnc167; BTnc169; BTnc170; BTnc171; BTnc173; BTnc175; BTnc180; BTnc182; BTnc183 BTnc187; BTnc188; BTnc191; BTnc198; BTnc200; BTnc201; BTnc204; BTnc207; BTnc208; BTnc227; BTnc228; BTnc229; BTnc230; BTnc231; BTnc232; BTnc235; BTnc237; BTnc242; BTnc257; BTnc262; BTnc263; BTnc264 BTnc265; BTnc267; BTnc270; BTnc274; BTnc276; BTnc279; BTnc280; BTnc285; BTnc286; BTnc289; BTnc290; BTnc292; BTnc294; BTnc295; BTnc297; BTnc301; BTnc302; BTnc306; BTnc310; BTnc311; BTnc318; BTnc323 BTnc324; BTnc325; BTnc329; BTnc330; BTnc334; BTnc335; BTnc336; BTnc337; BTnc338; BTnc342; BTnc343; BTnc346; BTnc349; BTnc350; BTnc351; BTnc353; BTnc355; BTnc362; BTnc363; BTnc372; BTnc376; BTnc378 BTnc383; BTnc385; BTnc388 "
+              "selected": "BTnc005; BTnc022; BTnc026; BTnc032; BTnc033; BTnc034; BTnc035; BTnc037; BTnc048; BTnc049; BTnc060; BTnc064; BTnc067; BTnc079; BTnc080; BTnc081; BTnc095; BTnc098; BTnc113; BTnc114; BTnc122; BTnc129; BTnc145; BTnc149; BTnc151; BTnc159; BTnc160; BTnc162; BTnc164; BTnc166; BTnc167; BTnc173; BTnc175; BTnc180; BTnc183; BTnc191; BTnc201; BTnc208; BTnc228; BTnc229; BTnc231; BTnc253; BTnc263; BTnc001; BTnc002; BTnc003; BTnc006; BTnc007; BTnc008; BTnc018; BTnc019; BTnc023; BTnc025; BTnc041; BTnc042; BTnc043; BTnc044; BTnc056; BTnc065; BTnc066; BTnc084; BTnc085; BTnc094; BTnc097; BTnc100; BTnc103; BTnc107; BTnc109; BTnc118; BTnc119; BTnc126; BTnc127; BTnc128; BTnc130; BTnc133; BTnc135; BTnc137; BTnc139; BTnc140; BTnc146; BTnc147; BTnc148; BTnc152; BTnc163; BTnc165; BTnc169; BTnc170; BTnc171; BTnc181; BTnc182; BTnc186; BTnc187; BTnc188; BTnc189; BTnc198; BTnc199; BTnc200; BTnc204; BTnc206; BTnc207; BTnc209; BTnc227; BTnc230; BTnc232; BTnc234; BTnc235; BTnc237; BTnc242; BTnc246; BTnc256; BTnc257; BTnc262; BTnc264; BTnc265; BTnc267; BTnc270; BTnc274; BTnc276; BTnc279; BTnc280; BTnc283; BTnc285; BTnc286; BTnc289; BTnc290; BTnc292; BTnc293; BTnc294; BTnc295; BTnc297; BTnc301; BTnc302; BTnc304; BTnc306; BTnc310; BTnc311; BTnc312; BTnc318; BTnc323; BTnc324; BTnc325; BTnc328; BTnc329; BTnc330; BTnc331; BTnc332; BTnc334; BTnc335; BTnc336; BTnc337; BTnc338; BTnc341; BTnc342; BTnc343; BTnc346; BTnc349; BTnc350; BTnc351; BTnc353; BTnc355; BTnc361; BTnc362; BTnc363; BTnc372; BTnc376; BTnc378; BTnc383; BTnc385; BTnc388"
             },
             "filter_area": {
               "label": "in ",
@@ -595,7 +606,7 @@
             }
           }
         },
-        "Filter Putative TA systems": {
+        "Filter Putative TA system": {
           "properties": {
             "type": "filter",
             "query": "expression"
@@ -627,7 +638,7 @@
               "label": "Show cis-antisense RNAs ",
               "type": "b-form-input",
               "id": "filter_values",
-              "selected": "BTnc004; BTnc009; BTnc010; BTnc011; BTnc012; BTnc013; BTnc014; BTnc015; BTnc016; BTnc019; BTnc020; BTnc021; BTnc024; BTnc027; BTnc028b; BTnc030; BTnc031; BTnc040; BTnc047; BTnc053; BTnc054; BTnc055; BTnc070; BTnc071; BTnc072; BTnc074; BTnc075; BTnc076; BTnc077; BTnc078; BTnc082; BTnc083; BTnc085; BTnc086; BTnc096; BTnc106; BTnc110; BTnc111; BTnc112; BTnc116; BTnc117; BTnc123; BTnc125; BTnc128; BTnc131; BTnc136; BTnc141; BTnc146; BTnc154; BTnc155; BTnc156; BTnc157; BTnc158; BTnc161; BTnc168; BTnc172; BTnc174; BTnc176; BTnc178; BTnc179; BTnc186; BTnc196; BTnc197; BTnc199; BTnc210; BTnc212; BTnc213; BTnc218; BTnc220; BTnc221; BTnc222; BTnc224; BTnc225; BTnc226; BTnc233; BTnc236; BTnc238; BTnc239; BTnc240; BTnc241a; BTnc241b; BTnc247; BTnc249; BTnc250; BTnc252; BTnc254; BTnc255; BTnc260; BTnc261; BTnc266; BTnc271; BTnc273; BTnc275; BTnc277; BTnc278; BTnc281; BTnc282; BTnc284; BTnc287; BTnc288; BTnc291; BTnc296; BTnc298; BTnc299; BTnc300; BTnc303; BTnc304; BTnc305; BTnc307; BTnc308; BTnc309; BTnc314; BTnc315; BTnc316; BTnc317; BTnc319; BTnc320; BTnc321; BTnc322; BTnc326; BTnc327; BTnc328; BTnc331; BTnc333; BTnc341; BTnc344; BTnc345; BTnc347; BTnc348; BTnc352; BTnc354; BTnc356; BTnc357; BTnc358; BTnc359; BTnc360; BTnc361; BTnc367; BTnc368; BTnc369; BTnc370; BTnc373; BTnc374; BTnc375; BTnc377; BTnc379; BTnc381; BTnc382; BTnc384; BTnc386; BTnc387; BTnc389; BTnc390; BTnc391; BTnc392; BTnc393; BTnc394 "
+              "selected": "BTnc004; BTnc009; BTnc010; BTnc011; BTnc012; BTnc013; BTnc014; BTnc015; BTnc016; BTnc020; BTnc021; BTnc024; BTnc027; BTnc028b; BTnc030; BTnc031; BTnc040; BTnc047; BTnc053; BTnc054; BTnc055; BTnc070; BTnc071; BTnc072; BTnc074; BTnc075; BTnc076; BTnc077; BTnc078; BTnc082; BTnc083; BTnc086; BTnc096; BTnc106; BTnc110; BTnc111; BTnc112; BTnc116; BTnc117; BTnc123; BTnc125; BTnc131; BTnc136; BTnc141; BTnc154; BTnc155; BTnc156; BTnc157; BTnc158; BTnc161; BTnc168; BTnc172; BTnc174; BTnc176; BTnc178; BTnc179; BTnc196; BTnc197; BTnc210; BTnc212; BTnc213; BTnc218; BTnc220; BTnc221; BTnc222; BTnc225; BTnc226; BTnc233; BTnc236; BTnc238; BTnc239; BTnc240; BTnc241a; BTnc241b; BTnc247; BTnc249; BTnc250; BTnc252; BTnc254; BTnc255; BTnc260; BTnc261; BTnc266; BTnc271; BTnc273; BTnc275; BTnc277; BTnc278; BTnc281; BTnc282; BTnc284; BTnc287; BTnc288; BTnc291; BTnc296; BTnc298; BTnc299; BTnc300; BTnc303; BTnc305; BTnc307; BTnc308; BTnc309; BTnc314; BTnc315; BTnc316; BTnc317; BTnc319; BTnc320; BTnc321; BTnc322; BTnc326; BTnc327; BTnc333; BTnc344; BTnc345; BTnc347; BTnc348; BTnc352; BTnc354; BTnc356; BTnc357; BTnc358; BTnc359; BTnc360; BTnc367; BTnc368; BTnc369; BTnc370; BTnc373; BTnc374; BTnc375; BTnc377; BTnc379; BTnc381; BTnc382; BTnc384; BTnc386; BTnc387; BTnc389; BTnc390; BTnc391; BTnc392; BTnc393; BTnc394"
             },
             "filter_area": {
               "label": "in ",
@@ -649,7 +660,7 @@
               "label": "Show 5' derived sRNAs ",
               "type": "b-form-input",
               "id": "filter_values",
-              "selected": "BTnc000; BTnc044; BTnc066; BTnc089; BTnc103; BTnc108; BTnc142; BTnc147; BTnc184; BTnc209; BTnc211; BTnc219; BTnc246; BTnc364; BTnc371; BTnc380"
+              "selected": "BTnc000; BTnc089; BTnc108; BTnc142; BTnc184; BTnc211; BTnc219; BTnc259; BTnc364; BTnc371; BTnc380"
             },
             "filter_area": {
               "label": "in ",
@@ -671,7 +682,7 @@
               "label": "Show 3' derived sRNAs ",
               "type": "b-form-input",
               "id": "filter_values",
-              "selected":"BTnc028a; BTnc029; BTnc065; BTnc088; BTnc099; BTnc101; BTnc102; BTnc104; BTnc105; BTnc134; BTnc153; BTnc195; BTnc234; BTnc248; BTnc251; BTnc268; BTnc312; BTnc313; BTnc332; BTnc339; BTnc340; BTnc365; BTnc366; BTnc395"
+              "selected": "BTnc028a; BTnc029; BTnc088; BTnc099; BTnc101; BTnc102; BTnc104; BTnc105; BTnc134; BTnc153; BTnc195; BTnc224; BTnc248; BTnc251; BTnc268; BTnc313; BTnc339; BTnc340; BTnc365; BTnc366; BTnc395"
             },
             "filter_area": {
               "label": "in ",
@@ -683,17 +694,17 @@
             }
           }
         },
-        "Filter PUL-antisense RNAs and SusC homologs": {
+        "Filter SusC homolog & cis-antisense RNAs": {
           "properties": {
             "type": "filter",
             "query": "expression"
           },
           "items": {
             "filter_value": {
-              "label": "Show PUL-antisense RNAs and SusC homologs",
+              "label": "Show SusC homolog and cis-antisense RNAs ",
               "type": "b-form-input",
               "id": "filter_values",
-              "selected": "BT_0268; BTnc011; BT_1619; BTnc077; BT_2032; BTnc111; BT_2364; BTnc327; BT_2952; BTnc352; BT_0190; BTnc009; BT_1280; BTnc055; BT_2196; BTnc123; BT_2461; BTnc136; BT_3750; BTnc210; BT_4357; BTnc249; BT_3332; BTnc368"
+              "selected": "BTnc009; BT_0190; BTnc011; BT_0268; BTnc055; BT_1280; BTnc077; BT_1619; BTnc111; BT_2032; BTnc123; BT_2196; BTnc136; BT_2461; BTnc210; BT_3750; BTnc249; BT_4357; BTnc252; BT_4460; BTnc327; BT_2364; BTnc352; BT_2952; BTnc368; BT_3332"
             },
             "filter_area": {
               "label": "in ",
@@ -704,29 +715,7 @@
               "selected": "locus tag"
             }
           }
-        },
-        "Filter All ncRNA": {
-          "properties": {
-            "type": "filter",
-            "query": "expression"
-          },
-          "items": {
-            "filter_value": {
-              "label": "Show all sRNA",
-              "type": "b-form-input",
-              "id": "filter_values",
-              "selected": "BTnc000; BTnc001; BTnc002; BTnc003; BTnc004; BTnc005; BTnc006; BTnc007; BTnc008; BTnc009; BTnc010; BTnc011; BTnc012; BTnc013; BTnc014; BTnc015; BTnc016; BTnc017; BTnc018; BTnc019; BTnc020; BTnc021; BTnc022; BTnc023; BTnc024; BTnc025; BTnc026; BTnc027; BTnc028a; BTnc028b; BTnc029; BTnc030; BTnc031; BTnc032; BTnc033; BTnc034; BTnc035; BTnc040; BTnc041; BTnc042; BTnc043; BTnc044; BTnc047; BTnc048; BTnc049; BTnc053; BTnc054; BTnc055; BTnc056; BTnc057; BTnc059; BTnc060; BTnc064; BTnc065; BTnc066; BTnc067; BTnc069; BTnc070; BTnc071; BTnc072; BTnc074; BTnc075; BTnc076; BTnc077; BTnc078; BTnc079; BTnc081; BTnc082; BTnc083; BTnc084; BTnc085; BTnc086; BTnc088; BTnc089; BTnc091; BTnc092; BTnc093; BTnc094; BTnc095; BTnc096; BTnc097; BTnc098; BTnc099; BTnc101; BTnc102; BTnc103; BTnc104; BTnc105; BTnc106; BTnc107; BTnc108; BTnc109; BTnc110; BTnc111; BTnc112; BTnc114; BTnc116; BTnc117; BTnc119; BTnc120; BTnc121; BTnc123; BTnc125; BTnc126; BTnc127; BTnc128; BTnc129; BTnc130; BTnc131; BTnc132; BTnc133; BTnc134; BTnc135; BTnc136; BTnc137; BTnc139; BTnc140; BTnc141; BTnc142; BTnc143; BTnc144; BTnc145; BTnc146; BTnc147; BTnc148; BTnc149; BTnc150; BTnc151; BTnc152; BTnc153; BTnc154; BTnc155; BTnc156; BTnc157; BTnc158; BTnc159; BTnc160; BTnc161; BTnc162; BTnc163; BTnc164; BTnc165; BTnc166; BTnc167; BTnc168; BTnc169; BTnc170; BTnc171; BTnc172; BTnc173; BTnc174; BTnc175; BTnc176; BTnc178; BTnc179; BTnc180; BTnc182; BTnc183; BTnc184; BTnc186; BTnc187; BTnc188; BTnc191; BTnc193; BTnc194; BTnc195; BTnc196; BTnc197; BTnc198; BTnc199; BTnc200; BTnc201; BTnc202; BTnc203; BTnc204; BTnc207; BTnc208; BTnc209; BTnc210; BTnc211; BTnc212; BTnc213; BTnc215; BTnc216; BTnc217; BTnc218; BTnc219; BTnc220; BTnc221; BTnc222; BTnc224; BTnc225; BTnc226; BTnc227; BTnc228; BTnc229; BTnc230; BTnc231; BTnc232; BTnc233; BTnc234; BTnc235; BTnc236; BTnc237; BTnc238; BTnc239; BTnc240; BTnc241a; BTnc241b; BTnc242; BTnc244; BTnc245; BTnc246; BTnc247; BTnc248; BTnc249; BTnc250; BTnc251; BTnc252; BTnc254; BTnc255; BTnc257; BTnc259; BTnc260; BTnc261; BTnc262; BTnc263; BTnc264; BTnc265; BTnc266; BTnc267; BTnc268; BTnc270; BTnc271; BTnc273; BTnc274; BTnc275; BTnc276; BTnc277; BTnc278; BTnc279; BTnc280; BTnc281; BTnc282; BTnc284; BTnc285; BTnc286; BTnc287; BTnc288; BTnc289; BTnc290; BTnc291; BTnc292; BTnc294; BTnc295; BTnc296; BTnc297; BTnc298; BTnc299; BTnc300; BTnc301; BTnc302; BTnc303; BTnc304; BTnc305; BTnc306; BTnc307; BTnc308; BTnc309; BTnc310; BTnc311; BTnc312; BTnc313; BTnc314; BTnc315; BTnc316; BTnc317; BTnc318; BTnc319; BTnc320; BTnc321; BTnc322; BTnc323; BTnc324; BTnc325; BTnc326; BTnc327; BTnc328; BTnc329; BTnc330; BTnc331; BTnc332; BTnc333; BTnc334; BTnc335; BTnc336; BTnc337; BTnc338; BTnc339; BTnc340; BTnc341; BTnc342; BTnc343; BTnc344; BTnc345; BTnc346; BTnc347; BTnc348; BTnc349; BTnc350; BTnc351; BTnc352; BTnc353; BTnc354; BTnc355; BTnc356; BTnc357; BTnc358; BTnc359; BTnc360; BTnc361; BTnc362; BTnc363; BTnc364; BTnc365; BTnc366; BTnc367; BTnc368; BTnc369; BTnc370; BTnc371; BTnc372; BTnc373; BTnc374; BTnc375; BTnc376; BTnc377; BTnc378; BTnc379; BTnc380; BTnc381; BTnc382; BTnc383; BTnc384; BTnc385; BTnc386; BTnc387; BTnc388; BTnc389; BTnc390; BTnc391; BTnc392; BTnc393; BTnc394; BTnc395"
-            },
-            "filter_area": {
-              "label": "in ",
-              "type": "b-form-select", 
-              "default_options": ["any column", "all columns"],
-              "options": ["any column", "all columns"],
-              "id": "filter_annotation_area",
-              "selected": "locus tag"
-            }
-          }
-        }       
+        }      
       }
     },
     "other": {
