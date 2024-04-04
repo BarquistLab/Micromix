@@ -30,7 +30,7 @@
 </div>
 </div>
         <h5 class="title initial_load_text">Loading HIRI Heatmap</h5>
-        <small id="subtitle">v1.0.0-alpha</small>
+        <small id="subtitle">v1.0.0</small>
       </div>
     </div>
 </template>
