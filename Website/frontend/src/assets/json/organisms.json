@@ -1,12 +1,6 @@
 {
   "items": {
-    "No organism": {
-      "name": "No organism",
-      "description": "All default features without specific filters.",
-      "path": "/default",
-      "id": "no-organism-33d6bd3a-5b4e-4f65-9369-cf1141ef044d",
-      "datasets": ["$all_datasets"]
-    },
+
     "Salmonella": {
       "name": "Salmonella",
       "description": "SPIs, Annotation Pathways, and more.",
