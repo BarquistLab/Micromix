@@ -240,8 +240,7 @@
         text="Add..." 
         class="m-md-2 rounded" 
         no-caret 
-        toggle-class="text-decoration-none"
-        :disabled="isDropdownDisabled">  <!-- greys out the button once a filter query has been loaded-->
+        toggle-class="text-decoration-none">  
 
         <!-- This is the popover text that whows when the help button is pressed - repeats below -->
         <b-popover 
@@ -347,7 +346,7 @@
         <!-- The image and text -->
         <template v-slot:button-content> 
           <b-icon icon="intersect"></b-icon> 
-          ncRNA 
+          {{ buttonLabel }} 
         </template>
 
         <!-- The contents -->
@@ -460,6 +459,10 @@ export default {
       });
     // Disable the dropdown if there are queries and at least one of them is a filter type
     return hasQueries && hasFilterTypeBlock;
+    },
+
+    buttonLabel() {
+    return this.active_organism.name === 'Salmonella' ? 'Pathogenicity Islands' : 'ncRNA';
     }
   },
 
