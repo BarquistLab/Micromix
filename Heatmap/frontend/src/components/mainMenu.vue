@@ -1,24 +1,33 @@
 <!-- App / deckglCanvas / mainMenu -->
 <template>
   <div>
+     <!-- Background div for buttons with styled background and shadow -->
     <div class="buttons_background">
+      <!-- Iterates over the 'options' array and creates a button for each option -->
       <div
         @click="setActiveOption(option.id)"
-        class="option_button"
+        class="option_button" 
         :class="{ option_button_active: activeOptionId === option.id }"
         v-for="option in options"
         :key="option.id"
         :id="option.id"
       >
+
+        <!-- Dynamically loads an icon for the button based on the option id -->
         <img class="option_icon" :src="require(`@/assets/${option.id}.svg`)" />
+        <!-- Tooltip that shows description on hover -->
         <b-tooltip :target="option.id" :delay="tooltipDelay">{{option.description}}</b-tooltip>
       </div>
     </div>
+    
+    <!-- Expand/Collapse the button for that button - showing settings based on the active option -->
     <b-collapse
       v-for="option in options"
       :key="option.id"
       :visible="activeOptionId === option.id"
     >
+      
+      <!-- Settings menu displayed when the 'deckglSettings' option is active -->
       <settingsMenu
         v-if="option.id === 'deckglSettings'"
         @settings-changed="$emit('settings-changed', $event)"
@@ -26,6 +35,8 @@
         :settingsTemplate="settingsTemplate"
         :minMaxValues="minMaxValues"
       />
+
+      <!-- Export menu displayed when the 'exportImage' option is active -->
       <exportMenu
         v-else-if="option.id === 'exportImage'"
         :layerSettings="layerSettings"
@@ -37,7 +48,9 @@
 </template>
 
 <script>
+ // General setting
 import settingsMenu from './settingsMenu.vue';
+// Export settings 
 import exportMenu from './exportMenu.vue';
 
 export default {
@@ -54,6 +67,7 @@ export default {
   },
   data() {
     return {
+      // Array of options for buttons
       options: [
         {
           id: 'goHome',
@@ -71,7 +85,7 @@ export default {
           description: 'Download SVG/PNG picture.',
         },
       ],
-      activeOptionId: 'deckglSettings',
+      activeOptionId: 'deckglSettings', // Keeps track of the currently active option
       homeCamera: {
         id: 'Top',
         viewState: {
@@ -88,14 +102,15 @@ export default {
           },
         },
       },
-      tooltipDelay: { show: 600, hide: 0 },
+      tooltipDelay: { show: 600, hide: 0 }, // Delay for tooltips to appear and disappear
     };
   },
   methods: {
+    // Method to set the active option, toggles the active state if the same button is clicked
     setActiveOption(id) {
       if (this.activeOptionId !== id) {
         this.activeOptionId = id;
-        if (id === 'goHome') {
+        if (id === 'goHome') { 
           this.goHome();
         }
       } else {
@@ -103,6 +118,7 @@ export default {
       }
     },
     goHome() {
+      // Method to emit an event to reset the camera to the default view
       this.$emit('active-camera-selected', this.homeCamera);
       this.activeOptionId = null;
     },

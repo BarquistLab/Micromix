@@ -37,6 +37,8 @@
 
 
 <script>
+// settingsTemplate - stores all the initial settigns from the json
+// settings - stores the actual settings
 
 
 // Importing necessary modules from Deck.gl and other libraries
@@ -63,7 +65,7 @@ export default {
   data() {
     return {
       // Initial data properties including URL, camera settings, layer configurations, etc.
-      backendUrl: 'http://127.0.0.1:3000',  //this will need to be changed to where micrimix is hosted
+      backendUrl: 'http://127.0.0.1:3000',  //this will need to be changed to where Micromix is hosted
       activeCamera: 'Top',
       constants: {
         textMarginRight: -0.003,

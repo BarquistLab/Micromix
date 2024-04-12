@@ -289,12 +289,12 @@ def upload_db_entry(db_entry, mongo_update, url):
     if 'locked' in db_entry and db_entry['locked'] == True:
         db_entry['locked'] = False  # Unlock the db_entry for the new entry.
         db_entry_id = db.visualizations.insert_one(db_entry).inserted_id  # Insert the new db_entry and get its ID.
-        print('new entry!')
+        #print('new entry!')
     else:
         db_entry_id = ObjectId(url)  # Use the existing db_entry's ID.
         db.visualizations.update_one({'_id': db_entry_id}, mongo_update)  # Update the existing db_entry.
-        print('This is the same entry')
-        print(db_entry['active_plugin_id'])
+        #print('This is the same entry')
+        print("Active plugin id: ",db_entry['active_plugin_id'])
     return db_entry_id  # Return the ID of the db_entry that was inserted/updated.
 
 
@@ -319,9 +319,8 @@ def upload_db_entry(db_entry, mongo_update, url):
 def search_query():
     try:
         # Dynamically import a custom module designed for applying filters to dataframes.
-        # This module likely contains logic to parse the query parameters and apply them
-        # to the dataframe to produce a subset of the data based on the specified criteria.
-        import filter_dataframe  # Custom module for filtering dataframes based on queries.
+        # This module contains and applies query logic to the dataframe to produce a subset of the data based on the specified criteria.
+        import filter_dataframe  # Load custom module.
 
         # Extract the query and the unique identifier from the POST request data.
         query = json.loads(request.form['query'])

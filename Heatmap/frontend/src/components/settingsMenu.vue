@@ -1,11 +1,16 @@
 <!-- App / deckglCanvas / mainMenu / settingsMenu -->
 <template>
+  <!-- Container for settings menu, only visible if settingsTemplate is provided -->
   <div class="menu" v-if="settingsTemplate">
+     <!-- Loops through each settings category defined in settingsTemplate -->
     <div
       v-for="settingsMode in settingsTemplate"
       :key="settingsMode.id"
       class="mb-4"
     >
+
+
+      <!-- Button used as a header for collapsible content, not shown for 'generalSettings' -->
       <b-button
         v-if="settingsMode.id !== 'generalSettings'"
         variant="link"
@@ -18,11 +23,15 @@
         ></b-icon
         ><span>{{ settingsMode.label }}</span></b-button
       >
+
+      <!-- Collapsible container for settings, visibility controlled by an id -->
       <b-collapse
         :id="settingsMode.id"
         :visible="settingsMode.visible"
         class="mt-2"
       >
+        
+        <!-- Form group for each block of settings within the current category -->
         <b-form-group
           v-for="block in settingsMode.settings"
           :key="block.label"
@@ -32,6 +41,8 @@
           :label="block.label"
           class="mb-3"
         >
+          
+          <!-- Nested form group for each input within the block -->
           <b-form-group
             label-align="left"
             :label-cols="6"
@@ -42,6 +53,8 @@
             label-class="input_label"
             class="input_group_custom"
           >
+            
+            <!-- Input handling for range sliders or dropdowns -->
             <b-form-input
               v-if="input.type === 'range' || input.type === 'dropdown'"
               v-model="localSettings[input.propertyType][input.id]"
@@ -58,6 +71,8 @@
               v-b-tooltip.hover
               :title="localSettings[input.propertyType][input.id]"
             ></b-form-input>
+            
+            <!-- Checkbox for toggle options -->
             <b-form-checkbox
               v-else-if="input.type === 'checkbox'"
               v-model="localSettings[input.propertyType][input.id]"
@@ -69,6 +84,8 @@
                   : false
               "
             ></b-form-checkbox>
+            
+            <!-- Custom dropdown for selecting gradient configurations -->
             <b-dropdown
               :lazy="true"
               class="dropdown-gradient"
@@ -180,7 +197,7 @@
 </template>
 
 <script>
-import chroma from 'chroma-js';
+import chroma from 'chroma-js'; // Importing chroma-js for color manipulations
 import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/default.css';
 
@@ -197,9 +214,9 @@ export default {
     },
   },
   props: {
-    settings: Object,
-    settingsTemplate: Object,
-    minMaxValues: Array,
+    settings: Object, // Settings object passed from parent
+    settingsTemplate: Object, // Template for how settings should be displayed
+    minMaxValues: Array, // Array containing min and max values used in sliders
   },
   watch: {
     'settings.layer': {
@@ -229,19 +246,21 @@ export default {
   },
   data() {
     return {
-      localSettings: this.settings,
+      localSettings: this.settings, // Local copy of settings to manage changes
       gradientSliderInterval: 1,
-      gradientSliderLazy: false,
+      gradientSliderLazy: false, // Toggle for live preview of gradient slider
     };
   },
   created() {
+    // Emits initial settings when component is created
     this.$emit('settings-changed', { type: 'gradient', settings: this.localSettings.gradient });
     this.$emit('settings-changed', { type: 'layer', settings: this.localSettings.layer });
   },
   methods: {
     getColorGradientCss(gradientName, domain) {
     // Maybe generate an Object when component is created() to prevent render on call.
-      const gradientSteps = 30;
+    // Method to generate CSS for a linear gradient background image
+      const gradientSteps = 30; // Number of steps in the gradient
       const colorArray = [];
       const step = (this.maxValue - this.minValue) / gradientSteps;
       const colorGradient = chroma
