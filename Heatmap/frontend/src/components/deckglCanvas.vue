@@ -182,7 +182,9 @@ export default {
 
   methods: {
     
+     // --------
      // Allows users to take a screenshot of the current heatmap
+     // --------
     takeScreenshot() {
       this.deck.redraw(true);
       const { canvas } = this.deck;
@@ -196,8 +198,10 @@ export default {
       // a.download = 'Heatmap_screenshot.jpeg';
       a.click();
     },
-    
+
+    // --------
     // Generates initial settings based on the settings template
+    // --------
     generateSettings() {
       const settings = {
         layer: {},
@@ -219,8 +223,10 @@ export default {
       });
       return settings;
     },
-    
+
+    // --------
     // Handles camera view changes
+    // --------
     changeCamera(e) {
       this.activeCamera = e.id;
       this.currentViewState = { ...this.currentViewState, ...e.viewState };
@@ -361,14 +367,40 @@ export default {
       this.$emit('long-loading-finished');
     },
     
+    // ---------
     // Fetches data for the heatmap visualization
+    // ---------
     fetchData(url) {
+      // Fetches processed data from a backend server for visualization in a heatmap.
+      // This function sends a request to the specified URL, which is expected to
+      // interact with a MongoDB database to retrieve and process the required data
+      // based on the provided configuration settings.
+      // The response data is then further processed in the frontend to fit
+      // the structure required by Deck.gl layers, such as grid cells and text
+      // ayers for row and column headers. It also handles setting up visualization
+      // parameters like min-max values and gradients based on the processed data.
+      // *
+      // Workflow:
+      // 1. Send a HTTP POST request with configuration data to the backend.
+      // 2. Backend processes this request, queries MongoDB, and formats the necessary data.
+      // 3. Received data is processed in the frontend to be used in heatmap layers.
+      // 4. Data is used to update the visualization, applying layer-based settings like colors and scales.
+
+      // Create a new FormData object to hold the data to be sent with the HTTP POST request
       const payload = new FormData();
+      // Append the 'url' key with the serialized configuration query parameter to the payload.
+      // This configuration 'might' determine specific data filters or identifiers for the backend to process.
       payload.append('url', JSON.stringify(this.$route.query.config));
-      axios
-        .post(url, payload)
+
+      // Send a POST request to the Micromix URL with the prepared payload.
+      // Axios is used here to handle the HTTP request.
+      axios.post(url, payload)
         .then((res) => {
-          [
+           // Upon successful data retrieval, 'res.data' contains the returned data.
+
+           // Process the received data to format suitable for the heatmap layers using 'processJsonData'.
+           // This method organizes raw data into structured formats for different layers of the heatmap.
+           [
             this.layerSettings.gridCellLayer.data,
             this.layerSettings.textCellLayer.data,
             this.layerSettings.rowTextLayer.data,
@@ -376,52 +408,83 @@ export default {
             this.highestValue,
             this.lowestValue,
           ] = this.processJsonData(res.data);
+
+          // Once the data is processed, set up the gradient forms for subtables.
+          // This may involve creating specific color gradient settings for each subtable based on the processed data.
           this.createSubTableGradientForms();
+
+          // If the lowest value in the data is below zero, additional configuration may be necessary,
+          // such as adjusting visualization parameters to properly display negative values.
           if (this.lowestValue < 0) {
             this.configureNegativeValues();
           }
         })
         .catch((error) => {
+          // Log any errors that occur during the fetch or processing steps.
           console.log(error);
         });
     },
-    
+
+    // --------
+    //
     // Processes JSON data into a format suitable for Deck.gl layers
+    //
+    // --------
     processJsonData(json) {
-      // This could be moved to the python backend for performace reasons.
+      // NOTE: This could be moved to the python backend for performace reasons.
+      // Details:
+      // The processJsonData function primarily focuses on transforming and structuring JSON data for visualization in Deck.gl layers, 
+      // such as grid cells and text annotations (headers). It doesn't involve the application settings related to visual aspects like 
+      // color gradients, camera views, materials, or specific settings for min/max gradient values. 
       const gridCellLayerData = [];
       const textCellLayerData = [];
       const rowTextLayerData = [];
       const columnTextLayerData = [];
+
+      // Extract column names from the first JSON object.
       const columns = Object.keys(json[0]);
+
+      // Initialize variables to track the extremes of data values across all tables and subtables.
       let lowestValue = 0;
       let highestValue = 0;
       let subTableLowestValue = 0;
       let subTableHighestValue = 0;
-      let lastPrefix;
+      let lastPrefix; // Track prefix to manage subtables
+
+      // Variables to manage column coordinates in the visualization.
       let columnName;
       let columnCoordinate = -1;
       let scaledColumnCoordinate = 0;
+
+      // Loop through each column index to process column-wise data.
       for (let columnIndex = 0; columnIndex < columns.length; columnIndex += 1) {
+        // Skip the first column in processing, assuming it's a special case (like identifiers).
         if (columnIndex !== 0) {
+          // Check if column name starts and contains specific delimiters to identify subtables.
           if (columns[columnIndex].startsWith('(') && columns[columnIndex].includes(') ')) {
             const splitIndex = columns[columnIndex].indexOf(') ');
             const prefix = columns[columnIndex].slice(0, splitIndex + 1);
+
+            // When encountering a new prefix, reset subtable-specific trackers and adjust coordinates.
             if (prefix !== lastPrefix) {
               lastPrefix = prefix;
               subTableLowestValue = 0;
               subTableHighestValue = 0;
-              columnCoordinate += 1.4;
+              columnCoordinate += 1.4; // Adjust coordinate for a new subtable grouping
               columnName = columns[columnIndex].slice(splitIndex + 2);
             } else {
-              columnCoordinate += 1;
+              columnCoordinate += 1; // Continue in the same subtable
             }
           } else {
             columnName = columns[columnIndex];
             columnCoordinate += 1;
           }
+
+          // Calculate a scaled coordinate for placement in the visualization.
           // Only calculate x coordinate when the column changes.
           scaledColumnCoordinate = columnCoordinate / 140;
+
+           // Store column names with their calculated display coordinates.
           columnTextLayerData.push({
             COORDINATES: [
               -this.constants.textMarginTop,
@@ -430,9 +493,14 @@ export default {
             VALUE: Object.keys(json[0])[columnIndex],
           });
         }
+
+        // Process each row within the current column.
         for (let rowIndex = 0; rowIndex < json.length; rowIndex += 1) {
+          // Check if the cell contains a finite number (ignoring non-numeric data).
           if (columnIndex !== 0) {
             if (Number.isFinite(json[rowIndex][columns[columnIndex]])) {
+
+              // Create data entry for grid cell layer.
               const gridCellLayerCell = {
                 COLUMN: columnName,
                 COORDINATES: [rowIndex / 140, scaledColumnCoordinate],
@@ -440,6 +508,8 @@ export default {
                 VALUE: json[rowIndex][columns[columnIndex]],
                 TITLE: lastPrefix,
               };
+
+              // Update subtable and overall data value ranges.
               if (gridCellLayerCell.VALUE > subTableHighestValue) {
                 subTableHighestValue = gridCellLayerCell.VALUE;
                 if (gridCellLayerCell.VALUE > highestValue) {
@@ -452,12 +522,14 @@ export default {
                   lowestValue = gridCellLayerCell.VALUE;
                 }
               }
+              // Handle negative values by setting orientation flag.
               if (gridCellLayerCell.VALUE < 0) {
-                gridCellLayerCell.VALUE *= -1;
-                gridCellLayerCell.ORIENTATION = -1;
+                gridCellLayerCell.VALUE *= -1;  // Make value positive
+                gridCellLayerCell.ORIENTATION = -1;  // Flag negative orientation
               }
               gridCellLayerData.push(gridCellLayerCell);
             } else {
+              // Create data entry for non-numeric cell data.
               const textCellLayerCell = {
                 COLUMN: columnName,
                 COORDINATES: [
@@ -470,6 +542,7 @@ export default {
               textCellLayerData.push(textCellLayerCell);
             }
           } else {
+            // Process the first column separately (likely for row headers or similar).
             rowTextLayerData.push({
               COORDINATES: [
                 rowIndex / 140 + this.constants.textMarginTop,
@@ -479,6 +552,8 @@ export default {
             });
           }
         }
+
+        // After processing all rows for a column, update subtable tracking.
         if (lastPrefix) {
           this.subTables[lastPrefix] = {
             TITLE: lastPrefix,
@@ -487,6 +562,8 @@ export default {
           };
         }
       }
+
+      // Return all processed data and extreme values for further use.
       return [
         gridCellLayerData,
         textCellLayerData,
@@ -496,8 +573,10 @@ export default {
         lowestValue,
       ];
     },
-    
+
+    // --------
     // Adjusts settings for handling negative values in data
+    // --------
     configureNegativeValues() {
       this.layerSettings.gridCellLayer.getPosition = (d) => [d.COORDINATES[0],
         d.COORDINATES[1], d.VALUE * (this.updateTriggerObjects.elevationScale * d.ORIENTATION)];
@@ -505,8 +584,10 @@ export default {
         ? this.colorGradientDict[d.TITLE](d.VALUE).rgb()
         : this.colorGradientDict[d.TITLE](d.VALUE * d.ORIENTATION).rgb());
     },
-    
+
+    // --------
     // Dynamically creates gradient settings forms based on data
+    // --------
     createSubTableGradientForms() {
       for (let i = 0; i < this.settingsTemplate.basicSettings.settings.length; i += 1) {
         if (this.settingsTemplate.basicSettings.settings[i].label === 'Color Gradient') {
@@ -545,8 +626,10 @@ export default {
         }
       }
     },
-    
+
+    // --------
     // Calculates gradient domain for color scaling
+    // --------
     calculateGradientDomain(form, lowestValue, highestValue) {
       // Calculate order of magnitude of the value range between data min and max.
       const gradientFormTemplate = form;
@@ -577,8 +660,10 @@ export default {
       ];
       return gradientFormTemplate;
     },
-    
-     // Generates tooltip content for grid cells
+
+    // --------
+    // Generates tooltip content for grid cells
+    // --------
      getTooltip({ object }) {
       if (!object) {
         return null;
