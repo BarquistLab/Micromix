@@ -11,7 +11,7 @@
 
 // The Heatmap canvas
 import deckglCanvas from './components/deckglCanvas.vue';
-//The loading screen
+// The loading screen
 import loadingOverlay from './components/loadingOverlay.vue';
 
 export default {

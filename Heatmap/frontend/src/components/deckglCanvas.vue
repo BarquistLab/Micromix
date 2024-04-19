@@ -3,7 +3,7 @@
   <div>
      <!-- Container for SVG exports -->
      <div id="export_svg"></div>
-    
+
     <!-- Main Menu Component: Controls and settings -->
     <mainMenu
       v-if="layerSettings.gridCellLayer.data"
@@ -17,8 +17,7 @@
       :colorGradientDict="colorGradientDict"
       :minMaxValues="[this.lowestValue, this.highestValue]"
     />
-    
-    
+
     <!-- Camera Menu Component: Controls for changing camera views -->
     <cameraMenu
       class="camera_menu menu_c"
@@ -34,12 +33,9 @@
   </div>
 </template>
 
-
-
 <script>
 // settingsTemplate - stores all the initial settigns from the json
 // settings - stores the actual settings
-
 
 // Importing necessary modules from Deck.gl and other libraries
 import {
@@ -50,12 +46,11 @@ import {
 } from '@deck.gl/core';
 
 import { GridCellLayer, TextLayer } from '@deck.gl/layers';
-import axios from 'axios'; //For HTTP requests
-import chroma from 'chroma-js';  // For color manipulation
-import cameraMenu from './cameraMenu.vue';  // Custom Vue component for camera menu
-import mainMenu from './mainMenu.vue';  // Custom Vue component for main settings menu
-import settingsTemplate from '../assets/settingsTemplate.json';  // Load in the template for initial settings
-
+import axios from 'axios'; // For HTTP requests
+import chroma from 'chroma-js'; // For color manipulation
+import cameraMenu from './cameraMenu.vue'; // Custom Vue component for camera menu
+import mainMenu from './mainMenu.vue'; // Custom Vue component for main settings menu
+import settingsTemplate from '../assets/settingsTemplate.json'; // Load in the template for initial settings
 
 export default {
   components: {
@@ -65,7 +60,7 @@ export default {
   data() {
     return {
       // Initial data properties including URL, camera settings, layer configurations, etc.
-      backendUrl: 'http://127.0.0.1:3000',  //this will need to be changed to where Micromix is hosted
+      backendUrl: 'http://127.0.0.1:3000', // this will need to be changed to where Micromix is hosted
       activeCamera: 'Top',
       constants: {
         textMarginRight: -0.003,
@@ -136,8 +131,10 @@ export default {
         },
       },
 
-      //These are the default view settings for the heatmap.
-      //If you want to change from Top to something else, you will also have to change values in settingsTemplate.json - for example line 26 for the 3d view enabled/disabled
+      // These are the default view settings for the heatmap.
+      // If you want to change from Top to something else,
+      // you will also have to change values in settingsTemplate.json
+      // for example line 26 for the 3d view enabled/disabled
       currentViewState: {
         latitude: 0.02,
         longitude: 0.05,
@@ -152,22 +149,21 @@ export default {
     };
   },
 
-
   // --------
   // Fetches initial configuration data and sets up the deck instance
   // --------
   created() {
-    //Get the config data
+    // Get the config data
     this.fetchData(`${this.backendUrl}/config`);
     this.deck = null;
-    //Load in the settings from the json template
+    // Load in the settings from the json template
     this.settings = this.generateSettings();
   },
 
-   // --------
-   // Initializes the Deck.gl instance on component mount
-   // --------
-   mounted() {
+  // --------
+  // Initializes the Deck.gl instance on component mount
+  // --------
+  mounted() {
     this.deck = new Deck({
       // Disable Retina rendering for better performance:
       // useDevicePixels: false,
@@ -185,9 +181,9 @@ export default {
 
   methods: {
 
-     // --------
-     // Allows users to take a screenshot of the current heatmap
-     // --------
+    // --------
+    // Allows users to take a screenshot of the current heatmap
+    // --------
     takeScreenshot() {
       this.deck.redraw(true);
       const { canvas } = this.deck;
@@ -206,24 +202,31 @@ export default {
     // Generates initial settings based on the settings template
     // --------
     // *
-    // Generates initial settings for the heatmap based on a predefined template thats loaded from the json.
-    // This function constructs a settings object that includes configurations for different aspects
-    // of the visualization, such as layer properties, lighting effects, custom features, and gradient controls.
+    // Generates initial settings for the heatmap based on a
+    // predefined template thats loaded from the json.
+    // This function constructs a settings object that includes
+    // configurations for different aspects of the visualization,
+    // such as layer properties, lighting effects, and gradient controls.
     // *
     // Process:
-    // 1. Initialize an empty settings object with categories for layers, lighting, custom settings, and gradients.
+    // 1. Initialize an empty settings object with categories for layers,
+    //    lighting, custom settings, and gradients.
     // 2. Iterate through each category in the provided settingsTemplate (json).
     // 3. For each category, iterate through the settings defined in the template.
-    // 4. Each setting can have multiple inputs; iterate through these inputs to extract and assign their default values.
-    // 5. Populate the settings object with these default values, categorizing them according to their specified property type.
+    // 4. Each setting can have multiple inputs; iterate through these inputs to
+    //    extract and assign their default values.
+    // 5. Populate the settings object with these default values,
+    //    categorizing them according to their specified property type.
     // *
-    // The settings object structured by this function serves as the foundational configuration
-    // from which the visualization's properties can be adjusted dynamically via user interactions or other controls.
+    // The settings object structured by this function serves
+    // as the foundational configuration from which the visualization's properties
+    // can be adjusted dynamically via user interactions or other controls.
     // *
     // Returns:
-    // - A fully populated settings object with initial values as specified in the settings template.
-    generateSettings() {
+    // A fully populated settings object with initial values as specified
+    // in the settings template.
 
+    generateSettings() {
       // Initialize the settings object with empty categories.
       const settings = {
         layer: {},
@@ -241,13 +244,14 @@ export default {
             // Reference to the current input.
             const input = settingsTemplate[mode].settings[i].inputs[j];
 
-            // Assign the default value from the input to the appropriate category in the settings object.
+            // Assign the default value from the input to the
+            // appropriate category in the settings object.
             settings[input.propertyType][input.id] = input.value;
           }
         }
       });
-       // Return the fully populated settings object
-       return settings;
+      // Return the fully populated settings object
+      return settings;
     },
 
     // --------
@@ -300,12 +304,13 @@ export default {
       // It might be useful to use a switch case instead,
       // if the possible conditions grow beyond 5 items.
 
-      // Use a switch statement to handle different types of settings based on 'updatedSettings.type'.
+      // Use a switch statement to handle different types of
+      // settings based on 'updatedSettings.type'.
       switch (updatedSettings.type) {
-
         // --- layer ---
         case 'layer':
-          // Merge existing layer settings with new ones and ensure numerical properties are correctly typed.
+          // Merge existing layer settings with new ones and
+          // ensure numerical properties are correctly typed.
           this.layerSettings.gridCellLayer = {
             ...this.layerSettings.gridCellLayer,
             ...s,
@@ -315,7 +320,7 @@ export default {
           this.layerSettings.gridCellLayer.elevationScale = Number(s.elevationScale);
           this.updateTriggerObjects.elevationScale = this
             .layerSettings.gridCellLayer.elevationScale;
-          
+
           // Optionally update materials for advanced visualization effects if specified.
           if (s.advancedMaterial) {
             this.layerSettings.gridCellLayer.material = {
@@ -349,12 +354,13 @@ export default {
           });
           break;
 
-        // --- gradient ---  
+        // --- gradient ---
         case 'gradient':
           // Toggle gradient update trigger to force re-rendering of layers.
+          // eslint-disable-next-line max-len
           this.updateTriggerObjects.gradientUpdateTrigger = !this.updateTriggerObjects.gradientUpdateTrigger;
 
-           // Update gradient settings for visual consistency across data visualization
+          // Update gradient settings for visual consistency across data visualization
           this.colorGradientPreset = s.gradientPreset.value;
           if (this.colorGradientPreset !== s.gradientPreset.value
           || s.individualGradients === false) {
@@ -454,23 +460,27 @@ export default {
       // 1. Send a HTTP POST request with configuration data to the backend.
       // 2. Backend processes this request, queries MongoDB, and formats the necessary data.
       // 3. Received data is processed in the frontend to be used in heatmap layers.
-      // 4. Data is used to update the visualization, applying layer-based settings like colors and scales.
+      // 4. Data is used to update the visualization,
+      //    applying layer-based settings like colors and scales.
 
       // Create a new FormData object to hold the data to be sent with the HTTP POST request
       const payload = new FormData();
       // Append the 'url' key with the serialized configuration query parameter to the payload.
-      // This configuration 'might' determine specific data filters or identifiers for the backend to process.
+      // This configuration 'might' determine specific data filters
+      // or identifiers for the backend to process.
       payload.append('url', JSON.stringify(this.$route.query.config));
 
       // Send a POST request to the Micromix URL with the prepared payload.
       // Axios is used here to handle the HTTP request.
       axios.post(url, payload)
         .then((res) => {
-           // Upon successful data retrieval, 'res.data' contains the returned data.
+          // Upon successful data retrieval, 'res.data' contains the returned data.
 
-           // Process the received data to format suitable for the heatmap layers using 'processJsonData'.
-           // This method organizes raw data into structured formats for different layers of the heatmap.
-           [
+          // Process the received data to format suitable for
+          // the heatmap layers using 'processJsonData'.
+          // This method organizes raw data into structured
+          // formats for different layers of the heatmap.
+          [
             this.layerSettings.gridCellLayer.data,
             this.layerSettings.textCellLayer.data,
             this.layerSettings.rowTextLayer.data,
@@ -480,11 +490,14 @@ export default {
           ] = this.processJsonData(res.data);
 
           // Once the data is processed, set up the gradient forms for subtables.
-          // This may involve creating specific color gradient settings for each subtable based on the processed data.
+          // This may involve creating specific color gradient settings
+          // for each subtable based on the processed data.
           this.createSubTableGradientForms();
 
-          // If the lowest value in the data is below zero, additional configuration may be necessary,
-          // such as adjusting visualization parameters to properly display negative values.
+          // If the lowest value in the data is below zero,
+          // additional configuration may be necessary,
+          // such as adjusting visualization parameters to
+          // properly display negative values.
           if (this.lowestValue < 0) {
             this.configureNegativeValues();
           }
@@ -503,9 +516,12 @@ export default {
     processJsonData(json) {
       // NOTE: This could be moved to the python backend for performace reasons.
       // Details:
-      // The processJsonData function primarily focuses on transforming and structuring JSON data for visualization in Deck.gl layers, 
-      // such as grid cells and text annotations (headers). It doesn't involve the application settings related to visual aspects like 
-      // color gradients, camera views, materials, or specific settings for min/max gradient values. 
+      // The processJsonData function primarily focuses on transforming and
+      // structuring JSON data for visualization in Deck.gl layers,
+      // such as grid cells and text annotations (headers).
+      // It doesn't involve the application settings related to
+      // visual aspects like color gradients, camera views, materials,
+      // or specific settings for min/max gradient values.
       const gridCellLayerData = [];
       const textCellLayerData = [];
       const rowTextLayerData = [];
@@ -535,7 +551,8 @@ export default {
             const splitIndex = columns[columnIndex].indexOf(') ');
             const prefix = columns[columnIndex].slice(0, splitIndex + 1);
 
-            // When encountering a new prefix, reset subtable-specific trackers and adjust coordinates.
+            // When encountering a new prefix,
+            // reset subtable-specific trackers and adjust coordinates.
             if (prefix !== lastPrefix) {
               lastPrefix = prefix;
               subTableLowestValue = 0;
@@ -554,7 +571,7 @@ export default {
           // Only calculate x coordinate when the column changes.
           scaledColumnCoordinate = columnCoordinate / 140;
 
-           // Store column names with their calculated display coordinates.
+          // Store column names with their calculated display coordinates.
           columnTextLayerData.push({
             COORDINATES: [
               -this.constants.textMarginTop,
@@ -569,7 +586,6 @@ export default {
           // Check if the cell contains a finite number (ignoring non-numeric data).
           if (columnIndex !== 0) {
             if (Number.isFinite(json[rowIndex][columns[columnIndex]])) {
-
               // Create data entry for grid cell layer.
               const gridCellLayerCell = {
                 COLUMN: columnName,
@@ -594,8 +610,8 @@ export default {
               }
               // Handle negative values by setting orientation flag.
               if (gridCellLayerCell.VALUE < 0) {
-                gridCellLayerCell.VALUE *= -1;  // Make value positive
-                gridCellLayerCell.ORIENTATION = -1;  // Flag negative orientation
+                gridCellLayerCell.VALUE *= -1; // Make value positive
+                gridCellLayerCell.ORIENTATION = -1; // Flag negative orientation
               }
               gridCellLayerData.push(gridCellLayerCell);
             } else {
@@ -734,7 +750,7 @@ export default {
     // --------
     // Generates tooltip content for grid cells
     // --------
-     getTooltip({ object }) {
+    getTooltip({ object }) {
       if (!object) {
         return null;
       }
@@ -757,7 +773,8 @@ export default {
         //   margin: '0'
         // }
       };
-      // Below is an example for a more advanced tooltip format according to: https://github.com/visgl/deck.gl/blob/8.3-release/examples/website/3d-heatmap/app.js
+      // Below is an example for a more advanced tooltip format according to:
+      // https://github.com/visgl/deck.gl/blob/8.3-release/examples/website/3d-heatmap/app.js
       // const lat = object.COORDINATES[1]
       // const lng = object.COORDINATES[0]
       // return `\

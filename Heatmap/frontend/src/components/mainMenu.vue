@@ -6,7 +6,7 @@
       <!-- Iterates over the 'options' array and creates a button for each option -->
       <div
         @click="setActiveOption(option.id)"
-        class="option_button" 
+        class="option_button"
         :class="{ option_button_active: activeOptionId === option.id }"
         v-for="option in options"
         :key="option.id"
@@ -19,14 +19,15 @@
         <b-tooltip :target="option.id" :delay="tooltipDelay">{{option.description}}</b-tooltip>
       </div>
     </div>
-    
-    <!-- Expand/Collapse the button for that button - showing settings based on the active option -->
+
+    <!-- Expand/Collapse the button for that button
+      - showing settings based on the active option -->
     <b-collapse
       v-for="option in options"
       :key="option.id"
       :visible="activeOptionId === option.id"
     >
-      
+
       <!-- Settings menu displayed when the 'deckglSettings' option is active -->
       <settingsMenu
         v-if="option.id === 'deckglSettings'"
@@ -48,9 +49,9 @@
 </template>
 
 <script>
- // General setting
+// General setting
 import settingsMenu from './settingsMenu.vue';
-// Export settings 
+// Export settings
 import exportMenu from './exportMenu.vue';
 
 export default {
@@ -110,7 +111,7 @@ export default {
     setActiveOption(id) {
       if (this.activeOptionId !== id) {
         this.activeOptionId = id;
-        if (id === 'goHome') { 
+        if (id === 'goHome') {
           this.goHome();
         }
       } else {

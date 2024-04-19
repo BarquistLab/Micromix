@@ -9,7 +9,6 @@
       class="mb-4"
     >
 
-
       <!-- Button used as a header for collapsible content, not shown for 'generalSettings' -->
       <b-button
         v-if="settingsMode.id !== 'generalSettings'"
@@ -30,7 +29,7 @@
         :visible="settingsMode.visible"
         class="mt-2"
       >
-        
+
         <!-- Form group for each block of settings within the current category -->
         <b-form-group
           v-for="block in settingsMode.settings"
@@ -41,7 +40,7 @@
           :label="block.label"
           class="mb-3"
         >
-          
+
           <!-- Nested form group for each input within the block -->
           <b-form-group
             label-align="left"
@@ -53,7 +52,7 @@
             label-class="input_label"
             class="input_group_custom"
           >
-            
+
             <!-- Input handling for range sliders or dropdowns -->
             <b-form-input
               v-if="input.type === 'range' || input.type === 'dropdown'"
@@ -71,7 +70,7 @@
               v-b-tooltip.hover
               :title="localSettings[input.propertyType][input.id]"
             ></b-form-input>
-            
+
             <!-- Checkbox for toggle options -->
             <b-form-checkbox
               v-else-if="input.type === 'checkbox'"
@@ -84,7 +83,7 @@
                   : false
               "
             ></b-form-checkbox>
-            
+
             <!-- Custom dropdown for selecting gradient configurations -->
             <b-dropdown
               :lazy="true"

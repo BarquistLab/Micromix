@@ -1,11 +1,17 @@
 {
-  "name": "HIRI heatmap",
+  "name": "hiri_heatmap",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --fix --host 127.1.1.1",
+    "prebuild": "npx update-browserslist-db@latest",
     "build": "vue-cli-service build --fix",
     "lint": "vue-cli-service lint --fix"
+  },
+  "eslintConfig": {
+    "rules": {
+      "max-len": "off"
+    }
   },
   "dependencies": {
     "@deck.gl/core": "^8.3.6",

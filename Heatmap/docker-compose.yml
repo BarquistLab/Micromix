@@ -4,12 +4,12 @@ services:
     build: ./backend
     network_mode: "host"
     ports:
-      - "8081:8081"
+      - "3000:3000" #host:container
   hiri-heatmap-vue-frontend:
     build: 
       context: . 
       dockerfile: frontend/Dockerfile
     ports:
-      - "3000:80"
+      - "8081:80" #host:container
 
 

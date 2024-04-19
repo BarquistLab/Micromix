@@ -14,13 +14,26 @@ import pandas as pd
 from io import BytesIO
 
 
+
+# MongoDB Connection setup
+# If running not in a container environment, you can use the following line to connect to a local MongoDB install
+#client = MongoClient() #this is for testing on a local machine, when not inside a container
+#When using containers, you need to modify 'sudo vim /etc/mongodb.conf' and add in an additional IP under bind_ip
+# '172.17.0.1' is often the Docker default bridge network gateway, allowing containers to connect to the host.
+client = MongoClient('172.17.0.1', 27017)
+# Select the 'micromix' database within MongoDB for storing and retrieving application data.
+db = client.micromix
+# Define collections for storing visualizations and plugins information.
+visualizations = db.visualizations
+
+
 # #MongoDB needs to be installed
 # Otherwise, use #client = MongoClient(os.environ.get("testend")) to point to the MongoDB server on the cloud
 
 #client = MongoClient(os.environ.get("testend"))
-client = MongoClient() # For offline testing.
-db = client.micromix
-visualizations = db.visualizations
+#client = MongoClient() # For offline testing.
+#db = client.micromix
+#visualizations = db.visualizations
 
 DEBUG = True
 app = Flask(__name__)

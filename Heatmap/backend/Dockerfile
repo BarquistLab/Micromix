@@ -10,13 +10,15 @@ COPY . /app
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 8080 available to the world outside this container
-EXPOSE 8080
+# Make port 3000 available to the world outside this container
+EXPOSE 3000
 
 # Define environment variables
 ENV FLASK_APP=app.py
+# make accessable from outside the container
 ENV FLASK_RUN_HOST=0.0.0.0
 
 # Run app.py when the container launches
-CMD ["flask", "run"]
+# (0.0.0.0 again to make accessable outside container)
+CMD ["flask", "run", "--host=0.0.0.0", "--port=3000"]
 
