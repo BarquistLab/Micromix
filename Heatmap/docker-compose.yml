@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  hiri-heatmap-flask-backend:
+    build: ./backend
+    network_mode: "host"
+    ports:
+      - "8081:8081"
+  hiri-heatmap-vue-frontend:
+    build: 
+      context: . 
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "3000:80"
+
+

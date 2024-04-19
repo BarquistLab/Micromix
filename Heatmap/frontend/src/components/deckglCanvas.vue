@@ -153,15 +153,20 @@ export default {
   },
 
 
+  // --------
   // Fetches initial configuration data and sets up the deck instance
+  // --------
   created() {
+    //Get the config data
     this.fetchData(`${this.backendUrl}/config`);
     this.deck = null;
+    //Load in the settings from the json template
     this.settings = this.generateSettings();
   },
-  
-  
+
+   // --------
    // Initializes the Deck.gl instance on component mount
+   // --------
    mounted() {
     this.deck = new Deck({
       // Disable Retina rendering for better performance:
@@ -178,10 +183,8 @@ export default {
     // this.deck.layerManager.layers[0].props.elevationScale = 10
   },
 
-
-
   methods: {
-    
+
      // --------
      // Allows users to take a screenshot of the current heatmap
      // --------
@@ -202,26 +205,49 @@ export default {
     // --------
     // Generates initial settings based on the settings template
     // --------
+    // *
+    // Generates initial settings for the heatmap based on a predefined template thats loaded from the json.
+    // This function constructs a settings object that includes configurations for different aspects
+    // of the visualization, such as layer properties, lighting effects, custom features, and gradient controls.
+    // *
+    // Process:
+    // 1. Initialize an empty settings object with categories for layers, lighting, custom settings, and gradients.
+    // 2. Iterate through each category in the provided settingsTemplate (json).
+    // 3. For each category, iterate through the settings defined in the template.
+    // 4. Each setting can have multiple inputs; iterate through these inputs to extract and assign their default values.
+    // 5. Populate the settings object with these default values, categorizing them according to their specified property type.
+    // *
+    // The settings object structured by this function serves as the foundational configuration
+    // from which the visualization's properties can be adjusted dynamically via user interactions or other controls.
+    // *
+    // Returns:
+    // - A fully populated settings object with initial values as specified in the settings template.
     generateSettings() {
+
+      // Initialize the settings object with empty categories.
       const settings = {
         layer: {},
         lighting: {},
         custom: {},
         gradient: {},
       };
+
+      // Loop over each category (mode) in the settings template.
       Object.keys(settingsTemplate).forEach((mode) => {
+        // Iterate through the array of settings in each category.
         for (let i = 0; i < settingsTemplate[mode].settings.length; i += 1) {
-          for (
-            let j = 0;
-            j < settingsTemplate[mode].settings[i].inputs.length;
-            j += 1
-          ) {
+          // Iterate through each input field in the current setting.
+          for (let j = 0; j < settingsTemplate[mode].settings[i].inputs.length; j += 1) {
+            // Reference to the current input.
             const input = settingsTemplate[mode].settings[i].inputs[j];
+
+            // Assign the default value from the input to the appropriate category in the settings object.
             settings[input.propertyType][input.id] = input.value;
           }
         }
       });
-      return settings;
+       // Return the fully populated settings object
+       return settings;
     },
 
     // --------
@@ -242,23 +268,55 @@ export default {
         ...e.layerSettings.gridCellLayer,
       };
     },
-    
+
+    // --------
     // Updates heatmap settings based on user interaction
+    // --------
+    // *
+    // Updates the settings of the visualization based on user interactions or programmatically.
+    // This method handles various types of updates categorized by 'type', such as layer settings,
+    // gradient settings, and lighting settings. Each type of setting modification triggers
+    // corresponding updates to the Deck.gl layers or effects used in the visualization.
+    //
+    // Parameters:
+    // - updatedSettings: An object containing the type of update and the new settings values.
+    //
+    // Workflow:
+    // 1. Distinguish the type of settings update from the 'updatedSettings' object.
+    // 2. Based on the type, apply specific changes to the visualization's properties.
+    // 3. Use switch-case structure to handle different types of updates effectively.
+    // 4. Emit an event after the settings update is complete to signal that the potentially
+    //    long-loading process has finished.
+    // *
+    // Supported update types:
+    // - 'layer': Updates properties related to Deck.gl layers like elevation scale and materials.
+    // - 'gradient': Adjusts the color gradient used in visualizing data.
+    // - 'lighting': Configures lighting effects for the visualization
+    //
     updateSettings(updatedSettings) {
+      // Simplify access to the new settings.
       const s = updatedSettings.settings;
+
       // It might be useful to use a switch case instead,
       // if the possible conditions grow beyond 5 items.
+
+      // Use a switch statement to handle different types of settings based on 'updatedSettings.type'.
       switch (updatedSettings.type) {
+
+        // --- layer ---
         case 'layer':
+          // Merge existing layer settings with new ones and ensure numerical properties are correctly typed.
           this.layerSettings.gridCellLayer = {
             ...this.layerSettings.gridCellLayer,
             ...s,
           };
-          this.layerSettings.gridCellLayer.elevationScale = Number(
-            s.elevationScale,
-          ); // This is necessary because bootstrap converts the property to a string.
+          // Ensure number type due to possible string inputs.
+          // This is necessary because bootstrap converts the property to a string.
+          this.layerSettings.gridCellLayer.elevationScale = Number(s.elevationScale);
           this.updateTriggerObjects.elevationScale = this
             .layerSettings.gridCellLayer.elevationScale;
+          
+          // Optionally update materials for advanced visualization effects if specified.
           if (s.advancedMaterial) {
             this.layerSettings.gridCellLayer.material = {
               ambient: Number(s.ambientMaterial),
@@ -267,10 +325,9 @@ export default {
             };
           }
           if (this.lowestValue < 0) {
+            // Set update triggers for Deck.gl layers to respond to changes in settings.
             this.layerSettings.gridCellLayer.updateTriggers = {
-              getFillColor: [
-                this.updateTriggerObjects.gradientUpdateTrigger,
-              ],
+              getFillColor: [this.updateTriggerObjects.gradientUpdateTrigger],
               getPosition: this.updateTriggerObjects.elevationScale,
             };
           } else {
@@ -280,6 +337,8 @@ export default {
               ],
             };
           }
+
+          // Reconfigure the layers with the new settings.
           this.deck.setProps({
             layers: [
               new GridCellLayer(this.layerSettings.gridCellLayer),
@@ -289,9 +348,13 @@ export default {
             ],
           });
           break;
+
+        // --- gradient ---  
         case 'gradient':
-          this.updateTriggerObjects.gradientUpdateTrigger = !this
-            .updateTriggerObjects.gradientUpdateTrigger;
+          // Toggle gradient update trigger to force re-rendering of layers.
+          this.updateTriggerObjects.gradientUpdateTrigger = !this.updateTriggerObjects.gradientUpdateTrigger;
+
+           // Update gradient settings for visual consistency across data visualization
           this.colorGradientPreset = s.gradientPreset.value;
           if (this.colorGradientPreset !== s.gradientPreset.value
           || s.individualGradients === false) {
@@ -321,6 +384,7 @@ export default {
               ],
             };
           }
+          // Reapply updated gradient settings to the Deck.gl layers.
           this.deck.setProps({
             layers: [
               new GridCellLayer(this.layerSettings.gridCellLayer),
@@ -330,7 +394,10 @@ export default {
             ],
           });
           break;
+
+        // --- lighting ---
         case 'lighting':
+          // Conditionally create new lighting effects based on user settings.
           if (s.advancedLighting === true) {
           // Only build new lights when advanced light is activated.
           // Probably not necessary but I speculate on performance advantages with this approach.
@@ -358,15 +425,18 @@ export default {
               ],
             });
           } else {
+            // Remove effects if advanced lighting is turned off.
             this.deck.setProps({ effects: [] });
           }
           break;
         default:
+          // Log a warning if an unsupported update type is encountered.
           console.log('Warning: No case found for this setting update.');
       }
+      // Notify the rest of the application that settings update is complete.
       this.$emit('long-loading-finished');
     },
-    
+
     // ---------
     // Fetches data for the heatmap visualization
     // ---------
