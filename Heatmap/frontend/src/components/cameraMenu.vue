@@ -48,6 +48,8 @@ export default {
   data() {
     return {
       lastElevationScale: 0,
+      // These are the camera default options
+      // When clicking on the different views, these settings are loaded
       cameraOptions: [
         {
           id: '3D',

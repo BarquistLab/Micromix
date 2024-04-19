@@ -1,4 +1,14 @@
 <!-- App / deckglCanvas -->
+<!--
+  This is the main script for the heatmap where the majority of processing and rendering occurs
+
+  Breif description of the other scripts:
+  cameraMenu:       The camera menu (top right)
+  exportMenu:       When the heatmap is exported as an image
+  loadingOverlay:   Loading screen When the heatmap is waiting for a request
+  mainMenu:         The main menu top lefthand side - storing info about each of the buttons
+  settingsMenu:     All the details and processing around heatmap settings, ie gradients etc
+-->
 <template>
   <div>
      <!-- Container for SVG exports -->
@@ -16,6 +26,9 @@
       :layerSettings="layerSettings"
       :colorGradientDict="colorGradientDict"
       :minMaxValues="[this.lowestValue, this.highestValue]"
+      :hashValue="hashValue"
+      :currentViewState="currentViewState"
+      :activeCamera="activeCamera"
     />
 
     <!-- Camera Menu Component: Controls for changing camera views -->
@@ -37,14 +50,14 @@
 // settingsTemplate - stores all the initial settigns from the json
 // settings - stores the actual settings
 
-// Importing necessary modules from Deck.gl and other libraries
+// Importing necessary modules from Deck.gl
 import {
   Deck,
   LightingEffect,
   AmbientLight,
   DirectionalLight,
 } from '@deck.gl/core';
-
+// Import other libaries
 import { GridCellLayer, TextLayer } from '@deck.gl/layers';
 import axios from 'axios'; // For HTTP requests
 import chroma from 'chroma-js'; // For color manipulation
@@ -61,6 +74,9 @@ export default {
     return {
       // Initial data properties including URL, camera settings, layer configurations, etc.
       backendUrl: 'http://127.0.0.1:3000', // this will need to be changed to where Micromix is hosted
+      // set the hash value
+      hashValue: null,
+      // active camera
       activeCamera: 'Top',
       constants: {
         textMarginRight: -0.003,
@@ -158,6 +174,8 @@ export default {
     this.deck = null;
     // Load in the settings from the json template
     this.settings = this.generateSettings();
+    // check to see if any user-saved settings are available
+    this.loadUserSettings();
   },
 
   // --------
@@ -180,6 +198,86 @@ export default {
   },
 
   methods: {
+
+    // --------
+    // Checkes to see if user settings have been saved - if so, attempt to load
+    // --------
+    async loadUserSettings() {
+      const dbEntryId = this.$route.query.config;
+      try {
+        const response = await axios.get(`http://127.0.0.1:3000/get-user-settings/${dbEntryId}`, {
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate', // Prevent caching
+            Pragma: 'no-cache', // HTTP 1.0.
+            Expires: '0', // Proxies.
+          },
+        });
+
+        // console.log('Settings loaded');
+        // console.log('Loaded hash from settings:', response.data.hash);
+
+        // Ensure the current hash is calculated and available
+        // Doing this as the hash hasn't been calculated yet - so we await for it
+        if (this.hashValue === null) {
+          await this.calculateCurrentHash();
+        }
+
+        // Compare the loaded hash with the current hash
+        // Check if the dataframes are the same - if not, do not apply the saved settings
+        // If yes - then we can apply the saved settings to the current visualisation
+        if (response.data.hash === this.hashValue) {
+          console.log('Hash values match:');
+          // Apply the settings to the current plot
+          // console.log('this.settings.layer.cellSize: ', this.settings.layer.cellSize);
+          // console.log('response.data.visual.plot_gap: ', response.data.visual.plot_gap);
+          // Visual
+          this.settings.layer.cellSize = response.data.visual.plot_gap;
+          this.settings.layer.extruded = response.data.visual.plot_3d;
+          this.settings.layer.elevationScale = response.data.visual.plot_elevation;
+          this.settings.layer.opacity = response.data.visual.plot_opacity;
+          // Colour gradients
+          this.settings.gradient.individualGradients = response.data.colour_grad.individual_grad;
+          this.settings.gradient.gradientPreset = response.data.colour_grad.the_individual_grad;
+          this.settings.gradient = response.data.colour_grad.the_combined_grads;
+          // Adv settings
+          this.settings.layer.pickable = response.data.adv_settings.tooltip;
+          // Lighting
+          this.settings.lighting.advancedLighting = response.data.lighting.adv_lighting;
+          this.settings.lighting.ambientLight = response.data.lighting.amb_light;
+          this.settings.lighting.directionalLight1 = response.data.lighting.dir_light1;
+          this.settings.lighting.directionalLight2 = response.data.lighting.dir_light2;
+          // Material
+          this.settings.layer.material = response.data.material.shader;
+          this.settings.layer.advancedMaterial = response.data.material.adv_material;
+          this.settings.layer.ambientMaterial = response.data.material.ambient;
+          this.settings.layer.diffuseMaterial = response.data.material.diffusion;
+          this.settings.layer.shininess = response.data.material.shininess;
+          // plot camera
+          this.activeCamera = response.data.camera_view.activeCamera;
+          this.deck.setProps({ viewState: response.data.camera_view.currentViewState });
+
+        } else {
+          console.log('Hash values do not match - not loading settings.');
+        }
+      } catch (error) {
+        // Catch errors
+        if (error.response && error.response.status === 404) {
+          console.error('Settings file not found: ', error.response.data);
+        } else {
+          console.error('Error loading settings', error);
+        }
+      }
+    },
+
+    // --------
+    // Helper method to calculate the current hash of the data
+    // --------
+    async calculateCurrentHash() {
+      // Assuming `this.rawData` has already been set
+      const serializedData = JSON.stringify(this.rawData, null, 2);
+      this.hashValue = await this.generateHash(serializedData);
+      // console.log('Current hash calculated:', this.hashValue);
+    },
 
     // --------
     // Allows users to take a screenshot of the current heatmap
@@ -447,7 +545,7 @@ export default {
     // Fetches data for the heatmap visualization
     // ---------
     fetchData(url) {
-      // Fetches processed data from a backend server for visualization in a heatmap.
+      // Fetches processed data from the backend for visualization in the heatmap.
       // This function sends a request to the specified URL, which is expected to
       // interact with a MongoDB database to retrieve and process the required data
       // based on the provided configuration settings.
@@ -463,6 +561,7 @@ export default {
       // 4. Data is used to update the visualization,
       //    applying layer-based settings like colors and scales.
 
+      //  @param {string} url - The URL to which the POST request will be sent.
       // Create a new FormData object to hold the data to be sent with the HTTP POST request
       const payload = new FormData();
       // Append the 'url' key with the serialized configuration query parameter to the payload.
@@ -476,36 +575,60 @@ export default {
         .then((res) => {
           // Upon successful data retrieval, 'res.data' contains the returned data.
 
-          // Process the received data to format suitable for
-          // the heatmap layers using 'processJsonData'.
-          // This method organizes raw data into structured
-          // formats for different layers of the heatmap.
-          [
-            this.layerSettings.gridCellLayer.data,
-            this.layerSettings.textCellLayer.data,
-            this.layerSettings.rowTextLayer.data,
-            this.layerSettings.columnTextLayer.data,
-            this.highestValue,
-            this.lowestValue,
-          ] = this.processJsonData(res.data);
+          // We want to generate a hash value to represent the data
+          // first convert to string
+          this.rawData = res.data;
+          this.seralise = JSON.stringify(this.rawData, null, 2);
 
-          // Once the data is processed, set up the gradient forms for subtables.
-          // This may involve creating specific color gradient settings
-          // for each subtable based on the processed data.
-          this.createSubTableGradientForms();
+          this.generateHash(this.seralise)
+            .then((hash) => {
+              this.hashValue = hash;
+              // console.log('this.hashValue: ', this.hashValue);
 
-          // If the lowest value in the data is below zero,
-          // additional configuration may be necessary,
-          // such as adjusting visualization parameters to
-          // properly display negative values.
-          if (this.lowestValue < 0) {
-            this.configureNegativeValues();
-          }
+              // Process JSON data once the hash has been successfully generated
+              // Process the received data to format suitable for
+              // the heatmap layers using 'processJsonData'.
+              // This method organizes raw data into structured
+              // formats for different layers of the heatmap.
+              [
+                this.layerSettings.gridCellLayer.data,
+                this.layerSettings.textCellLayer.data,
+                this.layerSettings.rowTextLayer.data,
+                this.layerSettings.columnTextLayer.data,
+                this.highestValue,
+                this.lowestValue,
+              ] = this.processJsonData(res.data);
+
+              // Once the data is processed, set up the gradient forms for subtables.
+              // This may involve creating specific color gradient settings
+              // for each subtable based on the processed data.
+              this.createSubTableGradientForms();
+
+              // If the lowest value in the data is below zero,
+              // additional configuration may be necessary,
+              // such as adjusting visualization parameters to
+              // properly display negative values.
+              if (this.lowestValue < 0) {
+                this.configureNegativeValues();
+              }
+            })
+            .catch((error) => {
+              console.error('Error generating hash: ', error);
+            });
         })
         .catch((error) => {
-          // Log any errors that occur during the fetch or processing steps.
-          console.log(error);
+          console.error('Error fetching data: ', error);
         });
+    },
+
+    // Hash function to generate hash for data - for comparing when loading settings
+    async generateHash(data) {
+      const encoder = new TextEncoder();
+      const dataAsUint8Array = encoder.encode(data);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', dataAsUint8Array);
+      const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+      const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+      return hashHex;
     },
 
     // --------

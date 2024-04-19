@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <!-- Expand/Collapse the button for that button
+    <!-- Expand/Collapse the button-area for that button
       - showing settings based on the active option -->
     <b-collapse
       v-for="option in options"
@@ -49,10 +49,9 @@
 </template>
 
 <script>
-// General setting
-import settingsMenu from './settingsMenu.vue';
-// Export settings
-import exportMenu from './exportMenu.vue';
+import axios from 'axios'; // HTTP requests to backend
+import settingsMenu from './settingsMenu.vue'; // General settings
+import exportMenu from './exportMenu.vue'; // Export settings
 
 export default {
   components: {
@@ -65,10 +64,13 @@ export default {
     layerSettings: Object,
     colorGradientDict: Object,
     minMaxValues: Array,
+    hashValue: String,
+    currentViewState: Object,
+    activeCamera: String,
   },
   data() {
     return {
-      // Array of options for buttons
+      // Array of options for available buttons
       options: [
         {
           id: 'goHome',
@@ -87,6 +89,7 @@ export default {
         },
       ],
       activeOptionId: 'deckglSettings', // Keeps track of the currently active option
+      // The default button when the HM is initially loaded
       homeCamera: {
         id: 'Top',
         viewState: {
@@ -109,6 +112,11 @@ export default {
   methods: {
     // Method to set the active option, toggles the active state if the same button is clicked
     setActiveOption(id) {
+      // Check if the saveUserSettings button is clicked.
+      if (id === 'saveUserSettings') {
+        this.saveUserSettings(); // Call saveUserSettings and do not change activeOptionId.
+        return; // Return early so no other logic affects the activeOptionId.
+      }
       if (this.activeOptionId !== id) {
         this.activeOptionId = id;
         if (id === 'goHome') {
@@ -122,6 +130,85 @@ export default {
       // Method to emit an event to reset the camera to the default view
       this.$emit('active-camera-selected', this.homeCamera);
       this.activeOptionId = null;
+    },
+    saveUserSettings() {
+      // ind gradients = T/F
+      // this.settings.gradient.individualGradients
+
+      // Settings to save to json
+      this.userSettings = {
+        hash: this.hashValue,
+        visual: {
+          plot_gap: this.settings.layer.cellSize,
+          plot_3d: this.settings.layer.extruded, // (true/false)
+          plot_elevation: this.settings.layer.elevationScale,
+          plot_opacity: this.settings.layer.opacity,
+        },
+        colour_grad: {
+          individual_grad: this.settings.gradient.individualGradients, // (true/false)
+          the_individual_grad: this.settings.gradient.gradientPreset,
+          the_combined_grads: this.settings.gradient,
+        },
+        adv_settings: {
+          tooltip: this.settings.layer.pickable,
+        },
+        lighting: {
+          adv_lighting: this.settings.lighting.advancedLighting,
+          amb_light: this.settings.lighting.ambientLight,
+          dir_light1: this.settings.lighting.directionalLight1,
+          dir_light2: this.settings.lighting.directionalLight2,
+        },
+        material: {
+          shader: this.settings.layer.material,
+          adv_material: this.settings.layer.advancedMaterial,
+          ambient: this.settings.layer.ambientMaterial,
+          diffusion: this.settings.layer.diffuseMaterial,
+          shininess: this.settings.layer.shininess,
+        },
+        camera_view: {
+          currentViewState: this.currentViewState,
+          activeCamera: this.activeCamera,
+        },
+      };
+
+      // console.log('THIS.', this);
+      console.log('this.settings.layer.cellSize: ', this.settings.layer.cellSize);
+      console.log('this.userSettings.visual.plot_gap: ', this.userSettings.visual.plot_gap);
+      console.log('hash', this.hashValue);
+
+      // console.log('Camera Details:', this.homeCamera);
+      // This is added as active camera settings are not accessable when its called earlier
+      // if (this.homeCamera) {
+      //   this.userSettings.plot_camera = this.homeCamera;
+      // }
+      // this.$emit('update-individual-gradients', true);
+      console.log('Saving settings to server...');
+      this.saveSettingsToServer(); // call save
+
+      this.$bvToast.toast('This is primarly useful when sharing the session URL with other users and you would like them to see your customised heatmap. ', {
+        title: 'The current settings have been saved',
+        variant: 'Primary',
+        solid: true,
+        toaster: 'b-toaster-top-right',
+        autoHideDelay: 5000,
+        html: true,
+      });
+    },
+    saveSettingsToServer() {
+      // Store the DB id and the user settings to send
+      const dbEntryId = this.$route.query.config;
+      const payload = {
+        dbEntryId,
+        settings: this.userSettings,
+      };
+      // send the payload to the backend
+      axios.post('http://127.0.0.1:3000/save-settings', payload)
+        .then((response) => {
+          console.log('%cSettings saved', 'color: green;', response.data);
+        })
+        .catch((error) => {
+          console.error('Error saving settings:', error);
+        });
     },
   },
 };
