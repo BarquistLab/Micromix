@@ -187,17 +187,8 @@ export default {
       //   this.userSettings.plot_camera = this.homeCamera;
       // }
       // this.$emit('update-individual-gradients', true);
-      console.log('Saving settings to server...');
+      console.log('Attempting to saving settings to server...');
       this.saveSettingsToServer(); // call save
-
-      this.$bvToast.toast('This is primarly useful when sharing the session URL with other users and you would like them to see your customised heatmap. ', {
-        title: 'The current settings have been saved',
-        variant: 'Primary',
-        solid: true,
-        toaster: 'b-toaster-top-right',
-        autoHideDelay: 5000,
-        html: true,
-      });
     },
     saveSettingsToServer() {
       // Store the DB id and the user settings to send
@@ -210,6 +201,15 @@ export default {
       axios.post('http://127.0.0.1:3000/save-settings', payload)
         .then((response) => {
           console.log('%cSettings saved', 'color: green;', response.data);
+          // Save message to appear
+          this.$bvToast.toast('This is primarly useful when sharing the session URL with other users and you would like them to see your customised heatmap. ', {
+            title: 'The current settings have been saved',
+            variant: 'Primary',
+            solid: true,
+            toaster: 'b-toaster-top-right',
+            autoHideDelay: 5000,
+            html: true,
+          });
         })
         .catch((error) => {
           console.error('Error saving settings:', error);
