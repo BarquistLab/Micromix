@@ -1,0 +1,74 @@
+{
+    "hash": "f77031d9db93b5be0b33b4e95ae9eda02c89a435012c4b51e129169977f9a759",
+    "visual": {
+        "plot_gap": "737",
+        "plot_3d": true,
+        "plot_elevation": 0,
+        "plot_opacity": "0.49"
+    },
+    "colour_grad": {
+        "individual_grad": false,
+        "the_individual_grad": {
+            "label": "OrRd",
+            "value": "OrRd",
+            "domain": [
+                0,
+                812,
+                1623.88
+            ]
+        },
+        "the_combined_grads": {
+            "gradientPreset": {
+                "label": "OrRd",
+                "value": "OrRd",
+                "domain": [
+                    0,
+                    812,
+                    1623.88
+                ]
+            },
+            "individualGradients": false,
+            "(f)": {
+                "label": "RdYlGn",
+                "value": "RdYlGn",
+                "domain": [
+                    0,
+                    812,
+                    1623.88
+                ]
+            }
+        }
+    },
+    "adv_settings": {
+        "tooltip": true
+    },
+    "lighting": {
+        "adv_lighting": false,
+        "amb_light": "3",
+        "dir_light1": "2",
+        "dir_light2": "2"
+    },
+    "material": {
+        "shader": true,
+        "adv_material": false,
+        "ambient": "1",
+        "diffusion": "1",
+        "shininess": "1000"
+    },
+    "plot_camera": {
+        "id": "Top",
+        "viewState": {
+            "pitch": 0,
+            "bearing": -90,
+            "latitude": 0.02,
+            "longitude": 0.05,
+            "zoom": 11
+        },
+        "layerSettings": {
+            "gridCellLayer": {
+                "elevationScale": 0,
+                "extruded": false
+            }
+        }
+    }
+}
