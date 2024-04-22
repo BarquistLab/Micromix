@@ -177,10 +177,10 @@ export default {
       };
 
       // console.log('THIS.', this);
-      console.log('this.settings.layer.cellSize: ', this.settings.layer.cellSize);
-      console.log('this.userSettings.visual.plot_gap: ', this.userSettings.visual.plot_gap);
-      console.log('hash', this.hashValue);
-
+      // console.log('this.settings.layer.cellSize: ', this.settings.layer.cellSize);
+      // console.log('this.userSettings.visual.plot_gap: ', this.userSettings.visual.plot_gap);
+      // console.log('hash', this.hashValue);
+      // debugging
       // console.log('Camera Details:', this.homeCamera);
       // This is added as active camera settings are not accessable when its called earlier
       // if (this.homeCamera) {
