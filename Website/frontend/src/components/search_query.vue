@@ -215,14 +215,11 @@
         </b-button>
       </b-card>
 
-
-
       <!-- 
           ------------ 
           Display properties for each of the dropdowns
           ------------ 
         -->
-
 
       <!-- Each b-dropdown are the filter/transform buttons
            If you need to add a new button or link to a new annotation category, change filters.items.presets
@@ -563,23 +560,38 @@ export default {
     
     // Restructures the query for submission to the backend
     restructure_query() {
+      // Initialize an empty array to hold the restructured query blocks.
       let structured_query = [];
+
+      // Iterate over the outermost level of `this.query`
       for (let array in this.query) {
+        // Iterate over each sub-array within `this.query`.
         for (let sub_array in this.query[array]) {
+          // Create a new object to represent a structured query block.
           let structured_query_block = {};
           // console.log(this.query[array][sub_array]);
+
+          // Assign properties from the current `sub_array` to the `structured_query_block`.
           structured_query_block["name"] = this.query[array][sub_array]["name"];
           structured_query_block["properties"] = this.query[array][sub_array]["forms"]["properties"];
           structured_query_block["id"] = this.query[array][sub_array]["id"];
           structured_query_block["logic"] = this.query[array][sub_array]["logic"];
           structured_query_block["inline_coordinates"] = this.query[array][sub_array]["inline_coordinates"];
+
+          // Initialize the `forms` property of the `structured_query_block` as an empty object.
           structured_query_block["forms"] = {};
+
+          // Iterate over the `items` in the `forms` object, and add the selected values to the `structured_query_block`.
           for (let form in this.query[array][sub_array]["forms"]["items"]) {
             structured_query_block["forms"][form] = this.query[array][sub_array]["forms"]["items"][form]["selected"];
           }
+
+          // Check if the `inline_coordinates` property is defined in the current query block.
           if (structured_query_block["inline_coordinates"]) {
+            // Insert the `structured_query_block` into the specified position.
             structured_query[structured_query_block["inline_coordinates"][0]].splice(structured_query_block["inline_coordinates"][1], 0, structured_query_block);
           } else {
+            // If `inline_coordinates` is not defined, push the `structured_query_block` to `structured_query` as a new sub-array.
             structured_query.push([structured_query_block]);
           }
         }
@@ -589,15 +601,18 @@ export default {
     
     // Removes a query block from the query array
     remove_query_block(block_array) {
+      // Find the index of the block to remove
       const index = this.query.indexOf(block_array);
       if (index > -1) {
-        this.query.splice(index, 1);
+        this.query.splice(index, 1); // Remove the block
       }
+
+      // After removing the block, re-apply or re-order any related operations or logical operators
       for (let i in this.server_queries) {
         // Optional: Push filter query as soon as a filter is removed
         if (this.server_queries[i][0]["id"] === block_array[0]["id"]) {
           this.loading = true;
-          this.post_query();
+          this.post_query(); // Re-submit the query after block removal
           break;
         }
       }

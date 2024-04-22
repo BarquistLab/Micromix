@@ -1,16 +1,19 @@
+<!-- Matrix preview details -->
 <template>
   <div>
+    <!-- Table preview with grid layout for displaying multiple matrices -->
     <div class="table_preview">
       <svg
         v-for="matrix in matrices"
         :key="matrix.id"
-        @click="selected = matrix, select_matrix()"
+        @click="selected = matrix, select_matrix()" 
         :class="{hot:selected.id==matrix.id, active:selected.id==matrix.id}"
         :style="{'grid-area': `${matrix.y} / ${matrix.x} / auto / auto`, 'height': `${(matrix.height * gap)-(gap-rect_height)}px`, 'width': `${(matrix.width * gap)-(gap-rect_width)}px`}"
         v-b-tooltip
         :title="matrix.title"
         trigger="click"
       >
+        <!-- Loop through the columns in the matrix -->
         <g
           v-for="column in matrix.height"
           :key="column"
@@ -18,6 +21,7 @@
           :style="{transform: `translate(0px, ${column * gap - gap}px)`}"
           v-bind:class="{ active: matrix.isActive }"
         >
+          <!-- Loop through the rows to create individual cells -->
           <rect
             v-for="row in matrix.width"
             :key="row"
@@ -27,6 +31,7 @@
         </g>
       </svg>
     </div>
+    <!-- Table buttons for additional actions like removing a matrix -->
     <div class="table_buttons">
       <!-- <b-button-group>
         <b-button
@@ -41,6 +46,7 @@
         >
           <img src="../assets/differential.svg" class="img_in_btn" />Relative Expression
         </b-button> -->
+        <!-- Button to remove a selected matrix -->
         <b-button
           v-b-modal.modal_delete
           @click="on_delete_matrix()"
@@ -52,6 +58,7 @@
         </b-button>
       <!-- </b-button-group> -->
 
+      <!-- Collapse section for additional transformation options -->
       <b-collapse id="collapse-relative" class="mt-2">
         <b-card class="transformation-options">
           <!-- <p class="card-text">Select base column for normalization.</p> -->
@@ -64,6 +71,7 @@
                 required
               >
               <b-form-select-option :value="null" disabled>Select a column</b-form-select-option></b-form-select>-->
+               <!-- Additional input for specifying log base when fold-change is activated -->
               <b-form-checkbox
                 id="checkbox-1"
                 v-model="relative_expression.options.activated"
@@ -83,6 +91,7 @@
                   size="sm"
                   placeholder="'2'"
                 ></b-form-input>
+                <!-- Preview of the selected log base -->
                 <div class="log-preview">
                   <b-badge variant="dark" class="log-preview-badge">
                     <span class="supsub">
@@ -118,15 +127,15 @@ export default {
   data() {
     return {
       is_hot: false,
-      selected: undefined,
-      button_enabled: false,
+      selected: undefined, // Currently selected matrix
+      button_enabled: false, //Indicates if certain buttons are enabled
       relative_expression: {
         type: "relative_expression",
-        activated: false,
+        activated: false, // Tracks if relative expression is activated
         options: {
           activated: false,
           value: 2,
-          type: "log-fc"
+          type: "log-fc" // Default log base
         }
       },
       transformation: null,
@@ -136,9 +145,11 @@ export default {
     };
   },
   created() {
+    // Initialize the selected matrix when component is created
     if (this.matrices.length === 1) {
       this.selected = this.matrices[0];
     } else {
+      // If multiple matrices, select the one with specific coordinates
       for (let i in this.matrices) {
         if (this.matrices[i].x === 1 && this.matrices[i].y === 2) {
           this.selected = this.matrices[i];
@@ -150,6 +161,7 @@ export default {
   },
   methods: {
     emit_transformation(current_transformation) {
+      // Sets the current transformation based on the checkbox state
       if (current_transformation.activated == true) {
         this.transformation = current_transformation;
       } else {
@@ -158,7 +170,9 @@ export default {
       this.$emit("transformation_selected", this.transformation);
     },
     select_matrix() {
+      // Selects a matrix and emits an event
       this.$emit("matrix_activated", this.selected);
+      // Enable/disable the remove button based on the selected matrix state
       if (this.selected.isActive == true) {
         this.button_enabled = true;
       } else {
