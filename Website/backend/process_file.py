@@ -312,7 +312,7 @@ def new_db_entry(df, metadata, pre_configured_plugins):
 def make_active_matrix(metadata, df, active_matrices, dataframe): # NOTE: Why is there a df and a dataframe argument?
     # This is neither readable, nor necessary, but it works for now. I'm truly sorry (Titus).
     
-    print('make_active_matrix')
+    #print('make_active_matrix')
     # Create the new matrix with specified properties and the binary dataframe.
     added_matrix = make_single_matrix(metadata['x'],metadata['y'],max_preview_columns,max_preview_rows,metadata['title'],True, dataframe)
     
@@ -348,7 +348,7 @@ def make_active_matrix(metadata, df, active_matrices, dataframe): # NOTE: Why is
     
     
     # Correct positions of all matrices after the addition.
-    # print('active_matrices#########################: ', active_matrices)
+    # print('active_matrices#####: ', active_matrices)
     active_matrices = correct_matrice_positions(active_matrices)
     # print('active_matrices corrected: ', active_matrices)
     return active_matrices, added_axis

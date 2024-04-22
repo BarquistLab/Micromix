@@ -255,7 +255,6 @@ export default {
           // plot camera
           this.activeCamera = response.data.camera_view.activeCamera;
           this.deck.setProps({ viewState: response.data.camera_view.currentViewState });
-
         } else {
           console.log('Hash values do not match - not loading settings.');
         }

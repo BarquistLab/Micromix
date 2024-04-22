@@ -294,7 +294,7 @@ def upload_db_entry(db_entry, mongo_update, url):
         db_entry_id = ObjectId(url)  # Use the existing db_entry's ID.
         db.visualizations.update_one({'_id': db_entry_id}, mongo_update)  # Update the existing db_entry.
         #print('This is the same entry')
-        print("Active plugin id: ",db_entry['active_plugin_id'])
+        #print("Active plugin id: ",db_entry['active_plugin_id'])
     return db_entry_id  # Return the ID of the db_entry that was inserted/updated.
 
 
@@ -496,7 +496,7 @@ def make_vis_link():
         # and which dataset (stored as a document in the 'visualizations' collection) to visualize.
         plugin = json.loads(request.form['plugin'])
         url = json.loads(request.form['url'])
-        print('url: ', url, 'plugin: ', plugin)
+        #print('url: ', url, 'plugin: ', plugin)
 
         # Retrieve the MongoDB document (visualization entry) using the document ID provided in the request.
         # This entry contains all necessary data and metadata for visualization, such as the dataset itself,
@@ -521,7 +521,7 @@ def make_vis_link():
         db.visualizations.update_one({'_id': ObjectId(url)}, {
             '$push': {'vis_links': vis_link}})
 
-        print(vis_link)
+        #print(vis_link)
 
         # Return the visualization link as a JSON response to the frontend, allowing the user to
         # access the generated visualization.
@@ -599,7 +599,7 @@ def add_plugin():
 
         # Insert the new visualization configuration into the 'visualizations' collection and retrieve its ID.
         db_entry_id = db.visualizations.insert_one(db_entry).inserted_id
-        print('db_entry_id empty url:', db_entry_id)
+        #print('db_entry_id empty url:', db_entry_id)
     else:
         # If 'db_entry_id' is provided, fetch the existing visualization configuration from the database.
         db_entry = db.visualizations.find_one({"_id": ObjectId(metadata['db_entry_id'])}, {'_id': False})
@@ -610,13 +610,13 @@ def add_plugin():
 
         # Update the existing visualization document in the database with the new list of plugin IDs.
         db.visualizations.update_one({'_id': ObjectId(metadata['db_entry_id'])}, {'$push': {'plugins_id': db_plugin_entry_id}})
-        print("metadata['db_entry']", metadata['db_entry_id'])
+        #print("metadata['db_entry']", metadata['db_entry_id'])
         db_entry_id = ObjectId(metadata['db_entry_id'])
-        print('db_entry_id filled id: ', db_entry_id)
+        #print('db_entry_id filled id: ', db_entry_id)
 
     # After successfully adding the plugin and potentially updating a visualization configuration,
     # respond to the frontend with the ID of the visualization document that was either created or updated.
-    print('db_plugins_id: ', db_plugin_entry_id)
+    #print('db_plugins_id: ', db_plugin_entry_id)
     return Response(dumps({'db_entry_id': db_entry_id}, allow_nan=True), mimetype="application/json")
 
 
@@ -645,7 +645,7 @@ def respond_config():
     if request.form['url'] != 'undefined':
        # Convert the string representation of the ObjectId back into an ObjectId type.
         db_entry_id = ObjectId(loads(request.form['url']))
-        print('Object_ID: ', db_entry_id)  # Log the ObjectId for debugging purposes.
+        #print('Object_ID: ', db_entry_id)  # Log the ObjectId for debugging purposes.
 
         # Retrieve the visualization configuration document from the MongoDB 'visualizations' collection.
         db_entry = db.visualizations.find_one({"_id": db_entry_id})
@@ -685,7 +685,7 @@ def respond_config():
         return Response(dumps({'db_entry': db_entry}, allow_nan=True), mimetype="application/json")
     else:
         # If the 'url' parameter is undefined, it indicates a request to initialize a new visualization session.
-        print('undefined')
+        print('url undefined')
         import copy
         # Create a new visualization configuration using a predefined template (DB_ENTRY_MOCKUP).
         db_entry = copy.deepcopy(DB_ENTRY_MOCKUP)
@@ -858,7 +858,7 @@ def remove_matrix(matrix_id):
     # about the visualization configuration or user-specific information necessary for
     # the removal process.
     metadata = json.loads(request.form['form'])
-    print('###### metadata: ', metadata)  # Logging the received metadata for debugging purposes.
+    #print('###### metadata: ', metadata)  # Logging the received metadata for debugging purposes.
 
     # Call the `remove_matrix` function from the `process_file` module, passing in the necessary
     # parameters including the predefined DB_ENTRY_MOCKUP, the received metadata, the database connection (`db`),

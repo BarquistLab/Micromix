@@ -26,8 +26,8 @@ import pprint
 def main(query, df):
     
     #Debugging: The initial user filter (query) - pprint displays the dictionary in a readable format
-    print("The user query:")
-    pprint.pprint(query)
+    #print("The user query:")
+    #pprint.pprint(query)
 
     
 

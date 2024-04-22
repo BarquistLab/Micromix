@@ -83,6 +83,11 @@ export default {
           description: 'Change colors, scaling, etc.',
         },
         {
+          id: 'saveUserSettings',
+          label: 'UserSettings',
+          description: 'Save current setting, such as gradients and camera view',
+        },
+        {
           id: 'exportImage',
           label: 'Export Image',
           description: 'Download SVG/PNG picture.',

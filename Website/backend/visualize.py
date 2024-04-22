@@ -37,7 +37,7 @@ def route(collection, df, plugin, db_entry_id):
     visualization['link'] = plugin_module.main({"df":df, "db_entry_id": db_entry_id})
     
      # Print the visualization link(s) for debugging
-    print('vis_links: ', visualization)
+    #print('vis_links: ', visualization)
     
     # Return the visualization dictionary, including the name, ID, and link of the plugin-generated visualization.
     return visualization
