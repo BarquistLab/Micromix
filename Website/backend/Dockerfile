@@ -12,8 +12,8 @@ COPY . /app
 # Otherwise users will have to re-run multiple times to install all the requirements
 RUN pip install --no-cache-dir --default-timeout=920 -r requirements.txt
 
-# Make port 8080 available to the world outside this container
-EXPOSE 8080
+# Make port 5000 available to the world outside this container
+EXPOSE 5000
 
 # Define environment variables
 ENV FLASK_APP=app.py
