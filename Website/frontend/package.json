@@ -14,7 +14,6 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@babel/polyfill": "^7.11.5",
     "axios": "^1.2.2",
     "bootstrap": "^4.5.2",
     "bootstrap-vue": "^2.17.3",
@@ -25,9 +24,6 @@
     "vue-typeahead-bootstrap": "^2.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "electron": "^22.0.0",
