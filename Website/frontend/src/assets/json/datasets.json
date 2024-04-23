@@ -84,37 +84,37 @@
     "options": [
       {
         "text": "0hrs",
-        "value": {"filename": "salmonella_sl1344_dual_rna-seq_00hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)"]},
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_00hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag","gene","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)"], "pre_selected_columns": ["Locus Tag","gene","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)"]},
         "seperator": "\t"
       },
       {
         "text": "2hrs",
-        "value": {"filename": "salmonella_sl1344_dual_rna-seq_02hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)"]},
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_02hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag","gene","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)"], "pre_selected_columns": ["Locus Tag","gene","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)"]},
         "seperator": "\t"
       },
       {
         "text": "4hrs",
-        "value": {"filename": "salmonella_sl1344_dual_rna-seq_04hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)"]},
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_04hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag","gene","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)"], "pre_selected_columns": ["Locus Tag","gene","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)"]},
         "seperator": "\t"
       },
       {
         "text": "8hrs",
-        "value": {"filename": "salmonella_sl1344_dual_rna-seq_08hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)"]},
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_08hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag","gene","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)"], "pre_selected_columns": ["Locus Tag","gene","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)"]},
         "seperator": "\t"
       },
       {
         "text": "16hrs",
-        "value": {"filename": "salmonella_sl1344_dual_rna-seq_16hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)"]},
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_16hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag","gene","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)"], "pre_selected_columns": ["Locus Tag","gene","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)"]},
         "seperator": "\t"
       },
       {
         "text": "24hrs",
-        "value": {"filename": "salmonella_sl1344_dual_rna-seq_24hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"]},
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_24hr.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag","gene","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"], "pre_selected_columns": ["Locus Tag","gene","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"]},
         "seperator": "\t"
       },
       {
         "text": "Complete Dataset",
-        "value": {"filename": "salmonella_sl1344_dual_rna-seq_complete.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "locus_tag","gene","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"], "pre_selected_columns": ["locus_tag","gene","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"]},
+        "value": {"filename": "salmonella_sl1344_dual_rna-seq_complete.tsv", "seperator": "\t", "decimal_character": ".", "columns": [{"value": null, "text": "All columns"}, "Locus Tag","gene","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"], "pre_selected_columns": ["Locus Tag","gene","0hr_r1","0hr_r2","0hr_r3","0hr (Avg)","2hr_r1","2hr_r2","2hr_r3","2hr (Avg)","4hr_r1","4hr_r2","4hr_r3","4hr (Avg)","8hr_r1","8hr_r2","8hr_r3","8hr (Avg)","16hr_r1","16hr_r2","16hr_r3","16hr (Avg)","24hr_r1","24hr_r2","24hr_r3","24hr (Avg)"]},
         "seperator": "\t"
       }
     ]

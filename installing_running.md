@@ -131,7 +131,7 @@ git clone https://github.com/BarquistLab/Micromix.git
 cd Micromix/Website
 
 #Run docker compose
-#This is llined to two dockerfiles, one for the backend and one for the frontend
+#This is linked to two dockerfiles, one for the backend and one for the frontend
 sudo docker compose build 
 sudo docker compose up
 
@@ -140,7 +140,7 @@ docker compose up --detach
 
 #These two commands may take some time to complete
 #Once the containers have completed running, you should see this line from the command line (or something similar)
-* Running on http://127.0.0.1:5000 
+* Running on http://127.0.0.1:7000 
 
 #Browse to this address in your browser, and Micromix will be running
 
@@ -150,6 +150,8 @@ docker compose down
 #To also remove the associated volumes (-v) and images (-)
 docker compose down --volumes --rmi
 
+#To remove all containers, volumes (-v) and images (-) etc
+docker prune --all --volumes
 ```
 
 ??????HEATMAP???????

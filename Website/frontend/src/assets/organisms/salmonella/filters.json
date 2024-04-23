@@ -329,7 +329,7 @@
               "default_options": ["any column", "all columns"],
               "options": ["any column", "all columns"],
               "id": "filter_annotation_area",
-              "selected": "locus_tag"
+              "selected": "Locus Tag"
             }
           }
         }
