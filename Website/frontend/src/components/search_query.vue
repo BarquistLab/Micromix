@@ -556,8 +556,7 @@ export default {
       );
       // return (Math.random() * 1001) | 0;
     },
-    
-    
+
     // Restructures the query for submission to the backend
     restructure_query() {
       // Initialize an empty array to hold the restructured query blocks.
@@ -587,6 +586,7 @@ export default {
           }
 
           // Check if the `inline_coordinates` property is defined in the current query block.
+          // Inline coords represent a logical operator within the sub-array
           if (structured_query_block["inline_coordinates"]) {
             // Insert the `structured_query_block` into the specified position.
             structured_query[structured_query_block["inline_coordinates"][0]].splice(structured_query_block["inline_coordinates"][1], 0, structured_query_block);
@@ -598,16 +598,37 @@ export default {
       }
       return structured_query;
     },
-    
+
     // Removes a query block from the query array
     remove_query_block(block_array) {
       // Find the index of the block to remove
       const index = this.query.indexOf(block_array);
+
+      // Check if there's an index
       if (index > -1) {
+        // Check if removing this block requires adjustment of logical operators
+        if (index < this.query.length -1){
+          // If not the last block, ensure the logical operator of the next block is updated or handled properly
+          // This could involve shifting logical operators or recomputing inline coordinates
+          // For example:
+          const next_block = this.query[index + 1];
+
+          // If the next block has inline coordinates, adjust them
+          if (next_block && next_block.inline_coordinates) {
+            // Update the inline coordinates to reflect the new positions
+            const [x, y] = next_block.inline_coordinates;
+            next_block.inline_coordinates = [x - 1, y]; // Adjusting x since the block is removed
+          }
+        }
         this.query.splice(index, 1); // Remove the block
       }
 
-      // After removing the block, re-apply or re-order any related operations or logical operators
+      // Recompute logical operators after removal
+      // This is particularly important if the first query block is removed
+      this.recompute_inline_coordinates();
+
+      // Checking if any of the IDs match in the current query - to what was before - ie removing
+      // If so, then the query block will need restructuring
       for (let i in this.server_queries) {
         // Optional: Push filter query as soon as a filter is removed
         if (this.server_queries[i][0]["id"] === block_array[0]["id"]) {
@@ -617,7 +638,18 @@ export default {
         }
       }
     },
-    
+    recompute_inline_coordinates() {
+      // Loop through the remaining query blocks and adjust inline coordinates
+      for (let i = 0; i < this.query.length; i++) {
+        for (let j = 0; j < this.query[i].length; j++) {
+          // Recalculate inline coordinates based on the new positions
+          const block = this.query[i][j];
+          if (block.inline_coordinates) {
+            block.inline_coordinates = [i, j];
+          }
+        }
+      }
+    },
     // Submits the query to the backend and handles the response
     post_query() {
       const path = `${this.backend_url}/query`;
