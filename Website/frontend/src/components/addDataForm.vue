@@ -416,7 +416,7 @@ export default {
       this.form.x = matrix.x;
       this.form.y = matrix.y;
       this.form.matrix_id = matrix.id
-      console.log(this.form.matrix_id);
+      // console.log(this.form.matrix_id);
     }
   }
 };

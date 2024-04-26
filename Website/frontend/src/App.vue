@@ -406,7 +406,7 @@ export default {
         // this.$router.go()
         this.active_vis_link = null;
         this.load_config();
-        console.log(this.config);
+        // console.log(this.config);
       } else {
         this.$router.push({
           path: "/",

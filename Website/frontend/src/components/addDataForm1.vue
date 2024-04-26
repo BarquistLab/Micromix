@@ -342,7 +342,7 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.progress_bar();
-      console.log(this.form.source);
+      // console.log(this.form.source);
       this.validateForm(this.form.source);
     },
     onReset(evt) {

@@ -706,7 +706,7 @@ export default {
       //Check for the active organism and load in the corresponding annotations
       if (this.active_organism.name == "Salmonella") {
                 
-                console.log("active=Sal");
+                // console.log("active=Sal");
                 this.filters.items.functional["Filter by annotation"]["GO Terms"].items.filter_annotation.source.items = this.pathways.go;
                 this.filters.items.functional["Filter by annotation"]["KEGG Pathways"].items.filter_annotation.source.items = this.pathways.kegg;
 
