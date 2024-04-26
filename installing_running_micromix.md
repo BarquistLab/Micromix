@@ -344,6 +344,7 @@ Similar to a local install, you have the option of installing Micromix using Doc
 > *Note: <br>
 > The code within the Github repository was adapted to run on a local machine for testing, making it easy for people to test Micromix. To run Micromix on a server, some small changes are required that revolve around linking the server IP address or domain name.*
 
+<br>
 
 To make Micromix accessible through the internet, you will need to have access to a running online server that is capable of publically displaying websites with an IP address.
 
@@ -351,7 +352,7 @@ If you don't have any institute or department hosting services available, you ca
 
 If choosing one of these online services, here is a checklist of requirements:
 
- - You will need to use a Debian-based Linux distribution (64bit) - we recommend Ubuntu. 
+ - You will need to use a Debian-based Linux distribution (64-bit) - we recommend Ubuntu. 
  - Depending on the expected traffic, 2 cores, 8-16GB of ram and between 10-20GB of hard drive space should initially be sufficient
  - When configuring the VM, ensure that it is assigned a public IP address - this is important for the site to be hosted (you will need to remember the IP address for later steps).
  - Port 5000 will need to be opened, allowing the frontend and backend to communicate. Under a Google Cloud VM, this firewall rule can be added by going to the **Navigation menu** >>  **VPC network** >> **Firewall**. From here, select **Create firewall rule**, using default options, but changing the protocol to **TCP**, the port to **5000**, Type to **Ingress** and **Apply to all targets**. 
@@ -372,13 +373,15 @@ sudo systemctl status mongodb
 ```
 
 Download Micromix repository from Github
+
 ```bash
 git clone https://github.com/BarquistLab/Micromix.git
 ```
 
 **You now have two options.**
-1) Use Docker containers to run the site, or 
-2) Manually install Micromix.
+
+2.1) Use Docker containers to run the site, or <br>
+2.2) Manually install Micromix.
 
 > *Note: <br> 
 > Here are some suggestions if you are unsure about which option to select. If using the Docker containers, this is intended to streamline the installation process, but will take up more hard drive space as the containers require between 2-3GB and requires slightly more network configuration changes. The manual install option takes more time to install, but takes up less space and has more straight forward network requirements.* 
