@@ -37,7 +37,7 @@ Plugins allow the user to visualise the data stored within Micromix. As part of 
 1) The Clustergrammer heatmap, which can be run without any configuration - and is an example of using an existing API
 2) The HIRI heatmap, which we provide the installation instructions below.
 
-Additional plugins can be developed and incorporated into Micromix, and will follow many of the following installation steps. A good example is a recently developed principal component analysis (PCA) plugin, that describes in detail many of the key steps required when building a plugin. The PCA plugin can be accessed here [xxxxxxxxxxxxx]. 
+Additional plugins can be developed and incorporated into Micromix, and will follow many of the following installation steps. A good example is a recently developed principal component analysis (PCA) plugin, that describes in detail many of the key steps required when building a plugin. The PCA plugin can be accessed [here](https://github.com/BarquistLab/pca-plugin). 
 
 <br>
 

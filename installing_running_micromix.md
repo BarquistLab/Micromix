@@ -3,15 +3,15 @@
 ## Contents
 - [Micromix](README.md#micromix-user-guide)
 - [Installing and running](installing_running.md#installing-and-running-micromix)
-    - [Micromix](installing_running.md#installing-and-running-micromix)
-        - [1. Local installation](installing_running.md#installing-and-running-micromix)
-            - [1.1 Virtual machine](installing_running.md#1-using-a-pre-built-virtual-machine)
-            - [1.2 Containers](installing_running.md#2-using-docker-containers)
-            - [1.3 Manual install](installing_running.md#3-manually-installing-micromix)
-        - [2. Server deployment](installing_running.md#server-deployment)
-            - [2.1 Containers](installing_running.md#2-using-docker-containers)
-            - [2.2 Manual install](installing_running.md#3-manually-installing-micromix)
-    - [Plugins](installing_running.md#installing-and-running-micromix)
+    - [Micromix](installing_running_micromix.md#installing-and-running-micromix)
+        - [1. Local installation](installing_running_micromix.md#1-installing-and-running-micromix)
+            - [1.1 Virtual machine](installing_running_micromix.md#11-using-a-pre-built-virtual-machine)
+            - [1.2 Containers](installing_running_micromix.md#12-using-docker-containers)
+            - [1.3 Manual install](installing_running_micromix.md#13-manually-installing-micromix)
+        - [2. Server deployment](installing_running_micromix.md#2-server-deployment)
+            - [2.1 Containers](installing_running_micromix.md#21-using-docker-containers)
+            - [2.2 Manual install](installing_running_micromix.md#22-manually-installing-micromix)
+    - [Plugins](installing_running_plugins.md#installing-and-running-micromix)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
@@ -40,18 +40,21 @@ There are three options to use Micromix, depending on the user requirements.
 
 ## 1.1. Using a pre-built virtual machine
 
-The simplest way to use Micromix is to use our pre-built virtual machine (VM). This is available for download **INSERT HYPERLINK**. 
+The simplest way to use Micromix is to use our pre-built virtual machine (VM). This is available for download here **INSERT HYPERLINK**. 
 
 > *Note: <br>
-> Using our pre-configured VM allows you to test Micromix out within minimal effort. This environment cannot be used to publically share sessions, its only available on the machine it is installed on.*
+> Using our pre-configured VM allows you to test Micromix out with minimal effort. However, this environment cannot be used to publically share sessions, its only available on the machine it is installed on.*
 
 The image was created using VirtualBox (version 6.1), free software that can be run on all operating systems, and can be downloaded [here](https://www.virtualbox.org/wiki/Download_Old_Builds_6_1).
 
-To create the VM using the downloaded image: within VirtualBox, click on **New**, then select **Expert mode**. Choose **use an existing virtual hard disk file** and select the downloaded Micromix VM. Make sure the operating system is set to **Linux - Ubuntu - 64bit**, and adjust the memory to a desired size (we recommend about 4GB). Then click on **Create**. 
+To create the VM using the downloaded image: <br>
+ - Within VirtualBox, click on **New**, then select **Expert mode**.  
+ - Choose **use an existing virtual hard disk file** and select the downloaded Micromix VM. 
+ - Eusure the operating system is set to **Linux - Ubuntu - 64bit**, and adjust the memory to a desired size (we recommend about 4GB). 
+ - Click on **Create**. 
+ - Once created, we also recommend going into **Settings >> System >> Processor** and changing to 2 or greater, which makes Micromix run smoother. 
 
-Once created, we also recommend going into **Settings >> System >> Processor** and changing to 2 or greater, which makes Micromix run smoother. 
-
-To run the VM, click on **Start** (the green arrow). Once running, you will need to start the website and the heatmap.
+To start runing the VM, click on **Start** (the green arrow within VirtualBox). Once Linux operating system has loaded, you will need to start the website and the heatmap.
 
 ```bash
 # On the desktop are two files:
@@ -66,6 +69,8 @@ To run the VM, click on **Start** (the green arrow). Once running, you will need
 ```
 
 The site can be accessed by opening the browser and typing **localhost:8080**
+
+$${\color{red}Red}$$
 
 <img width="80%" src="images/micromix_running.png" />
 
@@ -502,7 +507,7 @@ docker system prune --all --volumes
 
 
 
-### 2.2 Manual installation
+## 2.2 Manual installation
  
 To prepare the server with the required software, you will need to follow the instructions from [Manually installing Micromix](installing_running.md#3-manually-installing-micromix). You can skip the last steps of ```npm run serve``` for the frontend and ```flask run --port 3000``` for the backend.
 
