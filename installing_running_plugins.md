@@ -2,16 +2,16 @@
 
 ## Contents
 - [Micromix](README.md#micromix-user-guide)
-- [Installing and running](installing_running.md#installing-and-running-micromix)
-    - [Micromix](installing_running.md#installing-and-running-micromix)
-    - [Plugins](installing_running.md#installing-and-running-micromix)
-        - [1. Local installation](installing_running.md#installing-and-running-micromix)
-            - [1.1 Virtual machine](installing_running.md#1-using-a-pre-built-virtual-machine)
-            - [1.2 Containers](installing_running.md#2-using-docker-containers)
-            - [1.3 Manual install](installing_running.md#3-manually-installing-micromix)
-        - [2. Server deployment](installing_running.md#server-deployment)
-            - [2.1 Containers](installing_running.md#2-using-docker-containers)
-            - [2.2 Manual install](installing_running.md#3-manually-installing-micromix)
+- [Installing and running](installing_running_micromix.md#installing-and-running-micromix)
+    - [Micromix](installing_running_micromix.md#installing-and-running-micromix)
+    - [Plugins](installing_running_plugins.md#installing-and-running-micromix)
+        - [1. Local installation](installing_running_plugins.md#installing-and-running-micromix)
+            - [1.1 Containers](installing_running_plugins.md#2-using-docker-containers)
+            - [1.2 Manual installation](installing_running_plugins.md#3-manually-installing-micromix)
+        - [2. Server deployment](installing_running_plugins.md#server-deployment)
+            - [2.1 Containers](installing_running_plugins.md#2-using-docker-containers)
+            - [2.2 Manual installation](installing_running_plugins.md#3-manually-installing-micromix)
+        - [3. Integrating plugins to Micromix](installing_running_plugins.md#3-integrating-plugins-to-micromix)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
@@ -34,7 +34,7 @@
 
 Plugins allow the user to visualise the data stored within Micromix. As part of the standard installation, there are 2 plugins that are available. 
 
-1) The Clustergrammer heatmap, which can be run without any configuration - and is an example of using an existing API
+1) The Clustergrammer heatmap, which can be run without any configuration - and is an example of using an existing API <br>
 2) The HIRI heatmap, which we provide the installation instructions below.
 
 Additional plugins can be developed and incorporated into Micromix, and will follow many of the following installation steps. A good example is a recently developed principal component analysis (PCA) plugin, that describes in detail many of the key steps required when building a plugin. The PCA plugin can be accessed [here](https://github.com/BarquistLab/pca-plugin). 
@@ -57,7 +57,7 @@ The following steps assume:
 We have created the HIRI heatmap so it can be installed and run with Docker. To prepare the machine, we will need to install various software.
 
 
-1. Install Docker: The latest instructions can be found [here](https://docs.docker.com/engine/install/ubuntu/)
+**Install Docker:** The latest instructions can be found [here](https://docs.docker.com/engine/install/ubuntu/)
 
 ```bash
 # Uninstall old versions or conflicting packages
@@ -90,7 +90,7 @@ sudo usermod -aG docker $USER
 
 ```
 
-2. Install MongoDB (we install this locally so user sessions are not lost if the containers need to be restarted or replaced etc). 
+**Install MongoDB:** (we install this locally so user sessions are not lost if the containers need to be restarted or replaced etc). 
 
 > *It is important to install MongoDB after Docker, otherwise you will get errors trying to add 172.17.0.1*
 
@@ -116,7 +116,7 @@ sudo systemctl restart mongodb
 
 > *172.17.0.1 is typically used by Docker's bridge network to allow the containers to connect with the host version of MongoDB*
 
-3. Download the Micromix repository from Github
+**Download Micromix:** Download the Micromix repository from Github
 
 ```bash
 # Install Git
@@ -127,7 +127,7 @@ git clone https://github.com/BarquistLab/Micromix.git
 ```
 
 
-4. Run HIRI heatmap
+**Run HIRI heatmap:**
 
 ```bash
 # Browse to the correct directory
@@ -168,16 +168,26 @@ docker system prune --all --volumes
 ## 1.2. Manual installation
 
 
-There are a number of requirements if running locally or on a server for the first time. The heatmap follows the same infrastructure that the main site does: there is a frontend and backend, which then communicate through a specified port where the resulting heatmap can be displayed within the site when clicking on the heatmap plugin button.
+There are a number of requirements if running locally or on a server for the first time. The HIRI heatmap follows the same infrastructure that Micromix does: there is a frontend and backend, which communicate through a specified port where the resulting heatmap can be displayed within the site when clicking on the relevant plugin button.
 
-**Step 1:** Prepare the heatmap backend: 
+### Prepare the backend
 
 ```bash 
-# Browse to the backend
+# Install software
+sudo apt update
+sudo apt install python3-pip
+pip3 install wheel
+pip3 install biopython
+
+# To allow virtual env (check python version first)
+sudo apt-get install python3.8-venv 
+
+# Change to backend
 cd Micromix/Heatmap/backend
 
 # Create an additional python virtual environment
 python3 -m venv venv2
+
 # Enter the environment
 source venv2/bin/activate
 
@@ -196,13 +206,66 @@ flask run
 <img width="80%" src="images/heatmap_backend_running.png" />
 
 
-**Step 1:** Prepare the heatmap frontend: 
+### Prepare the frontend 
 
 ```bash
 # Change to the frontend
 cd Micromix/Heatmap/frontend
 
-# Install node dependencies
+# Make sure dependencies are already installed
+sudo apt-get install gcc g++ make
+sudo apt-get install libssl-dev libcurl4-openssl-dev
+
+# Download and install Node.js
+sudo apt install curl
+curl -sL https://deb.nodesource.com/setup_18.x -o nodejs_setup.sh
+# Change permissions
+sudo chmod 777 nodejs_setup.sh
+# Run
+sudo ./nodejs_setup.sh
+# Install
+sudo apt-get install -y nodejs
+
+# Install vue-cli with Node Package Manager (npm)
+sudo npm install -g @vue/cli
+
+# Install Eslint and axios
+npm install --save-dev eslint eslint-plugin-vue
+npm i axios
+
+# Initialise ESLint
+./node_modules/.bin/eslint --init
+
+# Use these responses
+✔ How would you like to use ESLint? · "To check syntax and find problems"
+✔ What type of modules does your project use? · "syntax and markup" # Default option
+✔ Which framework does your project use? · "vue"
+✔ Does your project use TypeScript? · "No"
+✔ Where does your code run? · "browser"
+✔ What format do you want your config file to be in? · "JavaScript"
+The config that youve selected requires the following dependencies:
+
+eslint-plugin-vue@latest
+✔ Would you like to install them now with npm? · "Yes"
+Installing eslint-plugin-vue@latest
+
+# This creates a file called .eslintrc.js
+
+# You will need to modify this file in 2 places
+# 1) Comment out the line below to avoid an error about process not being defined (or similar)
+
+vim .eslintrc.js
+
+    "extends": [
+        //"eslint:recommended",  //comment this line
+        "plugin:vue/essential"
+
+# 2) Add a rule to allow multi-word component names
+"rules": {
+        'vue/multi-word-component-names': 'off',
+    }
+
+# Finally, we can install node dependencies
 npm install
 
 # Launch frontend
@@ -214,15 +277,15 @@ npm run serve
 <img width="80%" src="images/heatmap_frontend_running.png" />
 
 > *Note: <br>
-> When visiting the IP address of the heatmap, a loading screen will be visible. You will not be able to interact with the heatmap at this point - you will have to link the heatmap up to a Micromix instance, that will pass data to this waiting server, which will then display the associated heatmap.*
+> When visiting the IP address of the heatmap, a loading screen will be visible. You will not be able to interact with the heatmap at this point - you will have to link the heatmap up to a Micromix instance, that will pass data to this waiting server, which will then display the associated heatmap.* SEE SECTION XXXXXXXXXX
 
 
 
-# Server deployment
+# 2. Server deployment
 
 This section allows you to run the HIRI heatmap on a server that is accessible to the public.
 
-Similar to a local install, you have the option of installing the HIRI heatmap using Docker containers, or with a manual installation.
+Similar to a local install, you have the option of installing the HIRI heatmap using Docker containers, or manually.
 
 > *Note: <br>
 > The code within the Github repository is adapted to run on a local machine for testing, making it easy for people to test the functionality of the heatmap. To create a dedicated server, some small changes are required that revolve around linking the server IP address to the heatmap.*
@@ -236,12 +299,30 @@ If you don't have any institute or department hosting services available, you ca
 If choosing one of these online services, here is a checklist of requirements:
 
  - You will need to use a Debian-based Linux distribution (64-bit) - we recommend Ubuntu. 
- - Depending on the expected traffic, 2 cores, 8-16GB of ram and between 10-20GB of hard drive space should initially be sufficient
+ - Depending on the expected traffic, 1-2 cores, 8-12GB of ram and between 10-20GB of hard drive space should initially be sufficient
  - When configuring the VM, ensure that it is assigned a public IP address - this is important for the site to be hosted (you will need to remember the IP address for later steps).
  - Port 5000 will need to be opened, allowing the frontend and backend to communicate. Under a Google Cloud VM, this firewall rule can be added by going to the **Navigation menu** >>  **VPC network** >> **Firewall**. From here, select **Create firewall rule**, using default options, but changing the protocol to **TCP**, the port to **5000**, Type to **Ingress** and **Apply to all targets**. 
 
 
-Download Micromix repository from Github
+Once you have access to a running server, you will first need to install some software.
+
+### General install
+
+**MongoDB:** We install this locally so user sessions are not lost if the containers need to be restarted or replaced etc.
+
+
+```bash
+# Install MongoDB
+sudo apt install -y mongodb
+
+# Start MongoDB (it should automatically be running)
+sudo systemctl start mongodb
+
+# Confirm it is running
+sudo systemctl status mongodb
+```
+
+**Download Micromix:** Download the Micromix repository from Github
 
 ```bash
 # Install Git
@@ -251,19 +332,19 @@ sudo apt-get install git
 git clone https://github.com/BarquistLab/Micromix.git
 ```
 
-**You now have two options.**
+### You now have two options.
 
-1) Use Docker containers to run the site, or <br>
-2) Manually install Micromix.
+1) Use Docker containers to run the heatmap, or <br>
+2) Manually installation.
 
 > *Note: <br> 
-> Here are some suggestions if you are unsure about which option to select. If using the Docker containers, this is intended to streamline the installation process, but will take up more hard drive space as the containers require between 2-3GB and requires slightly more network configuration changes. The manual install option takes more time to install, but takes up less space and has more straight forward network requirements.* 
+> Here are some suggestions if you are unsure about which option to select. If using the Docker containers, this is intended to streamline the installation process, but will take up more hard drive space as the containers require approx. 1-2GB and slightly more network configuration changes. The manual installation option takes more time to install, but takes up less space and has more straight forward network requirements.* 
 
 ## 2.1. Using Docker containers
 
-Install Docker
+**Install Docker:**
 
-The following steps 1-3 are identical to [Containers](installing_running.md#2-using-docker-containers) - and can be skipped if already completed.
+The following steps 1-3 are identical to [1.1. Using Docker containers](installing_running_plugins.md#11-using-docker-containers) - and can be skipped if already completed.
 
 The latest Docker instructions can be found [here](https://docs.docker.com/engine/install/ubuntu/) if any errors occur.
 
@@ -283,31 +364,33 @@ echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-# update
+
+# Update
 sudo apt-get update
 ```
 
 
-**Backend changes:**
+### Backend changes:
 
 TBD - change network config XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-**Frontend changes:**
+### Frontend changes:
 
 TBD - change network config XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 
-### 2) Micromix - Manual install
- 
-To prepare the server with the required software, you will need to follow the instructions from [Manually installing Micromix](installing_running.md#3-manually-installing-micromix). You can skip the last steps of ```npm run serve``` for the frontend and ```flask run --port 3000``` for the backend.
+
+### 2.2 Manual installation
+
+There are a number of requirements if running locally or on a server for the first time. The HIRI heatmap follows the same infrastructure that Micromix does: there is a frontend and backend, which communicate through a specified port where the resulting heatmap can be displayed within the site when clicking on the relevant plugin button.
+
+To prepare the server with the required software, you will need to follow the instructions from [1.2. Manual installation](installing_running_plugins.md#12-manual-installation). You can skip the last steps of ```npm run serve``` for the frontend and ```flask run``` for the backend.
 
 > *Note: <br>
-> The code within the Github repository was adapted to run on a local machine for testing, making it easy for people to test Micromix. To run Micromix on a server, some small changes are required that revolve around linking the server IP address or domain name.*
+> The code within the Github repository is adapted to run on a local machine for testing, making it easy for people to test the functionality of the heatmap. To run on a server, some small changes are required that revolve around linking the server IP address or domain name.*
 
 
-**Frontend changes:**
-
-Change the IP address to your servers IP address
+## Frontend changes:
 
 ```bash
 # Open App.vue
@@ -329,126 +412,13 @@ cd Website/frontend
 npm run build
 ```
 
-**Backend changes:**
 
-Change the address of MongoDB
-```bash
-# Change to backend
-cd ../backend
-
-# Open up app.py
-vim app.py
-
-# Change this line: client = MongoClient('172.17.0.1', 27017) - pointing directly to the local machine
-client = MongoClient()
-
-```
-
-**Install deployment software:**
-
-Finally, we need to install and run a HTTP server (Nginx) and a web server gateway interface (WSGI) (Gunicorn), allowing the site to hosted and displayed to users on the IP address or domain name, such as *Micromix.com*. 
-
-```bash
-# Install Gunicorn
-pip3 install gunicorn 
-
-# Install Nginx
-sudo apt install nginx
-```
-
-Run Gunicorn
-
-```bash
-# Make sure you are in the backend folder where app.py is located
-gunicorn --bind 0.0.0.0:5000 app:app --access-logfile /home/$USER/Micromix/Website/backend/gunicorn_logs.log --workers=2
-
-# Here's a brief explanation of what the command contains
-# --bind 0.0.0.0:5000   binds the backend to port 5000, which will be used by the frontend to connect
-# app:app               Runs app within app.py
-# --access-logfile      Saves the log files to the current user location
-# --workers=2           Uses 2 cores
-
-# Note: running the above command is designed to check for any errors. If successful, press CTRL+C to stop running. 
-# To run in the background, use:
-gunicorn --bind 0.0.0.0:5000 app:app --access-logfile /home/$USER/Micromix/Website/backend/gunicorn_logs.log --workers=2 --daemon
-```
-
-Install, configure and run Nginx
-
-```bash
-# Make a copy of the current Nginx configuration file
-mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default_old
-
-# You will need to copy an updated configuration file that has been adapted for Micromix
-cp Website/frontend/Nginx/nginx_manual_install.config /etc/nginx/sites-available/default
-
-# Edit the IP address/domain names and location of the /dist folder
-vim /etc/nginx/sites-available/default
-
-# Copy to sites-enabled location
-ls -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
-
-# Check if config file is valid
-sudo nginx -t  
-
-# Restart service to apply changes
-sudo systemctl restart nginx
-```
-
-You will be able to visit your IP address or domain name in a browser and Micromix will be running
-
-
-> *Note: <br>
-> If you would like to integrate the HIRI heatmap on to your site, we recommend using our dedicated server that is already setup and running, you will simply have to update the heatmap plugin IP address. Please reach out to the Manuscript authors for the heatmap server IP address and details.*  
-
-
-
-## HIRI heatmap deployment
-
-The heatmap server can also be installed manually or with Docker containers, similar to the main Micromix Website.
-
-Both options require that the Github repository has already been downloaded and MongoDB has been installed
-
-Download repository
-
-```bash
-# Install Git
-sudo apt-get install git
-
-# Download repository
-git clone https://github.com/BarquistLab/Micromix.git
-
-# Change to Heatmap directory
-cd Micromix/Heatmap
-```
-
-Install MongoDB
-
-```bash
-# Install MongoDB
-sudo apt install -y mongodb
-
-# Confirm it is running
-sudo systemctl status mongodb
-
-# If not, then start with
-sudo systemctl start mongodb
-```
-
-
-### 1) HIRI heatmap - Using Docker containers
-
-to be completed
-
-### 2) HIRI heatmap - Manual install
-
-
-something about adding HM ip address to MongoDB?????????
 
 **The Heatmap backend:**
 
 
 ```bash
+# Install software
 sudo apt update
 sudo apt install python3-pip
 pip3 install wheel
@@ -522,66 +492,6 @@ gunicorn --bind 0.0.0.0:5000 wsgy:app --access-logfile /home/$USER/Micromix/Heat
 
 **The Heatmap frontend:**
 
-```bash
-# Change to the frontend
-cd Micromix/Heatmap/frontend
-
-# Make sure dependencies are already installed
-sudo apt-get install gcc g++ make
-sudo apt-get install libssl-dev libcurl4-openssl-dev
-
-# Download and install Node.js
-sudo apt install curl
-curl -sL https://deb.nodesource.com/setup_18.x -o nodejs_setup.sh
-# Change permissions
-sudo chmod 777 nodejs_setup.sh
-# Run
-sudo ./nodejs_setup.sh
-# Install
-sudo apt-get install -y nodejs
-
-# Install vue-cli with Node Package Manager (npm)
-sudo npm install -g @vue/cli
-
-# Install Eslint and axios
-npm install --save-dev eslint eslint-plugin-vue
-npm i axios
-
-# Initialise ESLint
-./node_modules/.bin/eslint --init
-
-# Use these responses
-✔ How would you like to use ESLint? · "To check syntax and find problems"
-✔ What type of modules does your project use? · "syntax and markup" # Default option
-✔ Which framework does your project use? · "vue"
-✔ Does your project use TypeScript? · "No"
-✔ Where does your code run? · "browser"
-✔ What format do you want your config file to be in? · "JavaScript"
-The config that youve selected requires the following dependencies:
-
-eslint-plugin-vue@latest
-✔ Would you like to install them now with npm? · "Yes"
-Installing eslint-plugin-vue@latest
-
-# This creates a file called .eslintrc.js
-
-# You will need to modify this file in 2 places
-# 1) Comment out the line below to avoid an error about process not being defined (or similar)
-
-vim .eslintrc.js
-
-    "extends": [
-        //"eslint:recommended",  //comment this line
-        "plugin:vue/essential"
-
-# 2) Add a rule to allow multi-word component names
-"rules": {
-        'vue/multi-word-component-names': 'off',
-    }
-
-# Finally, we can install node dependencies
-npm install
-```
 
 Link the IP address and port of the backend to the frontend
 
@@ -630,3 +540,11 @@ sudo systemctl restart nginx
 ```
 
 You will be able to visit your IP address or domain name in a browser and you will be able to see the loading animation for the heatmap.
+
+
+
+## 3 Integrating plugin to Micromix
+
+something about adding HM ip address to MongoDB?????????
+
+creating plugins python script and the details

@@ -17,7 +17,8 @@ EXPOSE 5000
 
 # Define environment variables
 ENV FLASK_APP=app.py
-# make accessable from outside the container
+
+# Make accessable from outside the container
 ENV FLASK_RUN_HOST=0.0.0.0
 
 # Run app.py when the container launches

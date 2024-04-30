@@ -7,10 +7,10 @@
         - [1. Local installation](installing_running_micromix.md#1-installing-and-running-micromix)
             - [1.1 Virtual machine](installing_running_micromix.md#11-using-a-pre-built-virtual-machine)
             - [1.2 Containers](installing_running_micromix.md#12-using-docker-containers)
-            - [1.3 Manual install](installing_running_micromix.md#13-manually-installing-micromix)
+            - [1.3 Manual installation](installing_running_micromix.md#13-manually-installing-micromix)
         - [2. Server deployment](installing_running_micromix.md#2-server-deployment)
             - [2.1 Containers](installing_running_micromix.md#21-using-docker-containers)
-            - [2.2 Manual install](installing_running_micromix.md#22-manually-installing-micromix)
+            - [2.2 Manual installation](installing_running_micromix.md#22-manually-installing-micromix)
     - [Plugins](installing_running_plugins.md#installing-and-running-micromix)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
@@ -149,14 +149,18 @@ sudo systemctl restart mongodb
 
 > *172.17.0.1 is typically used by Docker's bridge network to allow the containers to connect with the host version of MongoDB*
 
-3. **Download Micromix:** Download the Micromix repository from Github
+**Download Micromix:** Download the Micromix repository from Github
 
 ```bash
+# Install Git
+sudo apt-get install git
+
+# Download Micromix repository from GitHub
 git clone https://github.com/BarquistLab/Micromix.git
 ```
 
 
-4. Run Micromix
+**Run Micromix:**
 
 ```bash
 # Browse to the correct directory
@@ -169,7 +173,7 @@ sudo docker compose up
 
 # Note: The 'build' command may take some time to complete
 # Once the containers have completed running, you should see this line from the command line (or something similar)
-* Running on http://127.0.0.1:7000 
+* Running on http://127.0.0.1:7000 $${\color{red}CHECK}$$
 
 # Browse to this address in your browser, and Micromix will be running
 
@@ -189,11 +193,14 @@ docker system prune --all --volumes
 
 
 
-## 1.3. Manually installing Micromix
+## 1.3. Manuall installation
 
 There are a number of requirements to run Micromix locally for the  first time. 
 
-**Step 1:** Download the git repository: 
+### General install
+
+**Download Micromix:** Download the Micromix repository from Github
+
 ```bash
 # Install Git
 sudo apt-get install git
@@ -223,7 +230,7 @@ sudo systemctl start mongodb
 <img width="80%" src="images/mongodb_running.png" />
 
 
-**The backend:**
+### The backend:
 
 ```bash
 sudo apt update
@@ -250,7 +257,7 @@ pip3 install -r requirements.txt
 export FLASK_DEBUG=1
 
 # Launch Flask server
-flask run --port 3000
+flask run --port 3000 $${\color{red}CHECK}$$
 
 # You should see the following output
 ```
@@ -258,7 +265,8 @@ flask run --port 3000
 <img width="80%" src="images/website_backend_running.png" />
 
 
-**The frontend:**
+### The frontend:
+
 ```bash
 # Change to the frontend
 cd Micromix/Website/frontend
@@ -325,6 +333,7 @@ npm run serve
 # You should see the following output
 ```
 > Open the address shown in the terminal where you executed the line above with your web browser. This should be http://localhost:8080/. The backend should also be running, otherwise the site will not load.
+$${\color{red}CHECK}$$
 
 <img width="80%" src="images/website_frontend_running.png" />
 
@@ -360,7 +369,11 @@ If choosing one of these online services, here is a checklist of requirements:
  - Port 5000 will need to be opened, allowing the frontend and backend to communicate. Under a Google Cloud VM, this firewall rule can be added by going to the **Navigation menu** >>  **VPC network** >> **Firewall**. From here, select **Create firewall rule**, using default options, but changing the protocol to **TCP**, the port to **5000**, Type to **Ingress** and **Apply to all targets**. 
 
 
-Once you have access to a running server, you will first need to install MongoDB (we install this locally so user sessions are not lost if the containers need to be restarted or replaced etc).
+Once you have access to a running server, you will first need to install some software.
+
+### General install
+
+**MongoDB:** We install this locally so user sessions are not lost if the containers need to be restarted or replaced etc.
 
 
 ```bash
@@ -374,23 +387,29 @@ sudo systemctl start mongodb
 sudo systemctl status mongodb
 ```
 
-Download Micromix repository from Github
+**Download Micromix:** Download the Micromix repository from Github
 
 ```bash
+# Install Git
+sudo apt-get install git
+
+# Download Micromix repository from GitHub
 git clone https://github.com/BarquistLab/Micromix.git
 ```
 
-**You now have two options.**
+### You now have two options.
 
 2.1) Use Docker containers to run the site, or <br>
 2.2) Manually install Micromix.
 
 > *Note: <br> 
-> Here are some suggestions if you are unsure about which option to select. If using the Docker containers, this is intended to streamline the installation process, but will take up more hard drive space as the containers require between 2-3GB and requires slightly more network configuration changes. The manual install option takes more time to install, but takes up less space and has more straight forward network requirements.* 
+> Here are some suggestions if you are unsure about which option to select. If using the Docker containers, this is intended to streamline the installation process, but will take up more hard drive space as the containers require between 2-3GB and requires slightly more network configuration changes. The manual installation option takes more time to install, but takes up less space and has more straight forward network requirements.* 
 
 ## 2.1. Using Docker containers
 
-Update MongoDB
+### General configuration:
+
+**Update MongoDB:**
 
 ```bash
 # We need to add in an additional IP address that allows Docker to communicate with this local installation of MongoDB
@@ -406,9 +425,9 @@ sudo systemctl restart mongodb
 sudo systemctl status mongodb
 ```
 
-Install Docker
+**Install Docker:**
 
-The following steps 1-3 are identical to [Containers](installing_running.md#2-using-docker-containers) - and can be skipped if already completed.
+The following steps are identical to [1.2. Using Docker containers](installing_running_micromix.md#12-using-docker-containers) - and can be skipped if already completed.
 
 The latest Docker instructions can be found [here](https://docs.docker.com/engine/install/ubuntu/) if any errors occur.
 
@@ -428,12 +447,13 @@ echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-# update
+
+# Update
 sudo apt-get update
 ```
 
 
-**Frontend changes:**
+### Frontend changes:
 
 Change the IP address to your servers IP address
 
@@ -448,7 +468,7 @@ backend_url: 'http://192.100.12.87:5000',
 ``` 
 
 
-**Backend changes:**
+### Backend changes:
 
 You will need to make some changes to the Dockerfile
 
@@ -463,7 +483,7 @@ vim Website/backend/Dockerfile
 # CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
 ```
 
-**Docker compose changes:**
+### Docker compose changes:
 
 The last step before running is to change the port to 80, allowing users to enter in the IP address or domain name without having to specify a port, as port 80 is the default port for websites.
 
@@ -474,7 +494,7 @@ vim docker-compose.yaml
 # Change the frontend port from "7000:80" to "80:80"
 ```
 
-Deploy Micromix 
+### Deploy Micromix:
 
 ```bash
 # Browse to the correct directory
@@ -506,13 +526,13 @@ docker system prune --all --volumes
 
 ## 2.2 Manual installation
  
-To prepare the server with the required software, you will need to follow the instructions from [Manually installing Micromix](installing_running.md#3-manually-installing-micromix). You can skip the last steps of ```npm run serve``` for the frontend and ```flask run --port 3000``` for the backend.
+To prepare the server with the required software, you will need to follow the instructions from [1.3. Manual installation](installing_running_micromix.md#13-manual-installation). You can skip the last steps of ```npm run serve``` for the frontend and ```flask run --port 3000``` for the backend.
 
 > *Note: <br>
 > The code within the Github repository is adapted to run on a local machine for testing, making it easy for people to test Micromix. To run Micromix on a server, some small changes are required that revolve around linking the server IP address or domain name.*
 
 
-**Frontend changes:**
+### Frontend changes:
 
 Change the IP address to your servers IP address
 
@@ -536,9 +556,10 @@ cd Website/frontend
 npm run build
 ```
 
-**Backend changes:**
+### Backend changes:
 
 Change the address of MongoDB
+
 ```bash
 # Change to backend
 cd ../backend
@@ -551,9 +572,9 @@ client = MongoClient()
 
 ```
 
-**Install deployment software:**
+### Install deployment software:
 
-Finally, we need to install and run a HTTP server (Nginx) and a web server gateway interface (WSGI) (Gunicorn), allowing the site to hosted and displayed to users on the IP address or domain name, such as *Micromix.com*. 
+Finally, we need to install and run a HTTP server (Nginx) and a web server gateway interface (WSGI) (Gunicorn), allowing the site to be hosted and displayed to users on the IP address or domain name, such as *Micromix.com*. 
 
 ```bash
 # Install Gunicorn
@@ -563,7 +584,7 @@ pip3 install gunicorn
 sudo apt install nginx
 ```
 
-Run Gunicorn
+**Run Gunicorn:**
 
 ```bash
 # Make sure you are in the backend folder where app.py is located
@@ -580,7 +601,7 @@ gunicorn --bind 0.0.0.0:5000 app:app --access-logfile /home/$USER/Micromix/Websi
 gunicorn --bind 0.0.0.0:5000 app:app --access-logfile /home/$USER/Micromix/Website/backend/gunicorn_logs.log --workers=2 --daemon
 ```
 
-Install, configure and run Nginx
+**Install, configure and run Nginx:**
 
 ```bash
 # Make a copy of the current Nginx configuration file
@@ -602,8 +623,8 @@ sudo nginx -t
 sudo systemctl restart nginx
 ```
 
-You will be able to visit your IP address or domain name in a browser and Micromix will be running
+You will be able to visit your IP address or domain name in a browser and Micromix will be running.
 
 
 > *Note: <br>
-> If you would like to integrate the HIRI heatmap on to your site, we recommend using our dedicated server that is already setup and running, you will simply have to update the heatmap plugin IP address. Please reach out to the Manuscript authors for the heatmap server IP address and details.*  
+> If you would like to integrate the HIRI heatmap on to your site, we recommend using our dedicated server that is already setup and running, you will simply have to update the heatmap plugin IP address. Please reach out to the Manuscript authors for the heatmap server IP address and details.*
