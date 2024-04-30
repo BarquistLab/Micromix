@@ -119,6 +119,10 @@ sudo systemctl restart mongodb
 3. Download the Micromix repository from Github
 
 ```bash
+# Install Git
+sudo apt-get install git
+
+# Download Micromix repository from GitHub
 git clone https://github.com/BarquistLab/Micromix.git
 ```
 
@@ -240,6 +244,10 @@ If choosing one of these online services, here is a checklist of requirements:
 Download Micromix repository from Github
 
 ```bash
+# Install Git
+sudo apt-get install git
+
+# Download Micromix repository from GitHub
 git clone https://github.com/BarquistLab/Micromix.git
 ```
 

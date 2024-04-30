@@ -68,16 +68,16 @@ To start runing the VM, click on **Start** (the green arrow within VirtualBox). 
 
 ```
 
-The site can be accessed by opening the browser and typing **localhost:8080**
+The site can be accessed by opening the browser and typing **localhost:8080** $${\color{red}CHECK}$$
 
-$${\color{red}Red}$$
+
 
 <img width="80%" src="images/micromix_running.png" />
 
 <br> 
 
 > *Note: <br>
-> This VM was created in development mode and should mainly be used for exploration and testing. If you want to run Micromix on a server that you can share with other users, you should use option 2 or 3 below.*  
+> This VM was created in development mode and should mainly be used for exploration and testing. If you want to run Micromix on a server that you can share with other users, you should follow section [2. Server Deployment](installing_running_micromix.md#2-server-deployment) below.*  
 
 ## 1.2. Using Docker containers
 
@@ -87,10 +87,10 @@ The following steps assume:
  - You have access to a debian-based Linux 64-bit machine
  - You have sudo (admin) access
 
-We have created Micromix so it can be installed and run with Docker. To prepare the machine for Micromix to work properly, we will need to install various software.
+We have created Micromix so it can be installed and run with Docker. To prepare the machine for Micromix to work properly, we will first need to install various software.
 
 
-1. Install Docker: The latest instructions can be found [here](https://docs.docker.com/engine/install/ubuntu/)
+**Install Docker:** The latest instructions can be found [here](https://docs.docker.com/engine/install/ubuntu/)
 
 ```bash
 # Uninstall old versions or conflicting packages
@@ -123,7 +123,7 @@ sudo usermod -aG docker $USER
 
 ```
 
-2. Install MongoDB (we install this locally so user sessions are not lost if the containers need to be restarted or replaced etc). 
+**Install MongoDB:** (we install this locally so user sessions are not lost if the containers need to be restarted or replaced etc). 
 
 > *It is important to install MongoDB after Docker, otherwise you will get errors when trying to add 172.17.0.1*
 
@@ -149,7 +149,7 @@ sudo systemctl restart mongodb
 
 > *172.17.0.1 is typically used by Docker's bridge network to allow the containers to connect with the host version of MongoDB*
 
-3. Download Micromix repository from Github
+3. **Download Micromix:** Download the Micromix repository from Github
 
 ```bash
 git clone https://github.com/BarquistLab/Micromix.git
@@ -167,10 +167,7 @@ cd Micromix/Website
 sudo docker compose build 
 sudo docker compose up
 
-# If you require that the containers run in the background, you can use
-docker compose up --detach
-
-# These two commands may take some time to complete
+# Note: The 'build' command may take some time to complete
 # Once the containers have completed running, you should see this line from the command line (or something similar)
 * Running on http://127.0.0.1:7000 
 
@@ -179,22 +176,22 @@ docker compose up --detach
 # To stop the containers - first press 'ctrl + C', then
 docker compose down
 
-# To also remove the associated volumes (-v) and images (-)
-docker compose down --volumes --rmi
+# (optional) If you require that the containers run in the background, you can use
+docker compose up --detach
 
-# To remove all containers, volumes (-v) and images (-) etc
+# (optional) To remove all containers, volumes (-v) and images (-) etc
 docker system prune --all --volumes
 ```
 
 
 > *Note: <br>
-> Following these commands will allow you to run Micromix on any compatible computer. If you would like to setup a Micromix server that can be publically viewed through the internet, see [Server deployment](installing_running.md#server-deployment).*
+> Following these commands will allow you to run Micromix on any compatible computer. If you would like to setup a Micromix server that can be publically viewed through the internet, see [2. Server Deployment](installing_running_micromix.md#2-server-deployment).*
 
 
 
 ## 1.3. Manually installing Micromix
 
-There are a number of requirements if running locally or on a server for the first time. 
+There are a number of requirements to run Micromix locally for the  first time. 
 
 **Step 1:** Download the git repository: 
 ```bash
