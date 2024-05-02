@@ -43,18 +43,19 @@ There are three options to use Micromix, depending on the user requirements.
 The simplest way to use Micromix is to use our pre-built virtual machine (VM). This is available for download here **INSERT HYPERLINK**. 
 
 > *Note: <br>
-> Using our pre-configured VM allows you to test Micromix out with minimal effort. However, this environment cannot be used to publically share sessions, its only available on the machine it is installed on.*
+> Using our pre-configured VM allows you to test Micromix out with minimal effort. However, this environment cannot be used to publicly share sessions, it's only available on the machine where it's installed.*
 
 The image was created using VirtualBox (version 6.1), free software that can be run on all operating systems, and can be downloaded [here](https://www.virtualbox.org/wiki/Download_Old_Builds_6_1).
 
 To create the VM using the downloaded image: <br>
- - Within VirtualBox, click on **New**, then select **Expert mode**.  
+ - Open VirtualBox, click on **New**, then select **Expert mode**.  
  - Choose **use an existing virtual hard disk file** and select the downloaded Micromix VM. 
- - Eusure the operating system is set to **Linux - Ubuntu - 64bit**, and adjust the memory to a desired size (we recommend about 4GB). 
+ - Ensure the operating system is set to **Linux - Ubuntu - 64bit**, and adjust the memory to a desired size (we recommend about 4GB). 
  - Click on **Create**. 
  - Once created, we also recommend going into **Settings >> System >> Processor** and changing to 2 or greater, which makes Micromix run smoother. 
 
-To start runing the VM, click on **Start** (the green arrow within VirtualBox). Once Linux operating system has loaded, you will need to start the website and the heatmap.
+To start running the VM, 
+ - Click on **Start** (the green arrow within VirtualBox). Once Linux operating system has loaded, you will need to start the website and the heatmap.
 
 ```bash
 # On the desktop are two files:
@@ -87,7 +88,7 @@ The following steps assume:
  - You have access to a debian-based Linux 64-bit machine
  - You have sudo (admin) access
 
-We have created Micromix so it can be installed and run with Docker. To prepare the machine for Micromix to work properly, we will first need to install various software.
+We have created Micromix so it can be installed and run with Docker. To prepare the machine for Micromix to work properly, we will first need to install various pieces of software.
 
 
 **Install Docker:** The latest instructions can be found [here](https://docs.docker.com/engine/install/ubuntu/)
@@ -141,7 +142,7 @@ sudo systemctl start mongodb
 sudo vim /etc/mongodb.conf
 
 # You will need to add in 172.17.0.1 so the bind_ip address has two values
-bind_ip = 127.0.0.1,172.17.0.1 
+bind_ip = 127.0.0.1,172.17.0.1 # Update the bind_ip setting to include the Docker bridge network IP
 
 # Restart mongoDB
 sudo systemctl restart mongodb
@@ -189,7 +190,7 @@ docker system prune --all --volumes
 
 
 > *Note: <br>
-> Following these commands will allow you to run Micromix on any compatible computer. If you would like to setup a Micromix server that can be publically viewed through the internet, see [2. Server Deployment](installing_running_micromix.md#2-server-deployment).*
+> Following these commands will allow you to run Micromix on any compatible computer. If you would like to setup a Micromix server that can be publicly viewed through the internet, see [2. Server Deployment](installing_running_micromix.md#2-server-deployment).*
 
 
 
@@ -357,7 +358,12 @@ Similar to a local install, you have the option of installing Micromix using Doc
 
 <br>
 
-To make Micromix accessible through the internet, you will need to have access to a running online server that is capable of publically displaying websites with an IP address.
+> *Note: <br>
+> Some servers such as institute-based servers are restarted at a set time to install updates. In addition, the underlying infrastructure of many servers may require being updated or patched added. What this means, is that when restarted, Micromix will not restart and thus users wll not be able visit the site until the required services are restarted. This can be problematic, especifically when restarts are unknown. To get arround this issue, Supervisord can be installed and each service (frontend and backend) can start when after the server restarts, requiring no intervension. To learn more about this, click [here](http://supervisord.org/).*
+
+<br>
+
+To make Micromix accessible through the internet, you will need to have access to a running online server that is capable of publicly displaying websites with an IP address.
 
 If you don't have any institute or department hosting services available, you can create and run a virtual machine from different web services, such as Amazon Web Services (AWS) or using Google Cloud. An AWS tutorial can be viewed [here](https://aws.amazon.com/getting-started/launch-a-virtual-machine-B-0/), and with Google Cloud [here](https://cloud.google.com/compute/docs/create-linux-vm-instance). 
 
@@ -416,7 +422,7 @@ git clone https://github.com/BarquistLab/Micromix.git
 sudo vim /etc/mongodb.conf
 
 # You will need to add in 172.17.0.1 so the bind_ip address has two values
-bind_ip = 127.0.0.1,172.17.0.1 
+bind_ip = 127.0.0.1,172.17.0.1 # Update the bind_ip setting to include the Docker bridge network IP
 
 # Restart mongoDB
 sudo systemctl restart mongodb
@@ -485,11 +491,11 @@ vim Website/backend/Dockerfile
 
 ### Docker compose changes:
 
-The last step before running is to change the port to 80, allowing users to enter in the IP address or domain name without having to specify a port, as port 80 is the default port for websites.
+The last step before running is to change the port to 80, allowing users to enter in the IP address or domain name without having to specify a port (as is done with local installs), as port 80 is the default port for websites.
 
 ```bash
 # Open docker-compose.yaml
-vim docker-compose.yaml
+vim Website/docker-compose.yaml
 
 # Change the frontend port from "7000:80" to "80:80"
 ```

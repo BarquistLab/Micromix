@@ -11,7 +11,6 @@
         - [2. Server deployment](installing_running_plugins.md#server-deployment)
             - [2.1 Containers](installing_running_plugins.md#2-using-docker-containers)
             - [2.2 Manual installation](installing_running_plugins.md#3-manually-installing-micromix)
-        - [3. Integrating plugins to Micromix](installing_running_plugins.md#3-integrating-plugins-to-micromix)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
@@ -32,12 +31,14 @@
 
 # 1. Installing and running plugins
 
-Plugins allow the user to visualise the data stored within Micromix. As part of the standard installation, there are 2 plugins that are available. 
+Plugins allow the user to visualise the data stored within Micromix. As part of the standard installation, there are 2 default plugins that are currently available. 
 
 1) The Clustergrammer heatmap, which can be run without any configuration - and is an example of using an existing API <br>
 2) The HIRI heatmap, which we provide the installation instructions below.
 
 Additional plugins can be developed and incorporated into Micromix, and will follow many of the following installation steps. A good example is a recently developed principal component analysis (PCA) plugin, that describes in detail many of the key steps required when building a plugin. The PCA plugin can be accessed [here](https://github.com/BarquistLab/pca-plugin). 
+
+If you already have a plugin you would like to integrate, see [Adding new visualisation plugins](modifying_micromix.md#adding-new-visualisation-plugins).
 
 <br>
 
@@ -54,7 +55,7 @@ The following steps assume:
  - You have access to a debian-based Linux 64-bit machine
  - You have sudo (admin) access
 
-We have created the HIRI heatmap so it can be installed and run with Docker. To prepare the machine, we will need to install various software.
+We have created the HIRI heatmap so it can be installed and run with Docker. To prepare the machine, we will need to install various pieces of software.
 
 
 **Install Docker:** The latest instructions can be found [here](https://docs.docker.com/engine/install/ubuntu/)
@@ -108,7 +109,7 @@ sudo systemctl start mongodb
 sudo vim /etc/mongodb.conf
 
 # You will need to add in 172.17.0.1 so the bind_ip address has two values
-bind_ip = 127.0.0.1,172.17.0.1 
+bind_ip = 127.0.0.1,172.17.0.1 # Update the bind_ip setting to include the Docker bridge network IP
 
 # Restart mongoDB
 sudo systemctl restart mongodb
@@ -161,7 +162,7 @@ docker system prune --all --volumes
 
 
 > *Note: <br>
-> Following these commands will allow you to run the HIRI heatmap on any compatible computer. If you would like to setup a plugin server that can be publically viewed through the internet, see [Server deployment](installing_running.md#server-deployment).*
+> Following these commands will allow you to run the HIRI heatmap on any compatible computer. If you would like to setup a plugin server that can be publicly viewed through the internet, see [Server deployment](installing_running.md#server-deployment).*
 
 
 
@@ -292,7 +293,12 @@ Similar to a local install, you have the option of installing the HIRI heatmap u
 
 <br>
 
-To make the heatmap accessible through the internet, you will need to have access to a running online server that is capable of publically displaying websites with an IP address.
+> *Note: <br>
+> Some servers such as institute-based servers are restarted at a set time to install updates. In addition, the underlying infrastructure of many servers may require being updated or patched added. What this means, is that when restarted, Micromix will not restart and thus users wll not be able visit the site until the required services are restarted. This can be problematic, especifically when restarts are unknown. To get arround this issue, Supervisord can be installed and each service (frontend and backend) can start when after the server restarts, requiring no intervension. To learn more about this, click [here](http://supervisord.org/).*
+
+<br>
+
+To make the heatmap accessible through the internet, you will need to have access to a running online server that is capable of publicly displaying websites with an IP address.
 
 If you don't have any institute or department hosting services available, you can create and run a virtual machine from different web services, such as Amazon Web Services (AWS) or using Google Cloud. An AWS tutorial can be viewed [here](https://aws.amazon.com/getting-started/launch-a-virtual-machine-B-0/), and with Google Cloud [here](https://cloud.google.com/compute/docs/create-linux-vm-instance). 
 
@@ -370,17 +376,118 @@ sudo apt-get update
 ```
 
 
-### Backend changes:
-
-TBD - change network config XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
 ### Frontend changes:
 
-TBD - change network config XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Change the IP address to your plugin servers IP address
+
+```bash
+# Open deckglCanvas.vue
+vim Heatmap/frontend/src/components/deckglCanvas.vue
+
+# Change the line that points to the backend
+# backend_url: 'http://127.0.0.1:3000', 
+# Change this to your server IP address or domain name
+backend_url: 'http://192.100.10.1:3000', 
+``` 
+
+### Backend changes:
+
+First, we need to configure networking between the Micromix server and the heatmap server
+```bash
+# Change the link in app.py to use the Micromix server's local install of MongoDB (heatmap)
+vim Heatmap/backend/app.py
+
+# Change client = MongoClient('172.17.0.1', 27017), to the Micromix instance you would like the heatmap to connect to. Depending on your server configuration, you may need to create a firewall rule for port 27017 if using a commercial service such as AWS or GCP (heatmap)
+client = MongoClient("mongodb://192.100.10.1:27017") # Change this IP address to the Micromix site the plugin will appear
+
+# At this point, you will also need to open port 27017 on your Micromix server, providing access for the heatmap. Again, if using a commercial service, you will need to create a firewall rule. (Micromix)
+```
+
+On the Micromix server:
+```bash
+# Next, you will need to add the heatmap IP address to MongoDB on the Micromix server, providing access. On the Micromix server, this can be added (Micromix)
+sudo vim /etc/mongodb.conf
+
+# Change bind_ip = 127.0.0.1 - adding in the heatmap IP address (Micromix)
+bind_ip = 127.0.0.1, 192.100.10.1
+
+# Add firewall rule (Micromix)
+sudo ufw allow from 192.100.10.1 to any port 27017
+
+# Restart MongoDB (Micromix)
+sudo systemctl restart mongodb
+```
+
+Create wsgi.py to allow Gunicorn to run.
+```bash
+# Create wsgi.py
+vim wsgi.py
+
+# Add in the following
+from app import app
+
+if __name__ == '__main__':
+   app.run()
+
+# Close file
+```
+
+Back on the heatmap server, edit the Dockerfile to allow Gunicorn to run and expose port 3000
+```bash
+# Open the backend Dockerfile
+vim Heatmap/backend/Dockerfile
+
+# Just before exposing port 3000, add in the installation of Gunicorn
+# RUN pip install gunicorn 
+
+# Comment out or remove all code after exposing port 3000, and add in 
+# CMD ["gunicorn", "--bind", "0.0.0.0:3000", "wsgy:app"]
+```
+
+> *Note:
+> Some plugins such as Clustergrammer will not require the IP address of the main Micromix site, as the dataframe is passed directly to the API.*
+
+### Docker compose changes:
+
+The last step before running is to change the port to 80, allowing users to enter in the IP address or domain name without having to specify a port (as is done with local installs), as port 80 is the default port for websites.
+
+```bash
+# Open docker-compose.yaml
+vim Heatmap/docker-compose.yaml
+
+# Change the frontend port from "8081:80" to "80:80"
+```
+
+### Deploy Micromix:
+
+```bash
+# Browse to the correct directory
+cd Micromix/Heatmap
+
+# Run docker compose
+# This is linked to two dockerfiles, one for the backend and one for the frontend
+sudo docker compose build 
+sudo docker compose up
+
+# If you require that the containers run in the background, you can use
+docker compose up --detach
+
+# These two commands may take some time to complete
+# Once the containers have completed running, they will stay running in the console window, displaying traffic information related to the site. You can now visit your IP address or domain name and loading screen for the heatmap will be running. 
 
 
+# To stop the containers - first press 'ctrl + C', then
+docker compose down
 
-### 2.2 Manual installation
+# To also remove the associated volumes (-v) and images (-)
+docker compose down --volumes --rmi
+
+# To remove all containers, volumes (-v) and images (-) etc
+docker system prune --all --volumes
+```
+
+
+## 2.2 Manual installation
 
 There are a number of requirements if running locally or on a server for the first time. The HIRI heatmap follows the same infrastructure that Micromix does: there is a frontend and backend, which communicate through a specified port where the resulting heatmap can be displayed within the site when clicking on the relevant plugin button.
 
@@ -390,32 +497,7 @@ To prepare the server with the required software, you will need to follow the in
 > The code within the Github repository is adapted to run on a local machine for testing, making it easy for people to test the functionality of the heatmap. To run on a server, some small changes are required that revolve around linking the server IP address or domain name.*
 
 
-## Frontend changes:
-
-```bash
-# Open App.vue
-vim Website/frontend/src/App.vue
-
-# Change the line that points to the backend
-# backend_url: 'http://127.0.0.1:5000', //This should be changed for production
-# Change this to your server IP address or domain name
-backend_url: 'http://192.100.12.87:5000', 
-``` 
-
-You can now build the frontend
-
-```bash
-# Change to frontend
-cd Website/frontend
-
-# Building the site will create files under the /dir directory 
-npm run build
-```
-
-
-
-**The Heatmap backend:**
-
+### Backend:
 
 ```bash
 # Install software
@@ -428,7 +510,7 @@ pip3 install biopython
 sudo apt-get install python3.8-venv 
 
 # Change to backend
-cd Micromix/Heatmap/backend
+cd Heatmap/backend
 
 # Create python virtual environment
 python3 -m venv venv
@@ -440,14 +522,14 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-Next, we need to configure the networking between the Micromix server the heatmap will be the plugin, and the heatmap server
+Next, we need to configure networking between the Micromix server and the heatmap server
 
 ```bash
 # Change the link in app.py to use local MongoDB (heatmap)
-vim Micromix/Heatmap/backend/app.py
+vim Heatmap/backend/app.py
 
 # Change client = MongoClient('172.17.0.1', 27017), to the Micromix instance you would like the heatmap to connect to. Depending on your server configuration, you may need to create a firewall rule for port 27017 if using a commercial service such as AWS or GCP (heatmap)
-client = MongoClient("mongodb://192.100.12.87:27017")
+client = MongoClient("mongodb://192.100.10.1:27017")
 
 # At this point, you will also need to open port 27017 on your Micromix server, providing access for the heatmap. Again, if using a commercial service, you will need to create a firewall rule. 
 
@@ -455,10 +537,10 @@ client = MongoClient("mongodb://192.100.12.87:27017")
 sudo vim /etc/mongodb.conf
 
 # Change bind_ip = 127.0.0.1 - adding in the heatmap IP address (Micromix)
-bind_ip = 127.0.0.1, 192.200.12.87
+bind_ip = 127.0.0.1, 192.100.10.1
 
 # Add firewall rule (Micromix)
-sudo ufw allow from 192.200.12.87 to any port 27017
+sudo ufw allow from 192.100.10.1 to any port 27017
 
 # Restart MongoDB (Micromix)
 sudo systemctl restart mongodb
@@ -490,17 +572,16 @@ gunicorn --bind 0.0.0.0:5000 wsgy:app --access-logfile /home/$USER/Micromix/Heat
 ```
 
 
-**The Heatmap frontend:**
-
+### Frontend:
 
 Link the IP address and port of the backend to the frontend
 
 ```bash
 # Edit deckglCanvas.vue
-vim Micromix/Heatmap/frontend/src/components/deckglCanvas.vue
+vim Heatmap/frontend/src/components/deckglCanvas.vue
 
 # Change backendUrl: 'http://127.0.0.1:3000', to the ip address/domain name of the heatmap and the backend port
-backendUrl: '192.200.12.87:5000',
+backendUrl: '192.100.10.1:3000',
 ```
 
 Build the heatmap static files
@@ -508,7 +589,7 @@ Build the heatmap static files
 ```bash
 
 # Change to frontend directory
-cd Micromic/Heatmap/frontend
+cd Heatmap/frontend
 
 # Build - creating the dist/ folder
 npm run build
@@ -523,7 +604,7 @@ sudo apt install nginx
 # Make a copy of the current Nginx configuration file
 mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default_old
 
-# You will need to copy an updated configuration file that has been adapted for Micromix
+# You will need to copy an updated configuration file that has been adapted for the HIRI heatmap
 cp Heatmap/frontend/Nginx/nginx_manual_install.config /etc/nginx/sites-available/default
 
 # Edit the IP address/domain names and location of the /dist folder
@@ -541,10 +622,3 @@ sudo systemctl restart nginx
 
 You will be able to visit your IP address or domain name in a browser and you will be able to see the loading animation for the heatmap.
 
-
-
-## 3 Integrating plugin to Micromix
-
-something about adding HM ip address to MongoDB?????????
-
-creating plugins python script and the details

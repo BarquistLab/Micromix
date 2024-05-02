@@ -2,12 +2,9 @@
 
 ## Contents
 - [Micromix](README.md#micromix-user-guide)
-- [Installing and running](installing_running.md##installing-and-running-micromix)
-    - [Install options](installing_running.md#installing-and-running-micromix)
-        - [Virtual machine](installing_running.md#1-using-a-pre-built-virtual-machine)
-        - [Containers](installing_running.md#2-using-docker-containers)
-        - [Manual install](installing_running.md#3-manually-installing-micromix)
-    - [Server deployment](installing_running.md#server-deployment)
+- [Installing and running](installing_running_micromix.md#installing-and-running-micromix)
+    - [Micromix](installing_running_micromix.md#installing-and-running-micromix)
+    - [Plugins](installing_running_plugins.md#installing-and-running-plugins)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
@@ -32,12 +29,12 @@ Depending on the way you have configured or downloaded Micromix, when making cha
 If using the pre-configured image, you can do this by pressing `Control + C` to stop the service in the relevant terminal.
 
 ```bash
-#You can then re-run the required service
+# You can then re-run the required service
 
-#To start the website
+# To start the website
 ./run_website.sh
 
-#To start the heatmap
+# To start the heatmap
 ./run_heatmap.sh
 
 ```
@@ -71,13 +68,13 @@ Download the genome (.fasta or .fa) and genome annotation (.gff or .gtf).
 For this example, you can use the following:
 
 ```bash
-#GFF
+# GFF
 curl https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-56/gff3/bacteria_79_collection/salmonella_enterica_subsp_enterica_serovar_typhimurium_str_sl1344_gca_000210855/Salmonella_enterica_subsp_enterica_serovar_typhimurium_str_sl1344_gca_000210855.ASM21085v2.56.chromosome.Chromosome.gff3.gz -o salmonella_sl1344.gff3.gz
 
-#Fasta
+# Fasta
 curl https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-56/fasta/bacteria_79_collection/salmonella_enterica_subsp_enterica_serovar_typhimurium_str_sl1344_gca_000210855/dna/Salmonella_enterica_subsp_enterica_serovar_typhimurium_str_sl1344_gca_000210855.ASM21085v2.dna.chromosome.Chromosome.fa.gz -o salmonella_sl1344.fa.gz
 
-#unzip
+# Unzip
 gunzip salmonella_sl1344.gff3.gz
 gunzip salmonella_sl1344.fa.gz
 ```
@@ -112,17 +109,17 @@ awk -F '\t' '{print $3}' salmonella_sl1344.gff3 | sort | uniq -c
 To generate the transcriptome, you need to decide which features to use. For example, we may only want to look at CDS regions, or we may want to look at a wider range of features as shown:
 
 ```bash
-#The generate_transcriptome.py script is located here:
+# The generate_transcriptome.py script is located here:
 /scripts/generate_transcriptome.py
 
-#To view the help menu
+# To view the help menu
 ./generate_transcriptome.py -h
 
-#If available, we recommend using a tag that exists for each loci such as a locus tag (sl1344_0001), 
-#so un-named and hypothetical genes will be included. 
-#You will need to manually open the .gff file to identify what fields are available (alternatives are gene_id, ID, Name etc).
+# If available, we recommend using a tag that exists for each loci such as a locus tag (sl1344_0001), 
+# so un-named and hypothetical genes will be included. 
+# You will need to manually open the .gff file to identify what fields are available (alternatives are gene_id, ID, Name etc).
 
-#To run, select the feature (CDS etc), and also the gene ID type. 
+# To run, select the feature (CDS etc), and also the gene ID type. 
 generate_transcriptome.py \
 -fasta salmonella_sl1344.fa \
 -gff salmonella_sl1344.gff3 \
@@ -151,24 +148,24 @@ The last step is extracting the required information from the eggNOG output and 
 To do so, you will need to run the following:
 
 ```bash
-#The script is located here 
+# The script is located here 
 /scripts/parse_eggnog_annotations.R
 
-#R will need to be installed on your machine for this to execute successfully, type the following to make sure (you should receive a version number
+# R will need to be installed on your machine for this to execute successfully, type the following to make sure (you should receive a version number
 R --version
 
-#If you have trouble installing R and BiocManager on Ubuntu
-#Try this link: https://linuxize.com/post/how-to-install-r-on-ubuntu-20-04/
+# If you have trouble installing R and BiocManager on Ubuntu
+# Try this link: https://linuxize.com/post/how-to-install-r-on-ubuntu-20-04/
 
-#When running, you need to provide the eggNOG annotation file as shown
-#The resulting output files will be saved in the current directory
+# When running, you need to provide the eggNOG annotation file as shown
+# The resulting output files will be saved in the current directory
 Rscript parse_eggnog_annotations.R eggnog_annotations.csv
 
-#After running, you should have the following two new files:
+# After running, you should have the following two new files:
 gene_annotations.json
 pathways.json
 
-#gene annotations requires a quick tidy up (removing redundant /'s)
+# Gene annotations requires a quick tidy up (removing redundant /'s)
 sed -i 's/\\//g' gene_annotations.json
 
 ```
@@ -307,16 +304,16 @@ The `columns` field should contain all columns within the associated file. If th
 There can be up to four files that may need to be edited, depending on requirements.
 
 ```bash
-#Files associated with gene annotations and pathways
+# Files associated with gene annotations and pathways
 
-#Frontend - bacteria specific
+# Frontend - bacteria specific
 src/assets/organisms/<bacteria>/pathways.json
 src/assets/organisms/<bacteria>/filters.json
 
-#Frontend - 
+# Frontend
 src/components/search_query.vue
 
-#Backend
+# Backend
 static/gene_annotations.json
 ```
 
@@ -364,10 +361,10 @@ An example of `gene_annotations.json`
 
 All pathway annotations should be linked to each organism/bacteria and their specific genes. For this reason, the underlying pathways are stored within each bacteria's folder. For example:
 ```bash
-#Bacteria A
+# Bacteria A
 Website/frontend/src/assets/organisms/bacteriaA/pathways.json
 
-#Baceria B
+# Baceria B
 Website/frontend/src/assets/organisms/bacteriaB/pathways.json
 ```
 
@@ -404,14 +401,14 @@ A snippet of `pathways.json`, showing the first two GO and KEGG entries
 Finally, to link the annotations so they can be loaded on the site and filtered, two files need to modified.
 
 ```bash
-#1) The filters for each bacteria
-#Bacteria A
+# 1) The filters for each bacteria
+# Bacteria A
 Website/frontend/src/assets/organisms/bacteriaA/filters.json
 
-#Baceria B
+# Baceria B
 Website/frontend/src/assets/organisms/bacteriaB/filters.json
 
-#2) Loading the filters
+# 2) Loading the filters
 Website/frontend/src/components/search_query.vue
 ```
 
@@ -424,9 +421,9 @@ Each bacteria is required to have its unique set of filters. This can be a direc
 The last setp is linking all the existing information we have created/modified in the above steps into the site. This file is stored here: `Website/frontend/src/components/search_query.vue`
 
 ```bash
-#Loading functional annotations is achieved from the function
+# Loading functional annotations is achieved from the function
 load_autocomplete_json()
-#This should be lines 335-348 (shown below)
+# This should be lines 335-348 (shown below)
 ```
 
 ```javascript
@@ -543,19 +540,13 @@ Micromix stores session data within MongoDB. Over time, the database will grow a
 You can also interact with MongoDB from the command line. For example:
 
 ```bash
-#To list the available databases
+# To list the available databases
 mongo --eval "printjson(db.adminCommand('listDatabases'))"
 
-#To give details about the database 'micromix'
+# To give details about the database 'micromix'
 mongo micromix --eval "var stats = db.stats(1024 * 1024); printjson({dataSizeMB: stats.dataSize, storageSizeMB: stats.storageSize, totalEntries: stats.objects})"
 
-#To get the head of a record
+# To get the head of a record
 mongo micromix --eval "printjson(db.visualizations.findOne())" | head
 
 ```
-
-
-
-
-
-

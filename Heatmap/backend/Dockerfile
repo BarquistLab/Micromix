@@ -15,10 +15,10 @@ EXPOSE 3000
 
 # Define environment variables
 ENV FLASK_APP=app.py
+
 # make accessable from outside the container
 ENV FLASK_RUN_HOST=0.0.0.0
 
 # Run app.py when the container launches
 # (0.0.0.0 again to make accessable outside container)
 CMD ["flask", "run", "--host=0.0.0.0", "--port=3000"]
-

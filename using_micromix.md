@@ -2,12 +2,9 @@
 
 ## Contents
 - [Micromix](README.md#micromix-user-guide)
-- [Installing and running](installing_running.md##installing-and-running-micromix)
-    - [Install options](installing_running.md#installing-and-running-micromix)
-        - [Virtual machine](installing_running.md#1-using-a-pre-built-virtual-machine)
-        - [Containers](installing_running.md#2-using-docker-containers)
-        - [Manual install](installing_running.md#3-manually-installing-micromix)
-    - [Server deployment](installing_running.md#server-deployment)
+- [Installing and running](installing_running_micromix.md#installing-and-running-micromix)
+    - [Micromix](installing_running_micromix.md#installing-and-running-micromix)
+    - [Plugins](installing_running_plugins.md#installing-and-running-plugins)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
@@ -124,9 +121,3 @@ The Clustergrammer plugin utalises the API from the Ma'ayan lab, passing the req
 > It should be noted that < 200 genes should be used for visualisations (an in-built restriction built into the API), otherwise an error may occur. If you require larger datasets, there is an option of deploying your own [Clustergrammer server](https://maayanlab.cloud/clustergrammer/) 
 
 <img width="80%" src="images/clustergrammer.png" />
-
-### Scatterplot
-
-**<< TBD >>**
-
-Hannah, I'm unsure if this will be kept in the final version - curious to know if you find the scatterplot useful?
