@@ -16,8 +16,6 @@ Or, transcripts and associated IDs:
 python gff_to_fasta_transcriptome.py -fasta chr1.fa -gff chr1.gff -f transcript -a ID -o chr1_transcripts.fa
 """
 
-#Note for Regan
-#python ./gff_to_fasta_transcriptome.py -fasta GCA_000010205.1_ASM1020v1_genomic.fna -gff GCA_000010205.1_ASM1020v1_genomic_v2.gff -f ['gene', 'nc_gene', 'tsa', 'sca'] -a locus_tag -o ncbi_fa.fa
 import argparse
 from Bio import SeqIO
 
@@ -65,7 +63,7 @@ gene_features = [feature.replace('[' , '').replace(']','').replace(',','') for f
 #Create empty dict.
 fasta_records_dict = dict()
 #Add fasta into dict.
-for fasta_file in  args.fasta:
+for fasta_file in args.fasta:
         fasta_records_dict.update(SeqIO.to_dict(SeqIO.parse(fasta_file, 'fasta')))
 #pass fasta, features and attributes to function
 create_transcriptome(fasta_records_dict, args.gff, gene_features, args.gene_attribute, args.o)

@@ -3,15 +3,15 @@
 ## Contents
 - [Micromix](README.md#micromix-user-guide)
 - [Installing and running](installing_running.md#installing-and-running-micromix)
-    - [Micromix](installing_running_micromix.md#installing-and-running-micromix)
+    - [Micromix](installing_running_micromix.md#1-installing-and-running-micromix)
         - [1. Local installation](installing_running_micromix.md#1-installing-and-running-micromix)
             - [1.1 Virtual machine](installing_running_micromix.md#11-using-a-pre-built-virtual-machine)
             - [1.2 Containers](installing_running_micromix.md#12-using-docker-containers)
-            - [1.3 Manual installation](installing_running_micromix.md#13-manually-installing-micromix)
+            - [1.3 Manual installation](installing_running_micromix.md#13-manual-installation)
         - [2. Server deployment](installing_running_micromix.md#2-server-deployment)
             - [2.1 Containers](installing_running_micromix.md#21-using-docker-containers)
-            - [2.2 Manual installation](installing_running_micromix.md#22-manually-installing-micromix)
-    - [Plugins](installing_running_plugins.md#installing-and-running-micromix)
+            - [2.2 Manual installation](installing_running_micromix.md#22-manual-installation)
+    - [Plugins](installing_running_plugins.md#1-installing-and-running-plugins)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
@@ -43,7 +43,7 @@ There are three options to use Micromix, depending on the user requirements.
 The simplest way to use Micromix is to use our pre-built virtual machine (VM). This is available for download here **INSERT HYPERLINK**. 
 
 > *Note: <br>
-> Using our pre-configured VM allows you to test Micromix out with minimal effort. However, this environment cannot be used to publicly share sessions, it's only available on the machine where it's installed.*
+> Using our pre-configured VM allows you to test Micromix out with minimal effort (Within this VM, Micromix has been installed manually). However, this environment cannot be used to publicly share sessions, it's only available on the machine where it's installed.*
 
 The image was created using VirtualBox (version 6.1), free software that can be run on all operating systems, and can be downloaded [here](https://www.virtualbox.org/wiki/Download_Old_Builds_6_1).
 
@@ -69,7 +69,7 @@ To start running the VM,
 
 ```
 
-The site can be accessed by opening the browser and typing **localhost:8080** $${\color{red}CHECK}$$
+The site can be accessed by opening the browser and typing **localhost:8080**
 
 
 
@@ -174,7 +174,7 @@ sudo docker compose up
 
 # Note: The 'build' command may take some time to complete
 # Once the containers have completed running, you should see this line from the command line (or something similar)
-* Running on http://127.0.0.1:7000 $${\color{red}CHECK}$$
+* Running on http://127.0.0.1:7000
 
 # Browse to this address in your browser, and Micromix will be running
 
@@ -194,7 +194,7 @@ docker system prune --all --volumes
 
 
 
-## 1.3. Manuall installation
+## 1.3. Manual installation
 
 There are a number of requirements to run Micromix locally for the  first time. 
 
@@ -258,7 +258,7 @@ pip3 install -r requirements.txt
 export FLASK_DEBUG=1
 
 # Launch Flask server
-flask run --port 3000 $${\color{red}CHECK}$$
+flask run --port 3000
 
 # You should see the following output
 ```
@@ -279,10 +279,13 @@ sudo apt-get install libssl-dev libcurl4-openssl-dev
 # Download and install Node.js
 sudo apt install curl
 curl -sL https://deb.nodesource.com/setup_18.x -o nodejs_setup.sh
+
 # Change permissions
 sudo chmod 777 nodejs_setup.sh
+
 # Run
 sudo ./nodejs_setup.sh
+
 # Install
 sudo apt-get install -y nodejs
 
@@ -334,7 +337,7 @@ npm run serve
 # You should see the following output
 ```
 > Open the address shown in the terminal where you executed the line above with your web browser. This should be http://localhost:8080/. The backend should also be running, otherwise the site will not load.
-$${\color{red}CHECK}$$
+
 
 <img width="80%" src="images/website_frontend_running.png" />
 
@@ -353,13 +356,9 @@ To host your own data, you can edit this code on a test machine first and copy t
 
 Similar to a local install, you have the option of installing Micromix using Docker containers, or with a manual installation.
 
-> *Note: <br>
-> The code within the Github repository was adapted to run on a local machine for testing, making it easy for people to test Micromix. To run Micromix on a server, some small changes are required that revolve around linking the server IP address or domain name.*
-
-<br>
-
-> *Note: <br>
-> Some servers such as institute-based servers are restarted at a set time to install updates. In addition, the underlying infrastructure of many servers may require being updated or patched added. What this means, is that when restarted, Micromix will not restart and thus users wll not be able visit the site until the required services are restarted. This can be problematic, especifically when restarts are unknown. To get arround this issue, Supervisord can be installed and each service (frontend and backend) can start when after the server restarts, requiring no intervension. To learn more about this, click [here](http://supervisord.org/).*
+> Note:
+> 1. The code within the Github repository was adapted to run on a local machine for testing, making it easy for people to test Micromix. To run Micromix on a server, some small changes are required that revolve around linking the server IP address or domain name.
+> 2. Some servers such as institute-based servers are restarted at a set time to install updates. In addition, the underlying infrastructure of many servers may require being updated or patched added. What this means, is that when restarted, Micromix will not restart and thus users wll not be able visit the site until the required services are restarted. This can be problematic, especifically when restarts are unknown. To get arround this issue, Supervisord can be installed and each service (frontend and backend) can start when after the server restarts, requiring no intervension. To learn more about this, click [here](http://supervisord.org/).
 
 <br>
 

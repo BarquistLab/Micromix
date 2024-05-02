@@ -3,14 +3,14 @@
 ## Contents
 - [Micromix](README.md#micromix-user-guide)
 - [Installing and running](installing_running_micromix.md#installing-and-running-micromix)
-    - [Micromix](installing_running_micromix.md#installing-and-running-micromix)
-    - [Plugins](installing_running_plugins.md#installing-and-running-micromix)
-        - [1. Local installation](installing_running_plugins.md#installing-and-running-micromix)
-            - [1.1 Containers](installing_running_plugins.md#2-using-docker-containers)
-            - [1.2 Manual installation](installing_running_plugins.md#3-manually-installing-micromix)
-        - [2. Server deployment](installing_running_plugins.md#server-deployment)
-            - [2.1 Containers](installing_running_plugins.md#2-using-docker-containers)
-            - [2.2 Manual installation](installing_running_plugins.md#3-manually-installing-micromix)
+    - [Micromix](installing_running_micromix.md#1-installing-and-running-micromix)
+    - [Plugins](installing_running_plugins.md#1-installing-and-running-plugins)
+        - [1. Local installation](installing_running_plugins.md#1-installing-and-running-plugins)
+            - [1.1 Containers](installing_running_plugins.md#11-using-docker-containers)
+            - [1.2 Manual installation](installing_running_plugins.md#12-manual-installation)
+        - [2. Server deployment](installing_running_plugins.md#2-server-deployment)
+            - [2.1 Containers](installing_running_plugins.md#21-using-docker-containers)
+            - [2.2 Manual installation](installing_running_plugins.md#22-manual-installation)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
@@ -36,11 +36,13 @@ Plugins allow the user to visualise the data stored within Micromix. As part of 
 1) The Clustergrammer heatmap, which can be run without any configuration - and is an example of using an existing API <br>
 2) The HIRI heatmap, which we provide the installation instructions below.
 
-Additional plugins can be developed and incorporated into Micromix, and will follow many of the following installation steps. A good example is a recently developed principal component analysis (PCA) plugin, that describes in detail many of the key steps required when building a plugin. The PCA plugin can be accessed [here](https://github.com/BarquistLab/pca-plugin). 
+Additional plugins can be developed and incorporated into Micromix, and will follow many of the following installation steps in this section. A good example is a recently developed principal component analysis (PCA) plugin, that describes in detail many of the key steps required when building a plugin. The PCA plugin can be accessed [here](https://github.com/BarquistLab/pca-plugin). 
 
 If you already have a plugin you would like to integrate, see [Adding new visualisation plugins](modifying_micromix.md#adding-new-visualisation-plugins).
 
 <br>
+
+## HIRI Heatmap
 
 To install and run the HIRI heatmap, there are two options currently available, depending on user requirements:
 
@@ -162,7 +164,7 @@ docker system prune --all --volumes
 
 
 > *Note: <br>
-> Following these commands will allow you to run the HIRI heatmap on any compatible computer. If you would like to setup a plugin server that can be publicly viewed through the internet, see [Server deployment](installing_running.md#server-deployment).*
+> Following these commands will allow you to run the HIRI heatmap on any compatible computer. If you would like to setup a plugin server that can be publicly viewed through the internet, see [Server deployment](installing_running_plugins.md#2-server-deployment).*
 
 
 
@@ -220,10 +222,13 @@ sudo apt-get install libssl-dev libcurl4-openssl-dev
 # Download and install Node.js
 sudo apt install curl
 curl -sL https://deb.nodesource.com/setup_18.x -o nodejs_setup.sh
+
 # Change permissions
 sudo chmod 777 nodejs_setup.sh
+
 # Run
 sudo ./nodejs_setup.sh
+
 # Install
 sudo apt-get install -y nodejs
 
@@ -278,7 +283,7 @@ npm run serve
 <img width="80%" src="images/heatmap_frontend_running.png" />
 
 > *Note: <br>
-> When visiting the IP address of the heatmap, a loading screen will be visible. You will not be able to interact with the heatmap at this point - you will have to link the heatmap up to a Micromix instance, that will pass data to this waiting server, which will then display the associated heatmap.* SEE SECTION XXXXXXXXXX
+> When visiting the IP address of the heatmap, a loading screen will be visible. You will not be able to interact with the heatmap at this point - you will have to link the heatmap up to a Micromix instance, that will pass data to this waiting server, which will then display the associated heatmap.*
 
 
 
@@ -288,15 +293,13 @@ This section allows you to run the HIRI heatmap on a server that is accessible t
 
 Similar to a local install, you have the option of installing the HIRI heatmap using Docker containers, or manually.
 
-> *Note: <br>
-> The code within the Github repository is adapted to run on a local machine for testing, making it easy for people to test the functionality of the heatmap. To create a dedicated server, some small changes are required that revolve around linking the server IP address to the heatmap.*
+> Note: 
+> 1. The code within the Github repository is adapted to run on a local machine for testing, making it easy for people to test the functionality of the heatmap. To create a dedicated server, some small changes are required that revolve around linking the server IP address to the heatmap.
+> 2. Some servers such as institute-based servers are restarted at a set time to install updates. In addition, the underlying infrastructure of many servers may require being updated or patched added. What this means, is that when restarted, Micromix will not restart and thus users wll not be able visit the site until the required services are restarted. This can be problematic, especifically when restarts are unknown. To get arround this issue, Supervisord can be installed and each service (frontend and backend) can start when after the server restarts, requiring no intervension. To learn more about this, click [here](http://supervisord.org/).
 
 <br>
 
-> *Note: <br>
-> Some servers such as institute-based servers are restarted at a set time to install updates. In addition, the underlying infrastructure of many servers may require being updated or patched added. What this means, is that when restarted, Micromix will not restart and thus users wll not be able visit the site until the required services are restarted. This can be problematic, especifically when restarts are unknown. To get arround this issue, Supervisord can be installed and each service (frontend and backend) can start when after the server restarts, requiring no intervension. To learn more about this, click [here](http://supervisord.org/).*
-
-<br>
+## Server requirements
 
 To make the heatmap accessible through the internet, you will need to have access to a running online server that is capable of publicly displaying websites with an IP address.
 
@@ -409,7 +412,7 @@ On the Micromix server:
 sudo vim /etc/mongodb.conf
 
 # Change bind_ip = 127.0.0.1 - adding in the heatmap IP address (Micromix)
-bind_ip = 127.0.0.1, 192.100.10.1
+bind_ip = 127.0.0.1,192.100.10.1
 
 # Add firewall rule (Micromix)
 sudo ufw allow from 192.100.10.1 to any port 27017
@@ -441,7 +444,7 @@ vim Heatmap/backend/Dockerfile
 # RUN pip install gunicorn 
 
 # Comment out or remove all code after exposing port 3000, and add in 
-# CMD ["gunicorn", "--bind", "0.0.0.0:3000", "wsgy:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:3000", "wsgy:app"]
 ```
 
 > *Note:
@@ -537,7 +540,7 @@ client = MongoClient("mongodb://192.100.10.1:27017")
 sudo vim /etc/mongodb.conf
 
 # Change bind_ip = 127.0.0.1 - adding in the heatmap IP address (Micromix)
-bind_ip = 127.0.0.1, 192.100.10.1
+bind_ip = 127.0.0.1,192.100.10.1
 
 # Add firewall rule (Micromix)
 sudo ufw allow from 192.100.10.1 to any port 27017

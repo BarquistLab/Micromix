@@ -30,15 +30,15 @@ if (length(args)==0) {
 #------------------------------------------
 
 
-#If you have troubles installing R and BiocManager on Ubuntu
+#If you have trouble installing R and BiocManager on Ubuntu
 #Try this link: https://linuxize.com/post/how-to-install-r-on-ubuntu-20-04/
-#In ubuntu, these are also needed: sudo apt-get install libssl-dev libcurl4-openssl-dev
+#In Ubuntu, these packages are also needed: sudo apt-get install libssl-dev libcurl4-openssl-dev
 
 #BiocManager
 if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
-#keeping if needed
+#keeping if needed to install manually
 #BiocManager::install("httr")
 #BiocManager::install("GO.db")
 #BiocManager::install("KEGGREST")

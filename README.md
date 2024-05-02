@@ -3,8 +3,8 @@
 ## Contents
 - [Micromix](README.md#micromix-user-guide)
 - [Installing and running](installing_running_micromix.md#installing-and-running-micromix)
-    - [Micromix](installing_running_micromix.md#installing-and-running-micromix)
-    - [Plugins](installing_running_plugins.md#installing-and-running-plugins)
+    - [Micromix](installing_running_micromix.md#1-installing-and-running-micromix)
+    - [Plugins](installing_running_plugins.md#1-installing-and-running-plugins)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
@@ -26,12 +26,13 @@
 # Micromix
 
 ## Background
-Micromix was designed as a visualisation platform to easily view next generation sequencing data, such as counts from RNA-seq. Its main focus is for use with prokaryotic data, such as bacteria, which comes pre-bundled. Different bacteria can be included where the associated data can be filtered and/or transformed, then passed through a visualisation tool to examine biological patterns further, such as a heatmap.
-
+Micromix is designed as a visualization platform to easily view next-generation sequencing data, such as RNA-seq counts. It primarily focuses on prokaryotic data, such as bacteria, which comes pre-bundled, which comes pre-bundled with Salmonella and Bacteroides. Users can include different bacteria, where associated data can be filtered and/or transformed, then visualized through plugins like heatmaps to examine biological patterns.
 
 ## Infrastructure
-The site contains a backend (Flask) and frontend (Vue.js) that communicate with each other, saving data from each session using MongoDB. Plugins within the site are typically setup on separate servers with data being passed and a visualisation returned and displayed within the site.
-Since each user session is stored with a unique ID, session information can be re-loaded by passing the unique ID into the URL. For example: [http://micromix.helmholtz-hiri.de/bacteroides/?config=652d4077f7670759f17ae4ba](http://micromix.helmholtz-hiri.de/bacteroides/?config=652d4077f7670759f17ae4ba). These types of links can also be shared to collaborators so they can examine specific data patterns from data within the site, or unique user data they have manually uploaded.
+The site comprises a backend (Flask) and a frontend (Vue.js) that communicate with each other, saving data from each session using MongoDB. Plugins within the site are typically set up on separate servers, displaying a visualisation within the site.
+
+Each user session is stored with a unique ID, allowing session information to be re-loaded by passing the unique ID into the URL. For example: [http://micromix.helmholtz-hiri.de/bacteroides/?config=652d4077f7670759f17ae4ba](http://micromix.helmholtz-hiri.de/bacteroides/?config=652d4077f7670759f17ae4ba). These links can be shared with collaborators to examine specific data patterns from data within the site, or unique user data they have manually uploaded.
+
 
 <br>
 <br>

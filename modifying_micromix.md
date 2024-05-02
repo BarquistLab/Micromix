@@ -2,9 +2,9 @@
 
 ## Contents
 - [Micromix](README.md#micromix-user-guide)
-- [Installing and running](installing_running_micromix.md#installing-and-running-micromix)
-    - [Micromix](installing_running_micromix.md#installing-and-running-micromix)
-    - [Plugins](installing_running_plugins.md#installing-and-running-plugins)
+- [Installing and running](installing_running_micromix.md#1-installing-and-running-micromix)
+    - [Micromix](installing_running_micromix.md#1-installing-and-running-micromix)
+    - [Plugins](installing_running_plugins.md#1-installing-and-running-plugins)
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
@@ -24,9 +24,9 @@
 
 # Modifying Micromix
 
-Depending on the way you have configured or downloaded Micromix, when making changes, the frontend or backend (or both) may require restarting before the changes are visable.
+Depending on the way you have configured or downloaded Micromix, when making changes, the frontend or backend (or both) may require restarting before the changes are visible.
 
-If using the pre-configured image, you can do this by pressing `Control + C` to stop the service in the relevant terminal.
+If using the preconfigured image, you can do this by pressing `Control + C` to stop the service in the relevant terminal.
 
 ```bash
 # You can then re-run the required service
@@ -39,7 +39,8 @@ If using the pre-configured image, you can do this by pressing `Control + C` to 
 
 ```
 
-> If you have pre-compiled yourself, you only need to press `Control + C` to stop the service in the relevant terminal, then press the up arrow to find the previous command, followed by `Enter`.
+> *Note: <br>
+> If you have precompiled yourself, you only need to press `Control + C` to stop the service in the relevant terminal, then press the up arrow to find the previous command, followed by `Enter`.*
 
 
 ## Preparing a new bacteria
@@ -120,7 +121,7 @@ To generate the transcriptome, you need to decide which features to use. For exa
 # You will need to manually open the .gff file to identify what fields are available (alternatives are gene_id, ID, Name etc).
 
 # To run, select the feature (CDS etc), and also the gene ID type. 
-generate_transcriptome.py \
+./generate_transcriptome.py \
 -fasta salmonella_sl1344.fa \
 -gff salmonella_sl1344.gff3 \
 -f ["gene", "ncRNA_gene", "pseudogene"] -a gene_id \
@@ -161,7 +162,7 @@ R --version
 # The resulting output files will be saved in the current directory
 Rscript parse_eggnog_annotations.R eggnog_annotations.csv
 
-# After running, you should have the following two new files:
+# After running, you should the following two new files will be created:
 gene_annotations.json
 pathways.json
 
@@ -180,11 +181,11 @@ If you are adding a new organism, you will need to add a new entry to `datasets.
 
 If you are modifying an existing bacteria/organism, there should already be an entry, which requires no action. However, in any case you will need to link the new organism to the expression data - see the next section.
 
-```
-b-theta/website/frontend/src/assets/json/organisms.json
+```bash
+Micromix/Website/frontend/src/assets/json/organisms.json
 ```
 
-Here as an example we have added **Bacteria B**:
+Here as an example where we have added **Bacteria B**:
 
 ```json
 {
@@ -208,17 +209,17 @@ Here as an example we have added **Bacteria B**:
 }
 ```
 
-**Description of the tags:**
+### Description of the tags:
 
-`"name":` - The name of the bacteria (displayed on button)
+**"name":** - The name of the bacteria (displayed on button).
 
-`"description":` - The description (displayed on button)
+**"description":** - The description (displayed on button).
 
-`"path":` - This path automatically points to `b-theta/website/frontend/src/assets/organisms/`. This is where the majority of configuration files are stored for each bacteria within the site. For each new bacteria that is added, you should browse to this location and copy either the default folder or an existing bacterial folder and rename to your new bacterial name. In this example, the entire default folder should be copied and re-named to BacteriaB. Within this newly renamed folder is an icon you can choose to update, which is displayed on the button. You can also adit the file `filters.json` to add/modify/create custom filters (discussed below in more detail in the section [Modifying or adding gene or pathway annotations](modifying_micromix.md#modifying-or-adding-gene-or-pathway-annotations).
+**"path":** - This path automatically points to `Micromix/Website/frontend/src/assets/organisms/`. This is where the majority of configuration files are stored for each bacteria within the site. For each new bacteria that is added, you should browse to this location and copy either the default folder or an existing bacterial folder and rename with your new bacterial name. In this example, the entire default folder should be copied and re-named to BacteriaB. Within this newly renamed folder is an icon you can choose to update, which is displayed on the button. You can also edit the file `filters.json` to add/modify/create custom filters (discussed below in more detail in the section [Modifying or adding gene or pathway annotations](modifying_micromix.md#modifying-or-adding-gene-or-pathway-annotations).
 
-`"id":` - this is a string and hex numbers that should be unique for each bacteria
+**"id":** - A hex number that must be unique for each bacteria.
 
-`"datasets":` - should link to an entry in this file: `b-theta/website/frontend/src/assets/json/datasets.json` (see below). 
+**"datasets":** - Should link to an entry in this file: `Micromix/Website/frontend/src/assets/json/datasets.json` (see below). 
 
 > After adding new organism, you will need to link it to the  expression data - see the next section
 
@@ -230,18 +231,17 @@ Although the heading mentions expression data, data from other next generation s
 
 Once the expression (or relevant) files have been generated, they should be saved here:
 
-```
-b-theta/website/backend/static/
+```bash
+Micromix/Website/backend/static/
 ```
 
 The corresponding file should then be added as an entry to `datasets.json`.
 
+```bash
+Micromix/Website/frontend/src/assets/json/datasets.json
 ```
-b-theta/website/frontend/src/assets/json/datasets.json
 
-```
-
-Each new entry requires all the fields presented here, such as `text`, `value` and `separator`. The new dataset can be added to an existing entry or be added as a completely new entry. Here the new dataset, called **New dataset**, is added to an existing entry ("Bacteria A RNA-seq") and is linked to the file **new_data.tsv**. 
+Each new entry requires all the fields presented here, such as **text**, **value** and **separator**. The new dataset can be added to an existing entry or be added as a completely new entry. Here the new dataset, called **New dataset**, is added to an existing entry ("Bacteria A RNA-seq") and is linked to the file **new_data.tsv**. 
 
 ```json
 {
@@ -251,51 +251,51 @@ Each new entry requires all the fields presented here, such as `text`, `value` a
       {
         "text": "Dataset 1",
         "value": {"filename": "dataset1.tsv", 
-                  "seperator": "\t", 
+                  "separator": "\t", 
                   "decimal_character": ".", 
                   "columns": [{"value": null, "text": "All columns"}, "Sequence name", "locus tag", "Name", "Start", "End", "Strand", "Condition 1 logFC", "Condition 2 logFC"]},
-        "seperator": "\t"
+        "separator": "\t"
       },
       {
         "text": "New dataset",
         "value": {"filename": "new_data.tsv", 
-                  "seperator": "\t", 
+                  "separator": "\t", 
                   "decimal_character": ".", 
                   "columns": [{"value": null, "text": "All columns"}, "Sequence name", "locus tag", "Name" "Start", "End", "Strand", "Condition 1 logFC"], 
                   "pre_selected_columns": ["locus tag", "Name", "Condition 1 logFC"]},
-        "seperator": "\t"
+        "separator": "\t"
       }
     ]
   }
 }
 ```
 If the dataset is not linked to an existing entry, e.g. data from a new study. One needs to add the name of the dataset to the organism.json file of the organism of interest (see previous steps). Here **DNA sequencing data** represents the added dataset.
-```
+```json
  "Bacteria A": {
       "name": "Bacteria A",
       "description": "Manually select datasets.",
       "path": "/bacteriaA",
       "id": "bacteria-a-e2ad6b25-40cb-4594-8685-f4fcb3ceb0e7",
       "datasets": ["Bacteria A RNA-seq", "DNA sequencing data"]
-
 ```
 Here is a brief description of the file contents:
 
-`"Bacteria A RNA-seq":` - The is the bold value that cannot be selected in the dropdown menu when selecting a new dataset
+**"Bacteria A RNA-seq":** - The is the bold value that cannot be selected in the dropdown menu when selecting a new dataset
 
 <img width="50%" src="images/select_data_dropdown_bold.png" />
 
-`"text": "Dataset 1" ` and `"text": "New dataset" ` - these are the names that will appear in the dropdown box that when selected will load the corresponding expression data
+**"text": "Dataset 1"** and **"text": "New dataset"** - These are the names that will appear in the dropdown box that when selected will load the corresponding expression data
 
-`"value": ` - this contains the filename with the expression data, the delimiter and decimal character. 
+**"value":** - this contains the filename with the expression data, the delimiter and decimal character. 
 
-The `columns` field should contain all columns within the associated file. If the column names do not match, an error will occur.
+The **columns** field should contain all columns within the associated file. If the column names do not match, an error will occur.
 
-> If you would not like to immediately show all columns, you can decide which columns should initially be displayed with `pre_selected_columns`. They can be re-added by the user when selecting the data and selecting `choose additional columns...`.  
+> *Note: <br>
+> If you would not like to immediately show all columns, you can decide which columns should initially be displayed with **pre_selected_columns**. They can be re-added by the user when selecting the data and selecting **choose additional columns...**.*
 
 <img width="50%" src="images/choose_additional_columns.png" />
 
-> After adding new expression data, both the frontend and backend will require a restart
+> After adding new expression data, both the frontend and backend will require a restart.
 
 <br>
 
@@ -307,14 +307,14 @@ There can be up to four files that may need to be edited, depending on requireme
 # Files associated with gene annotations and pathways
 
 # Frontend - bacteria specific
-src/assets/organisms/<bacteria>/pathways.json
-src/assets/organisms/<bacteria>/filters.json
+frontend/src/assets/organisms/<bacteria>/pathways.json
+frontend/src/assets/organisms/<bacteria>/filters.json
 
 # Frontend
-src/components/search_query.vue
+frontend/src/components/search_query.vue
 
 # Backend
-static/gene_annotations.json
+backend/static/gene_annotations.json
 ```
 
 This image represents the general structure how filters are linked to a pathway and that pathway contains genes that can be searched for. The site allows any type of pathway or functional annotation to be added, as long as it can follow this structure.
@@ -326,7 +326,8 @@ This image represents the general structure how filters are linked to a pathway 
 
 Each gene should have a unique identifier, as seen below with BT_0001, BT0002 etc. Depending on the functional annotations that have been extracted, they will be linked and displayed in this file: `gene_annotations.json`. If additional functional annotations are required, they can be added to the script in the previous section (above), or if specific classifications or categories are required, they can be added manually.
 
-> **Note:** If you have more then one organism loaded in the site, all genes should be present in this file. You will need to manually add the contents from both organisms `gene_annotations.json` into a single file. No additional code specifying which organism the ID links to is needed. The site looks in this file and searches through all IDs independently to which organism is selected. 
+> *Note: <br>
+> If you have more then one organism loaded in the site, all genes should be present in this file. You will need to manually add the contents from both organisms `gene_annotations.json` into a single file. No additional code specifying which organism the ID links to is needed. The site looks in this file and searches through all IDs independently to which organism is selected.*
 
 An example of `gene_annotations.json`
 
@@ -405,20 +406,20 @@ Finally, to link the annotations so they can be loaded on the site and filtered,
 # Bacteria A
 Website/frontend/src/assets/organisms/bacteriaA/filters.json
 
-# Baceria B
+# Bacteria B
 Website/frontend/src/assets/organisms/bacteriaB/filters.json
 
 # 2) Loading the filters
 Website/frontend/src/components/search_query.vue
 ```
 
-**1) Filters for each bacteria**
+**1) Filters for each bacteria:**
 
 Each bacteria is required to have its unique set of filters. This can be a direct copy across multiple bacteria, but separate files are required. Within `filters.json`, you can setup and modify all available filters.  
 
-**2) Loading the filters**
+**2) Loading the filters:**
 
-The last setp is linking all the existing information we have created/modified in the above steps into the site. This file is stored here: `Website/frontend/src/components/search_query.vue`
+The last setup is linking all the existing information we have created/modified in the above steps into the site. This file is stored here: `Website/frontend/src/components/search_query.vue`
 
 ```bash
 # Loading functional annotations is achieved from the function
@@ -471,19 +472,19 @@ For example, in the below snippet, all filters are stored under **functional** t
 
 Links to the `pathways.json` file and searches for all the entries under the parent term **go**. The names here need to match exactly. This tells the site to load all the GO entries and make them available for searching when **GO Terms** is selected in the dropdown menu. Likewise for other pathways of interest, you will need to add additional lines in to `search_query.vue` and link to the correct sections of the corresponding elements of the linked files.
 
-
-> If you have added additional functional annotations, or if you would like to add/remove current annotations from the dropdown menus - you can do this within `search_query.vue`. There are comments provided in the <dropdown> tags in the first 200 lines of code to make this process straightforward - basic knowledge of Javascript is required.
+> *Note: <br>
+> If you have added additional functional annotations, or if you would like to add/remove current annotations from the dropdown menus - you can do this within `search_query.vue`. There are comments provided in the <dropdown> tags in the first 200 lines of code to make this process straightforward - a basic knowledge of Javascript is required.*
 
 <br>
 
 ## Adding new visualisation plugins
 
 
-Plugin buttons can be programmed to load visualisations, or link to other webpages, such as genome browser tracks as applied here [b-theta DB](http://micromix.helmholtz-hiri.de/).
+Plugin buttons can be programmed to load specific visualisations, or link to other webpages, such as genome browser tracks as applied in the Micromix server housing Bacteroides data, [here](http://micromix.helmholtz-hiri.de/bacteroides/).
     
 The default approach for a visualisation plugin is to pass the expression values to an API which returns the desired visualisation and is displayed within the site. 
 
-The plugin configuration file is stored here: `btheta_site/Website/plugins.json`
+The plugin configuration file is stored here: `Micromix/Website/plugins.json`
     
 ```json
 {
@@ -491,38 +492,37 @@ The plugin configuration file is stored here: `btheta_site/Website/plugins.json`
         {
             "_id": "khds8fohoduskfi7syf99",
             "desc": "2D and 3D heatmap",
-            "image_url": "https://raw.githubusercontent.com/reganhayward/micromix/main/frontend/src/assets/heatmap_hiri_logo.svg",
+            "image_url": "https://github.com/BarquistLab/Micromix/frontend/src/assets/heatmap_hiri_logo.svg",
             "name": "Heatmap"
         },
 	{
             "_id": "5f984ac1b478a2c8653ed827",
             "desc": "Clustered heatmap by the Ma'ayan Laboratory (Max 200 genes per query)",
-            "image_url": "https://raw.githubusercontent.com/reganhayward/micromix/main/backend/plugins/clustergrammer.svg",
+            "image_url": "https://github.com/BarquistLab/Micromix/backend/plugins/clustergrammer.svg",
             "name": "Clustergrammer"
         },
 	{
             "_id": "khds8fohoduskfi7syf91",
             "desc": "Click to open new tab containing genome tracks",
-            "image_url": "https://raw.githubusercontent.com/reganhayward/micromix/main/frontend/src/assets/jbrowse.png",
+            "image_url": "https://github.com/BarquistLab/Micromix/frontend/src/assets/jbrowse.png",
             "name": "JBrowse"
         }
 
     ]
 }
-	
 ```
     
 ### Each plugin requires four fields:
 	
-**_id** -  this is the plugin unique identifier - it be should be assigned a unique HEX number
+ - **_id** -  This is the unique identifier for the plugin - it be should be assigned a unique HEX number.
 	
-**desc**  - the description written below the bold text on the button
+ - **desc**  - The description written below the bold text on the button.
 
-**image_url** - URL to the button image
+ - **image_url** - URL to the button image.
 
-**name** - the name in bold on the button
+ - **name** - The name in bold on the button.
 
-> Each plugin also requires a python script to pass the expression data to the API. These files are stored here: `btheta_site/Website/backend/plugins`. If you would like to create your own, there is a file called `template.py` that you can modify for your own purposes.
+> Each plugin also requires a python script to pass the expression data to the API. These files are stored here: `Micromix/Website/backend/plugins`. If you would like to create your own, there is a file called `template.py` that you can modify for your own purposes.
     
 
 
@@ -535,7 +535,7 @@ Micromix stores session data within MongoDB. Over time, the database will grow a
 
 `MONGO_look_for_locked.py` to look for locked session IDs. This may be useful for integrating into a Cron job or similar if wanting to automate removal of records, but exclude locked sessions
 
-`MONGO_remove_records_between_dates.py` To remove records within a specified timeframe – you also have the option of manually inputting session IDs to be excluded, such as IDs that are linked to collobrators or IDs that might be linked to a publication
+`MONGO_remove_records_between_dates.py` To remove records within a specified timeframe – you also have the option of manually inputting session IDs to be excluded, such as IDs that are linked to collaborators or IDs that might be linked to a publication
 
 You can also interact with MongoDB from the command line. For example:
 
