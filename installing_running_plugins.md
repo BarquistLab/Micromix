@@ -213,7 +213,7 @@ flask run --port 3000
 # You should see the following output
 ```
 
-<img width="80%" src="images/heatmap_backend_running.png" />
+<img width="80%" src="images/heatmap_backend.png" />
 
 
 ### Prepare the frontend 
@@ -287,7 +287,7 @@ npm run serve
 # You should see the following output
 ```
 
-<img width="80%" src="images/heatmap_frontend_running.png" />
+<img width="80%" src="images/heatmap_frontend.png" />
 
 > *Note: <br>
 > When visiting the IP address of the heatmap, a loading screen will be visible. You will not be able to interact with the heatmap at this point - you will have to link the heatmap up to a Micromix instance, that will pass data to this waiting server, which will then display the associated heatmap.*
