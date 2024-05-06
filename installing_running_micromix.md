@@ -42,8 +42,12 @@ There are three options to use Micromix, depending on the user requirements.
 
 The simplest way to use Micromix is to use our pre-built virtual machine (VM). This is available for download here **INSERT HYPERLINK**. 
 
-> *Note: <br>
-> Using our pre-configured VM allows you to test Micromix out with minimal effort (Within this VM, Micromix has been installed manually). However, this environment cannot be used to publicly share sessions, it's only available on the machine where it's installed.*
+If required, the *username* and *password* is **micromix**
+
+
+> Note: 
+> 1. Using our pre-configured VM allows you to test Micromix out with minimal effort (Within this VM, Micromix has been installed manually). However, this environment cannot be used to publicly share sessions, it's only available on the machine where it's installed.
+> 2. For this VM, we have used lubuntu, which is slightly different to Ubuntu, which we recommend. lubuntu was used to reduce the size of the virtual image.
 
 The image was created using VirtualBox (version 6.1), free software that can be run on all operating systems, and can be downloaded [here](https://www.virtualbox.org/wiki/Download_Old_Builds_6_1).
 
@@ -61,12 +65,15 @@ To start running the VM,
 # On the desktop are two files:
 
 # To start the website
-# Open a terminal (right click - 'Open in terminal')
+# Open a terminal (double click on QTerminal')
 ./run_website.sh 
 
 # To start the HIRI heatmap - open another terminal
 ./run_heatmap.sh
 
+# Each command will open two new terminal windows, 1 for the frontend and 1 for the backend
+
+# Wait about 30 seconds to ensure all the components have successfully loaded. 
 ```
 
 The site can be accessed by opening the browser and typing **localhost:8080**
@@ -257,8 +264,15 @@ pip3 install -r requirements.txt
 # Enable debugging (optional)
 export FLASK_DEBUG=1
 
+# Update to connect to the locally installed instance of MongoDB
+vim app.py
+
+# Change line ~158 from client = MongoClient('172.17.0.1', 27017), to
+client = MongoClient()
+# Save and close
+
 # Launch Flask server
-flask run --port 3000
+flask run --port 5000
 
 # You should see the following output
 ```
@@ -330,6 +344,14 @@ vim .eslintrc.js
 
 # Finally, we can install node dependencies
 npm install
+
+# We now need to change where plugins.json is located
+vim src/App.vue
+
+# Change ~ line 200, commenting out the previous line:
+# // import pluginsConfig from "plugins.json" # adding in // at the start of the line  
+# uncomment import pluginsConfig from "../../plugins.json"
+# Save file and close
 
 # Launch frontend
 npm run serve
@@ -531,7 +553,7 @@ docker system prune --all --volumes
 
 ## 2.2 Manual installation
  
-To prepare the server with the required software, you will need to follow the instructions from [1.3. Manual installation](installing_running_micromix.md#13-manual-installation). You can skip the last steps of ```npm run serve``` for the frontend and ```flask run --port 3000``` for the backend.
+To prepare the server with the required software, you will need to follow the instructions from [1.3. Manual installation](installing_running_micromix.md#13-manual-installation). You can skip the last steps of ```npm run serve``` for the frontend and ```flask run --port 5000``` for the backend.
 
 > *Note: <br>
 > The code within the Github repository is adapted to run on a local machine for testing, making it easy for people to test Micromix. To run Micromix on a server, some small changes are required that revolve around linking the server IP address or domain name.*

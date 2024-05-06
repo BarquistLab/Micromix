@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --fix --host 127.1.1.1",
+    "serve": "vue-cli-service serve --fix --host 127.0.0.1 --port 8081",
     "prebuild": "npx update-browserslist-db@latest",
     "build": "vue-cli-service build --fix",
     "lint": "vue-cli-service lint --fix"

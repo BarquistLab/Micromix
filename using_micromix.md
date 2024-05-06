@@ -31,22 +31,22 @@ This guide highlights the functionality of the Micromix website, designed to be 
 
 The first page allows you to select from the available organisms or bacteria.
 
-<img width="80%" src="images/micromix_running.png" />
+<img width="100%" src="images/select_organism.png" />
 
 ## Selecting datasets
 
 Once an organism is chosen, you have options to select desired datasets or load custom data from sources such as a delimited file or URL.
 
-<img width="80%" src="images/select_dataset.png" />
+<img width="60%" src="images/salmonella_add_data.png" />
 
 You also have the choice of adding or removing specific columns.
 
-<img width="50%" src="images/selecting_additional_columns.png" />
+<img width="60%" src="images/salmonella_select_columns.png" />
 
 Clicking **Add** will load the data.
 
 
-<img width="80%" src="images/site_descriptions.png" />
+<img width="100%" src="images/description_of_site.png" />
 
 The above image shows main elements of the site once data has been added. 
 
@@ -80,7 +80,7 @@ If you choose to examine more than one dataset, you can merge the underlying dat
 
 After selecting an additional dataset, you can choose if this additional data should be added to the right or left. This is shown in the figure below with the black squared matrix (**Matrix Preview**). By clicking on the light grey squares (on either side), this decides where the new data will be added.
 
-<img width="80%" src="images/combining_datasets.png" />
+<img width="80%" src="images/adding_data.png" />
 
 > Note: When merging datasets, there needs to be an overlap of a common gene identifier, such as **locus tags**. If both datasets use different naming conventions, then the merge will fail. Other common pitfalls are not having the locus tag identifier in exactly the same format. For example, `locus tag` and `locus_tag` will cause an error. If this occurs, you will need to change the columns in the originating data to be identical, which is described here: [How to add new expression data](modifying_micromix.md#how-to-add-new-expression-data)
 
@@ -96,7 +96,7 @@ As discussed above, there are different options of filtering and transforming th
 **Functional annotations:**
  - Allow you to type the beginning of a category/pathway and the closest matches appear in the dropdown menu (although only 10 are initially visible, additional categories/pathways can be viewed by scrolling). Functional annotations and filters can be modified as described here: [Modifying or adding gene or pathway annotations](modifying_micromix.md#modifying-or-adding-gene-or-pathway-annotations)
 
-<img width="80%" src="images/searching_for_oxidative.png" />
+<img width="100%" src="images/searching_for_flag.png" />
 
 **Pre-defined genesets:**
  - You can load in genesets of interest that can be filtered for and can change depending on the selected organism. When the Salmonella data is selected, *Pathogenicity Islands* are loaded. When Bacteroides is selected, this changes to *ncRNAs*.
@@ -107,7 +107,7 @@ As discussed above, there are different options of filtering and transforming th
 ### Examples of filtering
  - Filters can either be a singular (as shown above), or chained together.
 
-<img width="80%" src="images/multiple_filters.png" />
+<img width="100%" src="images/chaining_filters.png" />
 
 <br>
 
@@ -126,7 +126,7 @@ The HIRI heatmap comes pre-bundled with Micromix. It was designed with WebGL, pr
 
 > Note: If the heatmap is not working, you may need to make sure it has been deployed correctly - see [Plugins](installing_running_plugins.md#1-installing-and-running-micromix)
 
-<img width="80%" src="images/heatmap.png" />
+<img width="100%" src="images/hiri_heatmap.png" />
 
 ### Clustergrammer
 
@@ -135,4 +135,4 @@ The Clustergrammer plugin uses an API from the Ma'ayan lab. Data from Micromix i
 
 > It should be noted that < 200 genes should be used for visualisations (an in-built restriction built into the API), otherwise an error may occur. If you require larger datasets, there is an option of deploying your own [Clustergrammer server](https://maayanlab.cloud/clustergrammer/) 
 
-<img width="80%" src="images/clustergrammer.png" />
+<img width="100%" src="images/clustergrammer.png" />

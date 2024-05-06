@@ -200,8 +200,15 @@ pip3 install -r requirements.txt
 # Enable debugging (optional)
 export FLASK_DEBUG=1
 
+# Update to connect to the locally installed instance of MongoDB
+vim app.py
+
+# Change line ~158 from client = MongoClient('172.17.0.1', 27017), to
+client = MongoClient()
+# Save and close
+
 # Launch Flask server
-flask run
+flask run --port 3000
 
 # You should see the following output
 ```
@@ -310,7 +317,7 @@ If choosing one of these online services, here is a checklist of requirements:
  - You will need to use a Debian-based Linux distribution (64-bit) - we recommend Ubuntu. 
  - Depending on the expected traffic, 1-2 cores, 8-12GB of ram and between 10-20GB of hard drive space should initially be sufficient
  - When configuring the VM, ensure that it is assigned a public IP address - this is important for the site to be hosted (you will need to remember the IP address for later steps).
- - Port 5000 will need to be opened, allowing the frontend and backend to communicate. Under a Google Cloud VM, this firewall rule can be added by going to the **Navigation menu** >>  **VPC network** >> **Firewall**. From here, select **Create firewall rule**, using default options, but changing the protocol to **TCP**, the port to **5000**, Type to **Ingress** and **Apply to all targets**. 
+ - Port 3000 will need to be opened, allowing the frontend and backend to communicate. Under a Google Cloud VM, this firewall rule can be added by going to the **Navigation menu** >>  **VPC network** >> **Firewall**. From here, select **Create firewall rule**, using default options, but changing the protocol to **TCP**, the port to **3000**, Type to **Ingress** and **Apply to all targets**. 
 
 
 Once you have access to a running server, you will first need to install some software.
@@ -565,12 +572,12 @@ if __name__ == '__main__':
    app.run()
 
 # Make sure you are in the backend folder where app.py is located
-gunicorn --bind 0.0.0.0:5000 wsgy:app --access-logfile /home/$USER/Micromix/Heatmap/backend/gunicorn_logs.log --workers=2
+gunicorn --bind 0.0.0.0:3000 wsgy:app --access-logfile /home/$USER/Micromix/Heatmap/backend/gunicorn_logs.log --workers=2
 
 # Note: running the above command is designed to check for any errors. If successful, press CTRL+C to stop running. 
 
 # To run in the background, use:
-gunicorn --bind 0.0.0.0:5000 wsgy:app --access-logfile /home/$USER/Micromix/Heatmap/backend/gunicorn_logs.log --workers=2 --daemon
+gunicorn --bind 0.0.0.0:3000 wsgy:app --access-logfile /home/$USER/Micromix/Heatmap/backend/gunicorn_logs.log --workers=2 --daemon
 
 ```
 
