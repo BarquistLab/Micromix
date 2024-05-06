@@ -80,7 +80,7 @@ The site can be accessed by opening the browser and typing **localhost:8080**
 
 
 
-<img width="80%" src="images/micromix_running.png" />
+<img width="100%" src="images/select_organism.png" />
 
 <br> 
 
@@ -277,7 +277,7 @@ flask run --port 5000
 # You should see the following output
 ```
 
-<img width="80%" src="images/website_backend_running.png" />
+<img width="80%" src="images/website_backend.png" />
 
 
 ### The frontend:
@@ -361,12 +361,12 @@ npm run serve
 > Open the address shown in the terminal where you executed the line above with your web browser. This should be http://localhost:8080/. The backend should also be running, otherwise the site will not load.
 
 
-<img width="80%" src="images/website_frontend_running.png" />
+<img width="80%" src="images/website_frontend.png" />
 
 
 > At this point, the site will be functional and users can browse datasets, apply filters and use available plugins, apart from the Heatmap - which requires further installation.
 
-<img width="80%" src="images/micromix_running.png" />
+<img width="100%" src="images/select_organism.png" />
 
 <br>
 
