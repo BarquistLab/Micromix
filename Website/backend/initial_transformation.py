@@ -243,7 +243,7 @@ def transform_df(query, df):
                 # df[filter_area] = np.round(np.log(df[filter_area].values) / np.log(float(block["forms"]["log_value"])), 3) 
                 # NOTE: PERFORMANCE: Be careful with rounding when it comes to precision and performance. Maybe use pandas rounding function.
 
-                df[filter_area] = np.log(df[filter_area].values) / np.log(float(details["log_value"]))
+                df[filter_area] = np.log(df[filter_area].values +1) / np.log(float(details["log_value"]))
             except:
                 # If the log transformation fails (e.g., log of negative numbers), skip this step.
                 pass
