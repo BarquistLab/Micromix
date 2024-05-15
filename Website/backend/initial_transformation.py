@@ -204,8 +204,12 @@ def transform_df(query, df):
             comparison_operator, filter_area, any_column = setup_query_parameters(details, df)
 
             # Apply log transformation to the targeted filter area, dividing by log of specified base.
-            # The 'block["forms"]["log_value"]' specifies the base of logarithm.
-            df[filter_area] = np.log(df[filter_area].values) / np.log(float(block["forms"]["log_value"]))
+            # The 'details["log_value"]' specifies the base of logarithm.
+
+            # Updating to add +1 to avoid dividing by zero
+            # df[filter_area] = np.log(df[filter_area].values) / np.log(float(block["forms"]["log_value"]))
+            log_base = float(details["log_value"])
+            df[filter_area] = np.log(df[filter_area].values +1) / np.log(log_base)
 
             # Replace any infinite values resulting from the log transformation with NaN, to avoid data errors.
             df.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -227,7 +231,7 @@ def transform_df(query, df):
 
             # Divide the values in the filter area by the values in the target column to get the fold change.
             # This operation is performed row-wise ('axis=0' indicates row-wise operation).
-            df[filter_area] = df[filter_area].div(df[block["forms"]["target_column"]].values, axis=0)
+            df[filter_area] = df[filter_area].div(df[details["target_column"]].values, axis=0)
 
             try:
                 # Optionally, apply logarithmic transformation to the fold change values to get log fold change.
@@ -239,7 +243,7 @@ def transform_df(query, df):
                 # df[filter_area] = np.round(np.log(df[filter_area].values) / np.log(float(block["forms"]["log_value"])), 3) 
                 # NOTE: PERFORMANCE: Be careful with rounding when it comes to precision and performance. Maybe use pandas rounding function.
 
-                df[filter_area] = np.log(df[filter_area].values) / np.log(float(block["forms"]["log_value"]))
+                df[filter_area] = np.log(df[filter_area].values) / np.log(float(details["log_value"]))
             except:
                 # If the log transformation fails (e.g., log of negative numbers), skip this step.
                 pass
@@ -247,7 +251,7 @@ def transform_df(query, df):
             # Remove base columns.
             # After calculating fold change, optionally drop the base (reference) columns to simplify the DataFrame.
             # This is useful if the original values are no longer needed after fold change calculation.
-            df.drop(block["forms"]["target_column"], axis=1, inplace=True)
+            df.drop(details["target_column"], axis=1, inplace=True)
             
             # Replace any resulting infinite values with NaN to maintain data integrity.
             df.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -265,10 +269,10 @@ def transform_df(query, df):
 
             # Determine the target columns based on user input. If 'all columns' is specified, all DataFrame columns are targeted (which is kinda weird).
             # Otherwise, specific columns specified by the user are targeted.
-            if "all columns" in block["forms"]["target_column"]:
+            if "all columns" in details["target_column"]:
                 target_area = list(df.columns)
             else:
-                target_area = block["forms"]["target_column"]
+                target_area = details["target_column"]
 
             
             # Iterate over the specified target columns for conversion.
