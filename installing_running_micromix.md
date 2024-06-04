@@ -40,7 +40,7 @@ There are three options to use Micromix, depending on the user requirements.
 
 ## 1.1. Using a pre-built virtual machine
 
-The simplest way to use Micromix is to use our pre-built virtual machine (VM). This is available for download here **INSERT HYPERLINK**. 
+The simplest way to use Micromix is to use our pre-built virtual machine (VM). This is available for download [here](https://syncandshare.desy.de/index.php/s/y92miNkYSdsr5ot) (14GB). 
 
 If required, the *username* and *password* is **micromix**
 
