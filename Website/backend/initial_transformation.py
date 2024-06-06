@@ -206,10 +206,9 @@ def transform_df(query, df):
             # Apply log transformation to the targeted filter area, dividing by log of specified base.
             # The 'details["log_value"]' specifies the base of logarithm.
 
-            # Updating to add +1 to avoid dividing by zero
             # df[filter_area] = np.log(df[filter_area].values) / np.log(float(block["forms"]["log_value"]))
             log_base = float(details["log_value"])
-            df[filter_area] = np.log(df[filter_area].values +1) / np.log(log_base)
+            df[filter_area] = np.log(df[filter_area].values) / np.log(log_base)
 
             # Replace any infinite values resulting from the log transformation with NaN, to avoid data errors.
             df.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -242,8 +241,8 @@ def transform_df(query, df):
                 # Alternative would be to calculate log(df) - log(target_column).
                 # df[filter_area] = np.round(np.log(df[filter_area].values) / np.log(float(block["forms"]["log_value"])), 3) 
                 # NOTE: PERFORMANCE: Be careful with rounding when it comes to precision and performance. Maybe use pandas rounding function.
-
-                df[filter_area] = np.log(df[filter_area].values +1) / np.log(float(details["log_value"]))
+                log_base = float(details["log_value"])
+                df[filter_area] = np.log(df[filter_area].values) / np.log(log_base)
             except:
                 # If the log transformation fails (e.g., log of negative numbers), skip this step.
                 pass
