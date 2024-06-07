@@ -61,6 +61,7 @@ import {
 import { GridCellLayer, TextLayer } from '@deck.gl/layers';
 import axios from 'axios'; // For HTTP requests
 import chroma from 'chroma-js'; // For color manipulation
+import CryptoJS from 'crypto-js'; // Import CryptoJS
 import cameraMenu from './cameraMenu.vue'; // Custom Vue component for camera menu
 import mainMenu from './mainMenu.vue'; // Custom Vue component for main settings menu
 import settingsTemplate from '../assets/settingsTemplate.json'; // Load in the template for initial settings
@@ -243,16 +244,16 @@ export default {
         console.error('Error: rawData is undefined or null.');
         return;
       }
-      console.log('rawData:', this.rawData);
+      // console.log('rawData:', this.rawData);
 
       // Assuming `this.rawData` has already been set
       // const serializedData = JSON.stringify(this.rawData, null, 2);
 
       const normalizedData = this.normalizeAndSortData(this.rawData);
-      console.log('normalizedData:', normalizedData);
+      // console.log('normalizedData:', normalizedData);
 
       const serializedData = this.stableStringify(normalizedData);
-      console.log('serializedData:', serializedData);
+      // console.log('serializedData:', serializedData);
 
       this.hashValue = await this.generateHash(serializedData);
       console.log('3. Current hash calculated:', this.hashValue);
@@ -260,11 +261,11 @@ export default {
 
     normalizeAndSortData(data) {
       // Function to normalize and sort data
-      const normalizedData = data.map(item => {
+      const normalizedData = data.map((item) => {
         // Ensure keys are sorted and values are normalized
         const sortedKeys = Object.keys(item).sort();
         const normalizedItem = {};
-        sortedKeys.forEach(key => {
+        sortedKeys.forEach((key) => {
           normalizedItem[key] = item[key];
         });
         return normalizedItem;
@@ -628,30 +629,28 @@ export default {
         ] = this.processJsonData(res.data);
 
         this.createSubTableGradientForms();
-
         if (this.lowestValue < 0) {
           this.configureNegativeValues();
         }
-
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
     },
-      
+
     // Hash function to generate hash for data - for comparing when loading settings
     async generateHash(data) {
       // const encoder = new TextEncoder();
       // const dataAsUint8Array = encoder.encode(data);
       // const hashBuffer = await crypto.subtle.digest('SHA-256', dataAsUint8Array);
       // const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-      // const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+      // convert bytes to hex string
+      // const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
       // return hashHex;
       // return CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
       const serializedData = this.stableStringify(data);
       return CryptoJS.SHA256(serializedData).toString(CryptoJS.enc.Hex);
     },
-      
-      
+
     // --------
     //
     // Processes JSON data into a format suitable for Deck.gl layers
