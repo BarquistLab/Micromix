@@ -11,12 +11,11 @@
 -->
 <template>
   <div>
-     <!-- Container for SVG exports -->
-     <div id="export_svg"></div>
+    <!-- Container for SVG exports
+    <div id="export_svg"></div> -->
 
     <!-- Main Menu Component: Controls and settings -->
-    <mainMenu
-      v-if="layerSettings.gridCellLayer.data"
+    <mainMenu v-if="layerSettings.gridCellLayer.data"
       class="main_menu menu_c"
       @settings-changed="updateSettings"
       @take-screenshot="takeScreenshot"
@@ -29,15 +28,13 @@
       :hashValue="hashValue"
       :currentViewState="currentViewState"
       :activeCamera="activeCamera"
-    />
+      :legendData="legendData"
+      />
 
     <!-- Camera Menu Component: Controls for changing camera views -->
-    <cameraMenu
-      class="camera_menu menu_c"
-      :activeCamera="activeCamera"
+    <cameraMenu class="camera_menu menu_c" :activeCamera="activeCamera"
       :elevationScale="layerSettings.gridCellLayer.elevationScale"
-      @active-camera-selected="changeCamera"
-    />
+      @active-camera-selected="changeCamera" />
 
     <!-- Container for the Deck.gl canvas -->
     <div class="deck-container" id="deck-container">
@@ -49,7 +46,6 @@
 <script>
 // settingsTemplate - stores all the initial settigns from the json
 // settings - stores the actual settings
-
 // Importing necessary modules from Deck.gl
 import {
   Deck,
@@ -58,7 +54,13 @@ import {
   DirectionalLight,
 } from '@deck.gl/core';
 // Import other libaries
-import { GridCellLayer, TextLayer } from '@deck.gl/layers';
+import {
+  GridCellLayer,
+  TextLayer,
+  LineLayer,
+  PolygonLayer,
+} from '@deck.gl/layers';
+// import { PolygonLayer } from '@deck.gl/layers';
 import axios from 'axios'; // For HTTP requests
 import chroma from 'chroma-js'; // For color manipulation
 import CryptoJS from 'crypto-js'; // Import CryptoJS
@@ -75,6 +77,11 @@ export default {
     return {
       // Initial data properties including URL, camera settings, layer configurations, etc.
       backendUrl: 'http://127.0.0.1:3000', // this will need to be changed to where Micromix is hosted
+      polygonLayer: null, // Store the PolygonLayer instance
+      rectangleText: [],
+
+      // to send data for save as svg
+      legendData: [],
       // set the hash value
       hashValue: null,
       // active camera
@@ -87,21 +94,37 @@ export default {
         gradientUpdateTrigger: false,
         elevationScale: 200,
       },
-      colorGradientPreset: null,
+      colorGradientPreset: 'RdYlGn', // the default colour gradient,
       highestValue: null,
       lowestValue: null,
       colorGradientDict: {},
       colorGradient: null,
       advancedLighting: false,
       subTables: {},
+      // Settings for all the drawn layers
       layerSettings: {
         gridCellLayer: {
           id: 'grid-gridCellLayerCell-layer',
           data: null,
           getPosition: (d) => d.COORDINATES,
           getElevation: (d) => d.VALUE,
-          getFillColor: (d) => this.colorGradientDict[d.TITLE](d.VALUE).rgb(),
+          // getFillColor: (d) => this.colorGradientDict[d.TITLE](d.VALUE).rgb(),
+          // getFillColor: (d) => [...this.colorGradientDict[d.TITLE](d.VALUE).rgb(), 255],
+          getFillColor: (d) => {
+            console.log('d.TITLE:', d.TITLE);
+            console.log('Available keys in colorGradientDict:', Object.keys(this.colorGradientDict));
+
+            const colorFunction = this.colorGradientDict[d.TITLE];
+
+            if (typeof colorFunction === 'function') {
+              return [...colorFunction(d.VALUE).rgb(), 255];
+            } else {
+              console.warn(`No color function found for TITLE: ${d.TITLE}`);
+              return [255, 255, 255, 255]; // Fallback color (white)
+            }
+          },
         },
+        // heatmap text?
         textCellLayer: {
           id: 'text-cell-layer',
           data: null,
@@ -118,6 +141,7 @@ export default {
             '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Open Sans, Helvetica Neue, sans-serif',
           fontWeight: 'bold',
         },
+        // heatmap row text
         rowTextLayer: {
           id: 'row-text-layer',
           data: null,
@@ -132,6 +156,7 @@ export default {
           fontFamily:
             '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Open Sans, Helvetica Neue, sans-serif',
         },
+        // heatmap column text
         columnTextLayer: {
           id: 'column-text-layer',
           data: null,
@@ -145,6 +170,22 @@ export default {
           billboard: false,
           fontFamily:
             '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Open Sans, Helvetica Neue, sans-serif',
+        },
+        // Array to hold multiple gradient layers
+        rectangleGradientLayers: [],
+        // text for the legend
+        rectangleTextLayer: {
+          id: 'legend-text',
+          data: [], // Initialize with empty array; populate dynamically later
+          getPosition: (d) => d.position,
+          getText: (d) => d.text,
+          sizeUnits: 'meters', // to ensure text sizes with zoom
+          getSize: 550, // Adjust font size as needed
+          getColor: [0, 0, 0, 255], // Black color
+          getTextAnchor: 'middle',
+          getAlignmentBaseline: 'bottom',
+          fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Open Sans, Helvetica Neue, sans-serif',
+          fontWeight: 'normal', // Set to normal to remove bold effect
         },
       },
 
@@ -174,18 +215,19 @@ export default {
     // Load in the general settings from the json template
     this.settings = this.generateSettings();
     // Get the config data
-    this.fetchData(`${this.backendUrl}/config`)
-      .then(() => this.calculateCurrentHash())
-      .then(() => this.loadUserSettings());
+    // this.fetchData(`${this.backendUrl}/config`)
+    // .then(() => this.calculateCurrentHash())
+    // .then(() => this.loadUserSettings());
   },
 
   // --------
   // Initializes the Deck.gl instance on component mount
   // --------
   mounted() {
+    this.rectangleTextLayer = new TextLayer(this.layerSettings.rectangleTextLayer);
+
+    // Initialize Deck.gl with the PolygonLayer
     this.deck = new Deck({
-      // Disable Retina rendering for better performance:
-      // useDevicePixels: false,
       canvas: this.$refs.canvas,
       viewState: this.currentViewState,
       getTooltip: this.getTooltip,
@@ -194,14 +236,453 @@ export default {
         this.deck.setProps({ viewState: this.currentViewState });
       },
       controller: true,
+      glOptions: {
+        preserveDrawingBuffer: true, // Enable buffer preservation for screenshots
+        antialias: true, // Optional: Smooth edges
+      },
+      // include the additional layer info, ie legend gradient etc
+      layers: [
+        ...this.layerSettings.rectangleGradientLayers,
+        this.rectangleTextLayer,
+      ],
     });
-    // this.deck.layerManager.layers[0].props.elevationScale = 10
+
+    // Now, fetch data after Deck.gl has been initialized
+    // fetching needs to happen after initializing the deck canvas, otherwise get errors
+    this.fetchData(`${this.backendUrl}/config`)
+      .then(() => this.calculateCurrentHash())
+      .then(() => this.loadUserSettings())
+      .catch((error) => {
+        console.error('Error during data fetching and initialization:', error);
+      });
+    // create initial gradient layer
+    this.createLegendGradientLayer();
+    console.log('Deck.gl initialized with PolygonLayer and empty TextLayer.');
   },
 
   methods: {
+    // Extracts the table names without ()'s around the name
+    extractTableNames() {
+      return Object.keys(this.subTables).map((key) => key.replace(/[()]/g, ''));
+    },
+
+    // -------------------
+    // To add in the text above the legend gradient
+    // -------------------
+    updateLegendText() {
+      // Extract table names without parentheses
+      const tableNames = this.extractTableNames();
+
+      // ---
+      // Extract most RHS coord of heatmap
+      // ---
+      // Looking at the heatmap and the position of the last square
+      // and capture the coordinate so it can be dynamically asigned for
+      // placement of the legend
+      // Get the last item in the data array
+      const lastIndex = this.layerSettings.gridCellLayer.data.length - 1;
+      const lastDataItem = this.layerSettings.gridCellLayer.data[lastIndex];
+      // Access the second element in the COORDINATES array (index 1) most RHS
+      const lastCoordinateValue = lastDataItem.COORDINATES[1];
+      // console.log(lastCoordinateValue);
+
+      // ---
+      // positioning of text
+      // ---
+      // Define the spacing between legend entries
+      const spacing = 0.03; // spacing between text
+      const baseY = 0.0075; // up/down
+      // sideways
+      const baseX = 0.015 + lastCoordinateValue + (0.03 / 2); // 0.03/2 = half the gradient box size
+
+      // ---
+      // Create text entries for each table
+      // ---
+      // loop through each of the loaded table names and create
+      const newRectangleTextData = tableNames.map((tableName, index) => {
+        const yPosition = baseY + (index * spacing);
+        return {
+          position: [yPosition, baseX], // is backwards to what you think
+          text: tableName,
+        };
+      });
+
+      // Create a new TextLayer with the dynamic text
+      const newRectangleTextLayer = new TextLayer({
+        id: 'legend-text',
+        data: newRectangleTextData,
+        getPosition: (d) => d.position,
+        getText: (d) => d.text,
+      });
+
+      // Update Deck.gl layers by replacing the old TextLayer
+      const updatedLayers = this.deck.props.layers.map((layer) => (
+        layer.id === 'legend-text' ? newRectangleTextLayer : layer
+      ));
+
+      // updated layers to Deck.gl
+      this.deck.setProps({
+        layers: updatedLayers,
+      });
+
+      // Update the data property in layerSettings
+      this.layerSettings.rectangleTextLayer.data = newRectangleTextData;
+
+      // Update Deck.gl layers to include the updated rectangleTextLayer
+      this.updateDeckLayers();
+
+      // console.log(`Updated TextLayer with table names: ${tableNames.join(', ')}`);
+    },
+
+    // -------------------
+    // Create gradient rectangle
+    // -------------------
+    createLegendGradientLayer() {
+      const numberOfSlices = 50; // Can increase for smoother gradient
+      const rectangleHeight = 0.03; // Total width of rectangle from -0.02 to 0.02
+      const rectangleWidth = 0.01; // width of each gradient rectangle
+      // gradient slices
+      const sliceHeight = rectangleHeight / numberOfSlices;
+      // x and y positions
+      const baseX = 0.01; // Center the rectangle horizontally
+      const baseY = 0.045; // Vertical position (bottom edge)
+      // set default gradient, or default to RdYlGn if none
+      const gradientPreset = this.colorGradientPreset || 'RdYlGn';
+      // create gradient colour slices
+      let gradientColors;
+      try {
+        gradientColors = chroma.scale(gradientPreset).mode('lrgb').colors(numberOfSlices);
+        // console.log('Generated Gradient Colors:', gradientColors); // Debugging
+      } catch (error) {
+        // console.error('Invalid gradient preset:', gradientPreset, error);
+        // Fallback to a default gradient
+        gradientColors = chroma.scale('RdYlGn').mode('lrgb').colors(numberOfSlices);
+      }
+
+      // Extract all table names without ()'s
+      const tableNames = this.extractTableNames();
+
+      // ---
+      // Loop through tables and create gradient layers
+      // ---
+      // Create a gradient layer for each table
+      const gradientLayers = tableNames.map((tableName, index) => {
+        const tableBaseY = baseY + index * (rectangleHeight + 0.01); // spacing between legends
+
+        const gradientRectangleData = [];
+        for (let i = 0; i < numberOfSlices; i += 1) {
+          const yStart = tableBaseY + i * sliceHeight;
+          const yEnd = yStart + sliceHeight;
+          gradientRectangleData.push({
+            // creating the polygon
+            polygon: [
+              [baseX, yStart],
+              [baseX + rectangleWidth, yStart],
+              [baseX + rectangleWidth, yEnd],
+              [baseX, yEnd],
+              [baseX, yStart], // needs to be same as start to close the shape
+            ],
+            color: [...chroma(gradientColors[i]).rgb(), 255],
+          });
+        }
+
+        // Create the Gradient Rectangle Layer
+        return new PolygonLayer({
+          id: `legend-gradient-${tableName}`, // unique name
+          data: gradientRectangleData,
+          pickable: false,
+          stroked: false,
+          filled: true,
+          wireframe: false,
+          getPolygon: (d) => d.polygon,
+          getFillColor: (d) => d.color,
+        });
+      });
+
+      // Assign to layers.rectangleGradientLayer
+      this.layerSettings.rectangleGradientLayers = gradientLayers;
+      // console.log('Gradient Rectangle Layers:', this.layerSettings.rectangleGradientLayers);
+
+      // Update Deck.gl layers to include the new gradient layers
+      this.updateDeckLayers();
+    },
+
+    // -------------------
+    // Updates the gradient rectangle on change
+    // -------------------
+    // Note: some text below is the same as when created - can be simplified
+    updateLegendGradientLayer() {
+      // for debugging if needed
+      if (!this.colorGradientPreset) {
+        console.warn('No colorGradientPreset selected.');
+        return;
+      }
+
+      // ---
+      // values accociated with the gradient rectangle
+      // ---
+      const numberOfSlices = 50; // Increase for smoother gradient
+      const rectangleHeight = 0.03; // Total width from -0.02 to 0.02
+      const rectangleWidth = 0.01;
+      const sliceHeight = rectangleHeight / numberOfSlices;
+
+      // Get the last item in the data array - used to work out the
+      // most right hand position of the heatmap - otherwise the legend will overlap
+      const lastIndex = this.layerSettings.gridCellLayer.data.length - 1;
+      const lastDataItem = this.layerSettings.gridCellLayer.data[lastIndex];
+      // Access the second element in the COORDINATES array (index 1)
+      // Which is the most RHS - which we use to place the legend
+      const lastCoordinateValue = lastDataItem.COORDINATES[1];
+
+      // vertical spacing between legends (when more than 1)
+      const spacing = 0 + rectangleHeight; // Increased vertical spacing for clarity
+      // x and y start coords
+      const baseX = 0.01; // updown
+      const baseY = 0.015 + lastCoordinateValue; // sidewards
+
+      // degugging
+      // console.log('this.settings.gradient.individualGradients', this.settings.gradient.individualGradients);
+      // console.log('this.settings.gradient.gradientPreset', this.settings.gradient.gradientPreset);
+      // console.log('this.settings.gradient', this.settings.gradient);
+      // console.log('this.layerSettings.gridCellLayer', this.layerSettings.gridCellLayer);
+
+      const specialKeys = ['individualGradients', 'gradientPreset'];
+      // loop and capture all table names
+      const tableNames = Object.keys(this.settings.gradient)
+        .filter((key) => !specialKeys.includes(key));
+
+      // debugging
+      // console.log('Table Names:', tableNames);
+      // console.log('Gradient Keys:', Object.keys(this.settings.gradient));
+
+      // Find the maximum value across all entries in the data array
+      // used to work out the scaling for tickmarks for legend
+      const maxValueOverall = Math.max(
+        ...this.layerSettings.gridCellLayer.data.map((item) => item.VALUE),
+      );
+      // console.log('maxValueOverall', maxValueOverall);
+
+      // Initialize an array to hold all gradient and line layers
+      const updatedGradientLayers = [];
+
+      // If more than one table, we want to enable (by default)
+      // the option for multiple gradients
+      // Same if only one table - disable selecting individual gradients
+      // Otherwise have to link up the ticks to both preset and individual dynamic values
+      if (tableNames.length > 1) {
+        this.settings.gradient.individualGradients = true;
+      } else {
+        this.settings.gradient.individualGradients = false;
+      }
+
+      // Collect legend data to send for saving as svg
+      this.legendData = [];
+
+      // ---
+      // Loop through each table
+      // ---
+      // Within this loop we generate each gradient box, the ticks and
+      // also the values below the ticks
+      tableNames.forEach((tableName, index) => {
+        const legendBaseX = baseX + (index * spacing); // spacing between legends
+
+        // Determine the gradient colors for the current table
+        let gradientPreset;
+        // console.log(`Processing table: ${tableName}`);
+
+        // Check if individual gradients have been selected
+        // although probably not needed anymore - keeping in just in case
+        if (this.settings.gradient.individualGradients) {
+          // Individual gradients have been selected - apply specific gradient for each table
+          gradientPreset = this.settings.gradient[tableName]?.value || this.colorGradientPreset || 'RdYlGn';
+          // console.log(`Gradient preset for ${tableName}:`, gradientPreset);
+        } else {
+          // Individual gradients not selected - apply default shared gradient
+          gradientPreset = this.colorGradientPreset || 'RdYlGn';
+          // console.log(`Shared gradient preset for ${tableName}:`, gradientPreset);
+        }
+
+        // Generate gradient colors for the current table
+        let gradientColors;
+        try {
+          gradientColors = chroma.scale(gradientPreset).mode('lrgb').colors(numberOfSlices);
+          // console.log(`Generated Gradient Colors for ${tableName}:`, gradientColors);
+        } catch (error) {
+          console.error(`Invalid gradient preset for table ${tableName}: ${gradientPreset}`, error);
+          // Fallback to a default gradient
+          gradientColors = chroma.scale('RdYlGn').mode('lrgb').colors(numberOfSlices);
+        }
+
+        // Define the gradient rectangles for the current table
+        const gradientRectangleData = [];
+        for (let i = 0; i < numberOfSlices; i += 1) {
+          const yStart = baseY + i * sliceHeight; // Horizontal position start
+          const yEnd = yStart + sliceHeight; // Horizontal position end
+          gradientRectangleData.push({
+            // unfortunately the rectangle is rotated slightly by 90 deg I think
+            // but visually it appears fine - this should eventually be adjusted
+            polygon: [
+              [legendBaseX, yStart], // Top-Left
+              [legendBaseX + rectangleWidth, yStart], // Top-right
+              [legendBaseX + rectangleWidth, yEnd], // bottom-right
+              [legendBaseX, yEnd], // bottom-left
+              [legendBaseX, yStart], // closing the polygon
+            ],
+            color: [...chroma(gradientColors[i]).rgb(), 255], // RGBA color
+          });
+        }
+
+        // create the polygon shape and add gradient
+        const gradientLayer = new PolygonLayer({
+          id: `legend-gradient-layer-${tableName}`, // Unique ID per table
+          data: gradientRectangleData,
+          pickable: false,
+          stroked: false,
+          filled: true,
+          wireframe: false,
+          getPolygon: (d) => d.polygon,
+          getFillColor: (d) => d.color,
+        });
+
+        // If there is 1 table, then we need to use the present values
+        // if there are more than one table, link gradients and ticks to each table name
+        let domain = this.settings.gradient[tableName]?.domain;
+        let [minValue, midValue, maxValue] = domain;
+        if (tableNames.length > 1) {
+          // console.log('more than one table');
+          // do nothing - use above declared values for min,mid,max
+        } else {
+          // console.log('only one table');
+          // using present values, as only one table
+          domain = this.settings.gradient.gradientPreset.domain;
+          // assigns domain[0] to minValue, domain[1] to midValue, and domain[2] to maxValue
+          [minValue, midValue, maxValue] = domain;
+        }
+
+        // create the lines for below the gradient rectangle
+        // Filter data for the specified table and get the maximum value
+        // const maxValueTable = Math.max(
+        // ...this.layerSettings.gridCellLayer.data
+        // .filter((item) => item.TITLE === tableName)
+        // .map((item) => item.VALUE),
+        // );
+        // console.log(`Max value for table ${tableName}:`, maxValueTable);
+        const legendTickSegments = rectangleHeight / maxValueOverall;
+        // console.log('legendTickSegments', legendTickSegments);
+
+        // Calculate positions
+        const minPosition = minValue * legendTickSegments; // 0; // Start of the rectangle
+        const midPosition = midValue * legendTickSegments; // (midValue - minValue) / valueRange;
+        const maxPosition = maxValue * legendTickSegments; // 1; // End of the rectangle
+
+        // Calculate Y-Coordinates
+        const minY = baseY + minPosition; //
+        const midY = baseY + midPosition; // clampedMidPosition * rectangleHeight;
+        const maxY = baseY + maxPosition; // * rectangleHeight;
+
+        // Create lines data
+        const lineLength = 0.000; // Adjust as needed
+        // use these two lines if you want the black lines to be the entire
+        // height of the gradient box
+        // const lineStartX = legendBaseX - lineLength;
+        // const lineEndX = legendBaseX + rectangleWidth + lineLength;
+        const lineStartX = legendBaseX + rectangleWidth + lineLength; // Start bit before the rect
+        const lineEndX = legendBaseX + rectangleWidth + lineLength + 0.001; // End bit after rect
+
+        // positioning of the line
+        const linesData = [
+          {
+            sourcePosition: [lineStartX, minY],
+            targetPosition: [lineEndX, minY],
+          },
+          {
+            sourcePosition: [lineStartX, midY],
+            targetPosition: [lineEndX, midY],
+          },
+          {
+            sourcePosition: [lineStartX, maxY],
+            targetPosition: [lineEndX, maxY],
+          },
+        ];
+
+        // Create the LineLayer for the min, mid, max lines
+        const linesLayer = new LineLayer({
+          id: `legend-lines-layer-${tableName}`,
+          data: linesData,
+          getSourcePosition: (d) => d.sourcePosition,
+          getTargetPosition: (d) => d.targetPosition,
+          getColor: [0, 0, 0, 255], // Black color
+          getWidth: 1, // Adjust line width as needed
+        });
+
+        // Text layer for displaying the min, mid, max values below the gradient
+        const textData = [
+          { position: [lineEndX + 0.0025, minY], text: Math.round(minValue).toString() },
+          { position: [lineEndX + 0.0025, midY], text: Math.round(midValue).toString() },
+          { position: [lineEndX + 0.0025, maxY], text: Math.round(maxValue).toString() },
+        ];
+        // text layer to display the numbers below the tick marks
+        const textLayer = new TextLayer({
+          id: `legend-text-layer-${tableName}`,
+          data: textData,
+          getPosition: (d) => d.position,
+          getText: (d) => d.text,
+          sizeUnits: 'meters',
+          getSize: 400, // Adjust font size as needed
+          getColor: [0, 0, 0, 255], // Black text
+          getTextAnchor: 'middle',
+          getAlignmentBaseline: 'center',
+          fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+        });
+
+        // Add both layers to the array
+        updatedGradientLayers.push(gradientLayer, linesLayer, textLayer);
+
+        // Collect all the generated data for SVG export
+        this.legendData.push({
+          tableName,
+          legendBaseX,
+          baseY,
+          rectangleWidth,
+          rectangleHeight,
+          gradientColors,
+          linesData,
+          minValue,
+          midValue,
+          maxValue,
+          maxValueOverall,
+        });
+      });
+
+      // Update the layerSettings with the new gradient layers
+      this.layerSettings.rectangleGradientLayers = updatedGradientLayers;
+
+      // Instead of directly modifying this.deck.props.layers, call updateDeckLayers()
+      this.updateDeckLayers();
+
+      console.log('Gradient Rectangle Layers updated.');
+    },
+
+    // ---
+    // Layers to update on any user-based change
+    // ---
+    updateDeckLayers() {
+      const allLayers = [
+        new GridCellLayer(this.layerSettings.gridCellLayer),
+        new TextLayer(this.layerSettings.textCellLayer),
+        new TextLayer(this.layerSettings.rowTextLayer),
+        new TextLayer(this.layerSettings.columnTextLayer),
+        ...this.layerSettings.rectangleGradientLayers, // Include all gradient layers
+        new TextLayer(this.layerSettings.rectangleTextLayer), // Include the updated text layer
+      ];
+
+      this.deck.setProps({
+        layers: allLayers,
+      });
+    },
 
     // --------
-    // Checkes to see if user settings have been saved - if so, attempt to load
+    // Checks to see if user settings have been saved - if so, attempt to load
     // --------
     async loadUserSettings() {
       const dbEntryId = this.$route.query.config;
@@ -256,9 +737,13 @@ export default {
       // console.log('serializedData:', serializedData);
 
       this.hashValue = await this.generateHash(serializedData);
-      console.log('3. Current hash calculated:', this.hashValue);
+      // console.log('3. Current hash calculated:', this.hashValue);
     },
 
+    // ---
+    // Assistance for hashing
+    // ---
+    // hashing wasnt consistant, so need to normalise data first
     normalizeAndSortData(data) {
       // Function to normalize and sort data
       const normalizedData = data.map((item) => {
@@ -274,7 +759,7 @@ export default {
     },
 
     // --------
-    // Allows users to take a screenshot of the current heatmap
+    // Allows users to take a screenshot of the current heatmap (png)
     // --------
     takeScreenshot() {
       this.deck.redraw(true);
@@ -400,7 +885,7 @@ export default {
       // settings based on 'updatedSettings.type'.
       switch (updatedSettings.type) {
         // --- layer ---
-        case 'layer':
+        case 'layer': {
           // Merge existing layer settings with new ones and
           // ensure numerical properties are correctly typed.
           this.layerSettings.gridCellLayer = {
@@ -434,20 +919,17 @@ export default {
               ],
             };
           }
+          // Update Deck.gl layers to include all necessary layers - ie heatmap and legend
+          this.updateDeckLayers();
 
           // Reconfigure the layers with the new settings.
-          this.deck.setProps({
-            layers: [
-              new GridCellLayer(this.layerSettings.gridCellLayer),
-              new TextLayer(this.layerSettings.textCellLayer),
-              new TextLayer(this.layerSettings.rowTextLayer),
-              new TextLayer(this.layerSettings.columnTextLayer),
-            ],
-          });
+          // this.deck.setProps({
+          //   layers: updatedLayers,
+          // });
           break;
-
+        }
         // --- gradient ---
-        case 'gradient':
+        case 'gradient': {
           // Toggle gradient update trigger to force re-rendering of layers.
           // eslint-disable-next-line max-len
           this.updateTriggerObjects.gradientUpdateTrigger = !this.updateTriggerObjects.gradientUpdateTrigger;
@@ -455,7 +937,7 @@ export default {
           // Update gradient settings for visual consistency across data visualization
           this.colorGradientPreset = s.gradientPreset.value;
           if (this.colorGradientPreset !== s.gradientPreset.value
-          || s.individualGradients === false) {
+            || s.individualGradients === false) {
             Object.keys(this.subTables).forEach((subTableTitle) => {
               this.colorGradientDict[subTableTitle] = chroma
                 .scale(this.colorGradientPreset)
@@ -482,23 +964,18 @@ export default {
               ],
             };
           }
-          // Reapply updated gradient settings to the Deck.gl layers.
-          this.deck.setProps({
-            layers: [
-              new GridCellLayer(this.layerSettings.gridCellLayer),
-              new TextLayer(this.layerSettings.textCellLayer),
-              new TextLayer(this.layerSettings.rowTextLayer),
-              new TextLayer(this.layerSettings.columnTextLayer),
-            ],
-          });
+          // Update Deck.gl layers to include all necessary layers - ie heatmap and legend
+          this.updateDeckLayers();
+          // Update the gradient rectangle layer
+          this.updateLegendGradientLayer();
           break;
-
+        }
         // --- lighting ---
-        case 'lighting':
+        case 'lighting': {
           // Conditionally create new lighting effects based on user settings.
           if (s.advancedLighting === true) {
-          // Only build new lights when advanced light is activated.
-          // Probably not necessary but I speculate on performance advantages with this approach.
+            // Only build new lights when advanced light is activated.
+            // Probably not necessary but I speculate on performance advantages with this approach.
             const ambient = new AmbientLight({
               color: [255, 255, 255],
               intensity: s.ambientLight,
@@ -527,6 +1004,7 @@ export default {
             this.deck.setProps({ effects: [] });
           }
           break;
+        }
         default:
           // Log a warning if an unsupported update type is encountered.
           console.log('Warning: No case found for this setting update.');
@@ -617,7 +1095,8 @@ export default {
 
         const hash = await this.generateHash(this.rawData);
         this.hashValue = hash;
-        console.log('4. this.hashValue: ', this.hashValue);
+        // console.log('4. this.hashValue: ', this.hashValue);
+        // console.log('5. this.rawData: ', this.rawData);
 
         [
           this.layerSettings.gridCellLayer.data,
@@ -632,6 +1111,11 @@ export default {
         if (this.lowestValue < 0) {
           this.configureNegativeValues();
         }
+        // After processing data, update the TextLayer with dynamic text
+        this.updateLegendText();
+
+        // Update Deck.gl layers to include all necessary layers - ie heatmap and legend
+        this.updateDeckLayers();
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -880,7 +1364,7 @@ export default {
         ((highestValue
           - lowestValue) / 2
           + lowestValue) * 10 ** (-gradientFormTemplate.orderOfMagnitude + 3)
-          + Number.EPSILON,
+        + Number.EPSILON,
       ) / 10 ** (-gradientFormTemplate.orderOfMagnitude + 3);
       gradientFormTemplate.value.domain = [
         lowestValue,
@@ -910,20 +1394,7 @@ export default {
         ${column}<br>
         ${row}<br>
         <strong>${count}</strong>`,
-        // Below is an example for custom CSS styling for the tooltip.
-        // style: {
-        //   backgroundColor: '#000',
-        //   margin: '0'
-        // }
       };
-      // Below is an example for a more advanced tooltip format according to:
-      // https://github.com/visgl/deck.gl/blob/8.3-release/examples/website/3d-heatmap/app.js
-      // const lat = object.COORDINATES[1]
-      // const lng = object.COORDINATES[0]
-      // return `\
-      //   latitude: ${Number.isFinite(lat) ? lat.toFixed(6) : ''}
-      //   longitude: ${Number.isFinite(lng) ? lng.toFixed(6) : ''}
-      //   ${count} Accidents`
     },
   },
 };
@@ -935,11 +1406,17 @@ export default {
   height: 100vh;
   position: relative;
 }
+
 #deckgl-overlay {
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
+}
+
+#deck-canvas {
+  width: 100%;
+  height: 100%;
 }
 
 .camera_menu {
@@ -951,10 +1428,12 @@ export default {
   top: 10px;
   left: 10px;
 }
+
 .menu_c {
   position: absolute;
   z-index: 1000;
 }
+
 #export_svg {
   display: none;
 }
