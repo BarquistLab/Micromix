@@ -118,10 +118,9 @@ export default {
 
             if (typeof colorFunction === 'function') {
               return [...colorFunction(d.VALUE).rgb(), 255];
-            } else {
-              console.warn(`No color function found for TITLE: ${d.TITLE}`);
-              return [255, 255, 255, 255]; // Fallback color (white)
             }
+            console.warn(`No color function found for TITLE: ${d.TITLE}`);
+            return [255, 255, 255, 255]; // Fallback color (white)
           },
         },
         // heatmap text?
@@ -441,8 +440,6 @@ export default {
       const baseY = 0.015 + lastCoordinateValue; // sidewards
 
       // degugging
-      // console.log('this.settings.gradient.individualGradients', this.settings.gradient.individualGradients);
-      // console.log('this.settings.gradient.gradientPreset', this.settings.gradient.gradientPreset);
       // console.log('this.settings.gradient', this.settings.gradient);
       // console.log('this.layerSettings.gridCellLayer', this.layerSettings.gridCellLayer);
 
