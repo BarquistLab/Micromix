@@ -42,6 +42,7 @@
         v-else-if="option.id === 'exportImage'"
         :layerSettings="layerSettings"
         :colorGradientDict="colorGradientDict"
+        :legendData="legendData"
         @take-screenshot="$emit('take-screenshot')"
       />
     </b-collapse>
@@ -67,6 +68,7 @@ export default {
     hashValue: String,
     currentViewState: Object,
     activeCamera: String,
+    legendData: Array,
   },
   data() {
     return {
