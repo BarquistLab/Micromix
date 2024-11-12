@@ -54,7 +54,7 @@ If combining user uploaded data with pre-defined datasets that are already avail
 
 To test this feature for yourself, you can manually upload any of the predefined datasets available [here](https://github.com/BarquistLab/Micromix/tree/main/Website/backend/static) 
 
-<img width="100%" src="images/upload_data.png" />
+<img width="50%" src="images/upload_data.png" />
 
 
 The following image shows main elements of the site once data has been added. 
