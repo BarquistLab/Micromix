@@ -14,6 +14,7 @@
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
+    - [Uploading datasets](using_micromix.md#uploading-datasets)
     - [Combining datasets](using_micromix.md#combining-datasets)
     - [Filtering data](using_micromix.md#filtering-data)
     - [Visualising data](using_micromix.md#visualising-data)  

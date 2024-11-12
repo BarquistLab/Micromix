@@ -8,6 +8,7 @@
 - [Using Micromix](using_micromix.md#micromix-user-guide)
     - [Selecting organism](using_micromix.md#selecting-organism)
     - [Selecting datasets](using_micromix.md#selecting-datasets)
+    - [Uploading datasets](using_micromix.md#uploading-datasets)
     - [Combining datasets](using_micromix.md#combining-datasets)
     - [Filtering data](using_micromix.md#filtering-data)
     - [Visualising data](using_micromix.md#visualising-data)  
@@ -45,10 +46,20 @@ You also have the choice of adding or removing specific columns.
 
 Clicking **Add** will load the data.
 
+## Uploading datasets
+
+If choosing to upload your own data, the file can be delimited (comma or tab) or an Excel spreadsheet. Files should contain a header row containing column names. 
+
+If combining user uploaded data with pre-defined datasets that are already available on Micromix, then care should be taken to make sure there are overlapping gene identifiers (for example, SL1344_xxxx).
+
+To test this feature for yourself, you can manually upload any of the predefined datasets available [here](https://github.com/BarquistLab/Micromix/tree/main/Website/backend/static) 
+
+<img width="100%" src="images/upload_data.png" />
+
+
+The following image shows main elements of the site once data has been added. 
 
 <img width="100%" src="images/description_of_site.png" />
-
-The above image shows main elements of the site once data has been added. 
 
 ### Address bar:
 
