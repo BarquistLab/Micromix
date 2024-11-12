@@ -1,7 +1,6 @@
 <template>
   <div>
-    <loading v-if="loading" :increment="20" style="position: fixed;z-index: 100;top: 0;left: 0;width: 100vw;" />
-    <b-form @submit="onSubmit" inline>
+   <b-form @submit="onSubmit" inline>
       <b-card bg-variant="light" v-for="(form_block_array, block_index) in query" v-bind:key="block_index" class="block-wrapper">
         <div class="form" v-for="form_block in form_block_array" v-bind:key="form_block.id + String(block_index)">
           <div class="form-block" v-for="form in form_block.forms.items" v-bind:key="form.id">
@@ -421,7 +420,7 @@
 <script>
 import axios from "axios";
 import input_autocomplete from "./input_autocomplete";
-import loading from "./loading";
+// import loading from "./loading";
 
 export default {
   name: "search_query",
@@ -439,7 +438,7 @@ export default {
   components: {
     // Declaring local components used within this component
     input_autocomplete,
-    loading,
+    // loading,
   },
 
   computed: {
@@ -632,7 +631,7 @@ export default {
       for (let i in this.server_queries) {
         // Optional: Push filter query as soon as a filter is removed
         if (this.server_queries[i][0]["id"] === block_array[0]["id"]) {
-          this.loading = true;
+          // this.loading = true;
           this.post_query(); // Re-submit the query after block removal
           break;
         }
@@ -667,16 +666,16 @@ export default {
         .then((res) => {
           if (res.data.error_type) {
             self.$emit("error_occured", res.data);
-            this.loading = false;
+            // this.loading = false;
           } else {
             self.$emit("dataframe_filtered", res);
-            this.$nextTick(() => {
-              setTimeout(() => {
-                // This forces the loading bar to stay alive for 2 additional seconds, 
-                //to compensate the delay between backend work and frontend rendering of the dataframe table. This isn't very good.
-                this.loading = false;
-              }, 2500);
-            });
+            // this.$nextTick(() => {
+            //   setTimeout(() => {
+            //     // This forces the loading bar to stay alive for 2 additional seconds, 
+            //     //to compensate the delay between backend work and frontend rendering of the dataframe table. This isn't very good.
+            //     this.loading = false;
+            //   }, 2500);
+            // });
           }
         })
         .catch((error) => {
@@ -686,7 +685,7 @@ export default {
     
     // Form submission handler
     onSubmit(evt) {
-      this.loading = true;
+      // this.loading = true;
       evt.preventDefault();
       this.post_query();
     },
@@ -778,7 +777,7 @@ export default {
   // The component's reactive data properties
   data() {
     return {
-      loading: false, // Indicates whether the component is in a loading state
+      // loading: false, // Indicates whether the component is in a loading state
       query: [], // Array of query blocks for building the query UI
       filters: null, // Object containing filter options loaded from JSON
       pathways: null, // Object containing pathway options loaded from JSON

@@ -2,27 +2,28 @@
  
  <template>
   <div>
-    <b-progress
-      v-if="show_loading_overlay"
-      :value="bar_value"
-      variant="success"
-      striped
-      :animated="animate"
-    ></b-progress>
-    <b-overlay :show="show_loading_overlay" rounded="sm" variant="white">
+    <!-- Loading screen -->
+        <div class="loading-overlay" v-if="showLoading">
+            <div class="loading-box">
+              <!-- Dynamic loading text -->
+              <h5>{{ loadingText }}</h5>
+              <!-- Progress bar -->
+              <b-progress :value="progressValue" :max="100"></b-progress>
+            </div>
+          </div>
       <b-container class="bv-example-row">
         <b-row>
           <b-col>
             <h2 style="cursor:help; display:inline-block;" id="upload-dataset-popover-target">Add Data<span style="font-size:1rem;"><sup><b-icon style="cursor:help;" icon="question-circle-fill"></b-icon></sup></span></h2>
               <b-popover target="upload-dataset-popover-target" triggers="hover" placement="top"><template v-slot:title>Upload a dataset</template>Upload various datasets from our databases or your local machine. If you give datasets the same title, the tool will automatically merge them without data-loss. The first column and all columns with non-numeric values will be turned into index columns. <strong>Uploading multiple tables requires 1 or more index column with the same column name.</strong></b-popover>
-            <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+            <b-form @submit="onSubmit" @reset="onReset" v-if="!showLoading">
                <b-form-group id="input-group-2" label="Title:" label-for="input-2">
                 <b-form-input id="input-2" v-model="form.title" required></b-form-input>
               </b-form-group>
               <b-form-group id="input-group-6" label="Source:" label-for="source-card">
                 <b-card no-body id="source-card">
                   <b-tabs card>
-                    <b-tab title="Datasets">
+                    <b-tab title="Datasets" active>
                       <b-form-group
                         id="input-group-3"
                         description="Use our database of experimental results."
@@ -105,7 +106,7 @@
                         </b-form-group>
                       </b-form>
                     </b-tab>
-                    <b-tab title="Upload file" active>
+                    <b-tab title="Upload file">
                       <b-form-group
                         id="input-group-4"
                         description="Upload a .csv, .txt (tab-seperated), .tsv, or .xlsx (Excel) file from your machine."
@@ -191,7 +192,6 @@
           </b-col>
         </b-row>
       </b-container>
-    </b-overlay>
   </div>
 </template>
 
@@ -218,13 +218,15 @@ export default {
       test: ['test'],
       datasets,
       animate: true,
-      show_loading_overlay: false,
       sourceErrMsg: "",
       showErrorAlert: false,
       matrices_old: [],
       activeMatrix: null,
-      timer: null,
-      bar_value: 1,
+      
+      showLoading: false, // Controls loading screen visibility
+      loadingText: "Loading...", // Default loading text
+      progressValue: 0, // Progress value for the bar
+
       datasets_options: [],
       default_dataset_option: {"value": null, "text": "Please select a dataset"},
       form: {
@@ -274,20 +276,39 @@ export default {
   },
   created() {
     this.refine_dataset_options()
-  //   // console.log(this.plugins);
-  //   // this.fetch_matrices();
-  //   // console.log("proped matrices: ", this.matrices);
   },
   beforeDestroy() {
     clearInterval(this.timer);
     this.timer = null;
   },
   methods: {
+    startLoading(loadingText = "Loading...") {
+      this.showLoading = true;
+      this.loadingText = loadingText;
+      this.progressValue = 0; // Reset progress
+
+      // Simulate progress (or adjust to real progress if available)
+      const interval = setInterval(() => {
+        if (this.progressValue < 100) {
+          this.progressValue += 10; // Increase progress
+        } else {
+          clearInterval(interval); // Stop progress once it hits 100%
+          this.stopLoading(); // Hide loading screen when done
+        }
+      }, 5000); // Adjust the interval speed as necessary
+    },
+
+    // Stop loading
+    stopLoading() {
+      this.showLoading = false;
+      this.progressValue = 0; // Reset progress bar
+    }, 
+    
     refine_dataset_options() {
       this.datasets_options.push(this.default_dataset_option)
-      for(var i in this.active_organism.datasets) {
-        if(this.active_organism.datasets[i] === "$all_datasets") {
-          for(var dataset in this.datasets) {
+      for (var i in this.active_organism.datasets) {
+        if (this.active_organism.datasets[i] === "$all_datasets") {
+          for (var dataset in this.datasets) {
             this.datasets_options.push(this.datasets[dataset])
           }
           break
@@ -297,53 +318,55 @@ export default {
       }
     },
     change_transformation(obj) {
-      // console.log(obj);
       this.form.transformation = obj;
-      // console.log("form: ", this.form);
     },
-    progress_bar() {
-      // console.log("mounted");
-      this.timer = setInterval(() => {
-        this.bar_value = this.bar_value + Math.random() * 40;
-      }, 2000);
-    },
-
     
     change_matrix(path, payload) {
-      this.show_loading_overlay = true;
       if (this.$route.query.config) {
         this.form.db_entry_id = this.$route.query.config;
       }
-      this.form.local_active_organism_id = this.local_active_organism_id
+
+      this.form.local_active_organism_id = this.local_active_organism_id;
+
       var data = new FormData();
       data.append("file", payload);
       data.append("form", JSON.stringify(this.form));
       let self = this;
-      // self.$parent.$bvModal.hide('bv_modal_addData')
+
       axios
-        .post(path, data)
-        .then(res => {
-          if (res.data.error_type) {
-            this.show_loading_overlay = false;
-            self.$emit("error_occured", res.data);
-          } else {
-            this.$nextTick(() => {
-              // console.log("after next tick res: ", res);
-              // console.log(JSON.stringify(res));
-              self.$emit("dataframe_change", res);
-              this.show_loading_overlay = false;
-            });
+        .post(path, data, {
+          onUploadProgress: progressEvent => {
+            let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            console.log("Upload progress:", percentCompleted);
+            self.progressValue = percentCompleted; // Set the progress value
           }
         })
+
+        .then(res => {
+
+
+          if (res.data.error_type) {
+            console.log("---addDataform.vue datatype error---");
+            self.$emit("error_occured", res.data);
+            self.stopLoading();
+          } else {
+            self.$emit("dataframe_change", res);
+          }
+        })
+
         .catch(error => {
           console.log(error);
+          self.stopLoading();
         });
     },
+  
     onSubmit(evt) {
       evt.preventDefault();
-      this.progress_bar();
-      // console.log(this.form.source);
-      this.validateForm(this.form.source);
+      this.startLoading("Uploading Data...");
+      // Use nextTick to wait for the DOM to update
+      this.$nextTick(() => {
+        this.validateForm(this.form.source);
+      });
     },
     onReset(evt) {
       evt.preventDefault();
@@ -374,6 +397,7 @@ export default {
           "The decimal character for pasted text cannot be empty.";
         this.showErrorAlert = true;
       } else {
+        this.startLoading("Uploading...");
         const payload = this.form.source.file;
         this.change_matrix(`${this.backend_url}/upload`, payload);
         // this.$emit("close");
@@ -388,7 +412,6 @@ export default {
       this.form.x = matrix.x;
       this.form.y = matrix.y;
       this.form.matrix_id = matrix.id
-      console.log(this.form.matrix_id);
     }
   }
 };
@@ -411,5 +434,33 @@ export default {
 }
 .margin-right {
   margin-right: .5rem;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-box {
+  background-color: white;
+  padding: 50px;
+  border-radius: 12px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+b-progress {
+  margin-top: 15px;
 }
 </style>

@@ -1,143 +1,145 @@
 <template>
   <div id="app">
     <!-- <div class="draggableRegion"></div> -->
-    <error_alert
-      :error="error"
-      @error_alert_dismissed="error = null"
-      style="position:fixed;top:10px;width:100vw;z-index:1100;"
-    />
-    <loading
-      v-if="this.loading.state"
-      :increment="this.loading.increment"
-      style="position: fixed;z-index: 1900;top: 0;left: 0;width: 100vw;"
-    />
+    <error_alert 
+    :error="error" 
+    @error_alert_dismissed="error = null"
+      style="position:fixed;top:10px;width:100vw;z-index:1100;" />
+
     <div v-if="this.initializing" class="initial_load">
       <img src="./assets/hzi-logo.svg" alt="">
       <div>
-        <div class="ball-grid-pulse"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        <div class="ball-grid-pulse">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
         <h5 class="title initial_load_text">Loading Session</h5>
-        <small>v1.0.0</small>
+        <small>v1.1.0</small>
       </div>
     </div>
-    <b-alert variant="info" show dismissible><strong class="alert-heading">Update v1.0.0</strong>
-       Deployment on Docker.
+
+    <!-- Loading screen -->
+    <div class="loading-overlay" v-if="showLoading">
+      <div class="loading-box">
+        <!-- Dynamic loading text -->
+        <h5>{{ loadingText }}</h5>
+        <!-- Progress bar -->
+        <b-progress :value="progressValue" :max="100"></b-progress>
+      </div>
+    </div>
+
+    <b-alert variant="info" show dismissible><strong class="alert-heading">Update v1.1.0</strong>
+      Deployment on Docker.
     </b-alert>
     <!-- <b-progress v-if="loading.state" :value="loading.bar.value" :variant="loading.bar.variant" :key="loading.bar.variant" height="6px"></b-progress> -->
     <!-- <div class="loading" v-if="loading"><b-spinner label="Spinning"></b-spinner><span>Loading ...</span></div> -->
     <div v-if="!this.initializing">
-      <div v-if="loading.state === false">
-        <toolbar :locked="config.locked" :backend_url="backend_url" @error_occured="error_occured" />
+      <div>
+        <toolbar 
+        v-if="config" 
+        :locked="config.locked" 
+        :backend_url="backend_url" 
+        @error_occured="error_occured" />
       </div>
       <div class="grid_container">
-        <!-- <div class="header">
-        <b-button variant="secondary" size="sm"><b-icon icon="cloud-download" aria-hidden="true"></b-icon></b-button>
-        <b-button variant="secondary" size="sm"><b-icon icon="upload" aria-hidden="true"></b-icon></b-button>
-        </div>-->
         <div class="main_cell">
           <div class="main_cell_header block">
             <div class="cell_title_ud">
               <h5 class="title">Upload data</h5>
             </div>
-            <div
-              class="cell_upload_data field"
-              @click="show_modal('bv_modal_addData')"
-              id="upload_data_parent"
-            >
-              <b-popover
-                id="tutorial_popover"
-                :no-fade="true"
-                triggers
-                placement="right"
-                target="upload_data_parent"
-                title="Upload your data"
-              >Click on the + to upload, merge, or remove multiple datasets from our databases or your computer.</b-popover>
+            <div class="cell_upload_data field" @click="show_modal('bv_modal_addData')" id="upload_data_parent">
+              <b-popover 
+              id="tutorial_popover" 
+              :no-fade="true" 
+              triggers placement="right" 
+              target="upload_data_parent"
+                title="Upload your data">Click on the + to upload, merge, or remove multiple datasets from our databases
+                or your computer.</b-popover>
               <addDataButton v-on:plugin_clicked="show_modal('modal_add_plugin')" />
               <!-- <b-button variant="secondary"><b-icon icon="table"></b-icon>Upload</b-button> -->
             </div>
             <div class="cell_title_sp">
               <h5 v-if="config.plugins && this.$route.query.config" class="title">Select the visualization</h5>
-              <h5 v-else class="title">Specify the organism that best fits your data</h5>
+              <h5 v-else class="title">Specify the organism that best fits your data
+              </h5>
             </div>
-            <div
-              class="cell_select_plugin field plugins"
-              id="select_organism_parent"
-              v-if="!this.$route.query.config"
-            >
-              <b-popover
-                id="tutorial_popover"
-                :no-fade="true"
-                triggers
-                placement="bottom"
-                target="select_organism_parent"
-                title="Configure the organism"
-              >Specify an organism before uploading if you want to upload biological data and use specific features. The application offers a wide range of general-purpose features for non-biological data.</b-popover>
-              
-              
-              <organism_selection
-                @click.native="set_local_organism(organism.id), show_modal('bv_modal_addData')"
-                v-for="organism in organisms.items"
-                :key="organism.id"
-                :organism="organism"
-                :local_active_organism_id="config.active_organism_id"
-              />
+            <div 
+            class="cell_select_plugin field plugins" id="select_organism_parent" 
+            v-if="!this.$route.query.config">
+              <b-popover 
+              id="tutorial_popover" :no-fade="true" triggers placement="bottom"
+                target="select_organism_parent" title="Configure the organism">Specify an organism before uploading if
+                you want to upload biological data and use specific features. The application offers a wide range of
+                general-purpose features for non-biological data.
+              </b-popover>
+
+              <template v-for="organism in organisms.items">
+                <organism_selection 
+                @click.native="set_local_organism(organism.id), 
+                show_modal('bv_modal_addData')"
+                  :key="organism.id" 
+                  :organism="organism" 
+                  :local_active_organism_id="config.active_organism_id" 
+                  />
+              </template>
             </div>
-            <div
-              class="cell_select_plugin field plugins"
-              id="select_plugin_parent"
-              v-if="config.plugins && this.$route.query.config"
-            >
-              <b-popover
-                id="tutorial_popover"
-                :no-fade="true"
-                triggers
-                placement="top"
-                target="select_plugin_parent"
-                title="Visualize your data"
-              >Click on one of the plugins (e.g. Clustergrammer) above to generate a plot.</b-popover>
+            <div 
+            class="cell_select_plugin field plugins" id="select_plugin_parent"
+              v-if="config && config.plugins && this.$route.query.config">
+              
+              <b-popover 
+              id="tutorial_popover" 
+              :no-fade="true" 
+              triggers 
+              placement="top" 
+              target="select_plugin_parent"
+                title="Visualize your data">Click on one of the plugins (e.g. Clustergrammer) above to generate a
+                plot.
+              </b-popover>
 
               <!-- This is where we structure and display the plugins that we have loaded either from the mongoDB or from the local plugins.json into the "config.plugins" variable. -->
-              <plugins
-                @click.native="select_plugin(plugin)"
-                :active_plugin="active_plugin_id"
-                :active_vis_link="active_vis_link"
-                v-for="plugin in config.plugins"
-                :key="plugin.name"
-                :title="plugin.name"
-                :desc="plugin.desc"
-                :image_url="plugin.image_url"
-                :id="plugin._id"
-               />
-              <!-- <plugins
-                v-on:plugin_clicked="show_modal('modal_add_plugin')"
-                :title="'Add Plugin'"
-                :desc="'Connect a new visualization'"
-                :img="'add_plugin.svg'"
-              />-->
+              <plugins 
+              @click.native="select_plugin(plugin)" :active_plugin="active_plugin_id"
+              :active_vis_link="active_vis_link" 
+              v-for="plugin in config.plugins" 
+              :key="plugin.name"
+              :title="plugin.name" 
+              :desc="plugin.desc" 
+              :image_url="plugin.image_url" 
+              :id="plugin._id" />
             </div>
           </div>
-          <!-- <h5 class="title">Filter queries</h5> -->
-          <div class="field block" v-if="this.config.transformed_dataframe.length > 0">
-            <search_query
-              @dataframe_filtered="redirect_to_config($event); update_filtered(true)"
-              @error_occured="error_occured"
-              v-bind:df_categories="unique_df_categories"
-              v-bind:server_queries="this.config.query"
-              v-bind:backend_url="backend_url"
-              v-bind:table_titles="table_titles"
-              v-bind:active_organism="configure_active_organism"
-              v-if="!this.loading.state"
-            />
+          <div 
+          class="field block" 
+          v-if="config && config.transformed_dataframe && config.transformed_dataframe.length > 0">
+
+            <search_query 
+            @dataframe_filtered="redirect_to_config($event); update_filtered(true)"
+              @error_occured="error_occured" v-bind:df_categories="unique_df_categories"
+              v-bind:server_queries="this.config.query" v-bind:backend_url="backend_url"
+              v-bind:table_titles="table_titles" v-bind:active_organism="configure_active_organism"
+           />
           </div>
           <div>
             <!-- This is the iframe where the visualisation appears after clicking on the viz-plugin -->
             <visualization 
-              v-bind:vis_link="this.active_vis_link" v-if="this.active_vis_link" />
+            v-bind:vis_link="this.active_vis_link" 
+            v-if="this.active_vis_link" 
+            />
           </div>
-          <div class="html_dataframe" v-if="config.transformed_dataframe.length > 0">
-            <dataframe
-              v-bind:dataframe="this.config.transformed_dataframe"
-              v-bind:dataframe_filtered="this.config.filtered_dataframe"
-              v-bind:update_is_filter="this.filtered"
+          <div 
+          class="html_dataframe" 
+          v-if="config && config.transformed_dataframe && config.transformed_dataframe.length > 0">
+            <dataframe 
+            v-bind:dataframe="this.config.transformed_dataframe"
+            v-bind:dataframe_filtered="this.config.filtered_dataframe" v-bind:update_is_filter="this.filtered" 
             />
           </div>
         </div>
@@ -147,35 +149,36 @@
 
       <div>
         <b-modal id="bv_modal_addData" hide-footer>
-          <addDataForm
-            v-bind:matrices="this.config.preview_matrices"
-            v-bind:plugins="this.config.plugins"
-            v-bind:df_categories="Object.keys(this.config.transformed_dataframe)"
-            v-bind:backend_url="backend_url"
+          <addDataForm 
+          v-if="config"
+          v-bind:matrices="this.config.preview_matrices" v-bind:plugins="this.config.plugins"
+            v-bind:df_categories="Object.keys(this.config.transformed_dataframe)" v-bind:backend_url="backend_url"
             v-bind:local_active_organism_id="config.active_organism_id"
             v-bind:active_organism="configure_active_organism"
-            @dataframe_change="redirect_to_config($event); update_filtered(false);"
+            @dataframe_change="redirect_to_config($event); update_filtered(false);" 
             @error_occured="error_occured"
-            @close='hide_modal("bv_modal_addData")'
-          />
+            @close='hide_modal("bv_modal_addData")' 
+            />
         </b-modal>
 
-        <b-modal id="bv_modal_addData1" hide-footer>
-          <addDataForm1
-            v-bind:matrices="this.config.preview_matrices"
-            v-bind:plugins="this.config.plugins"
-            v-bind:df_categories="Object.keys(this.config.transformed_dataframe)"
-            v-bind:backend_url="backend_url"
+        <b-modal 
+        id="bv_modal_addData1" hide-footer>
+          <addDataForm1 
+          v-if="config"
+          v-bind:matrices="this.config.preview_matrices" v-bind:plugins="this.config.plugins"
+            v-bind:df_categories="Object.keys(this.config.transformed_dataframe)" v-bind:backend_url="backend_url"
             v-bind:local_active_organism_id="config.active_organism_id"
             v-bind:active_organism="configure_active_organism"
-            @dataframe_change="redirect_to_config($event); update_filtered(false);"
+            @dataframe_change="redirect_to_config($event); update_filtered(false);" 
             @error_occured="error_occured"
-            @close='hide_modal("bv_modal_addData1")'
-          />
+            @close='hide_modal("bv_modal_addData1")' />
         </b-modal>
 
         <b-modal id="modal_add_plugin" hide-footer>
-          <add_plugin @plugins_change="redirect_to_config" :backend_url="backend_url" />
+          <add_plugin 
+          @plugins_change="redirect_to_config" 
+          :backend_url="backend_url" 
+          />
         </b-modal>
       </div>
     </div>
@@ -192,7 +195,6 @@ import add_plugin from "./components/add_plugin";
 import dataframe from "./components/dataframe";
 import error_alert from "./components/error_alert";
 import organism_selection from "./components/organism_selection";
-import loading from "./components/loading";
 import plugins from "./components/plugins";
 import search_query from "./components/search_query";
 import toolbar from "./components/toolbar";
@@ -214,23 +216,19 @@ export default {
     search_query,
     toolbar,
     dataframe,
-    loading,
     error_alert,
     organism_selection,
   },
   data() {
     return {
          backend_url: 'http://127.0.0.1:5000', //This should be changed in production
+      showLoading: false,       // Controls loading screen visibility
+      loadingText: "Loading...", // Default loading text
+      progressValue: 0,          // Progress bar value
+      loadingInterval: null, 
+      
       organisms,
-      loading: {
-        state: true,
-        increment: 10,
-        bar: {
-          variant: "primary",
-          value: 0,
-          timer: null
-        }
-      },
+
       config: null,
       active_plugin_id: null,
       active_vis_link: null,
@@ -244,37 +242,94 @@ export default {
   },
   computed: {
     unique_df_categories: function() {
-      if (this.config.filtered_dataframe[0]) {
-        return [...new Set([...Object.keys(this.config.transformed_dataframe[0]) ,...Object.keys(this.config.filtered_dataframe[0])])];
-      } else {
+      if (this.config && this.config.filtered_dataframe && this.config.filtered_dataframe[0]) {
+        return [
+          ...new Set([
+            ...Object.keys(this.config.transformed_dataframe[0]),
+            ...Object.keys(this.config.filtered_dataframe[0]),
+          ]),
+        ];
+      } else if (this.config && this.config.transformed_dataframe && this.config.transformed_dataframe[0]) {
         return Object.keys(this.config.transformed_dataframe[0]);
+      } else {
+        return []; // Or handle as appropriate
       }
     },
     table_titles: function() {
-      let active_matrices_flattened = [].concat.apply([], this.config.active_matrices); // Flatten the nested array.
-      // return active_matrices_flattened.map(a => ({text: a.title, value: a.id}));
-      return active_matrices_flattened.map(a => a.title);
+      if (this.config && this.config.active_matrices) {
+        let active_matrices_flattened = [].concat.apply([], this.config.active_matrices);
+        return active_matrices_flattened.map(a => a.title);
+      } else {
+        return [];
+      }
     },
      configure_active_organism: function() {
-      let active_organism
-      for(var organism in this.organisms.items) {
-        if(this.organisms.items[organism].id == this.config.active_organism_id) {
-          active_organism = this.organisms.items[organism]
+      if (this.config && this.config.active_organism_id) {
+        let active_organism;
+        for (var organism in this.organisms.items) {
+          if (this.organisms.items[organism].id == this.config.active_organism_id) {
+            active_organism = this.organisms.items[organism];
+          }
         }
+        console.log("active organism: ", active_organism);
+        //console.log("this.loading.state:  ", this.loading.state);
+        return active_organism;
+      } else {
+        return null;
       }
-      // console.log(active_organism)
-      return active_organism
-    }
+    },
   },
   watch: {
     $route: "load_config",
   },
   methods: {
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
+
+    startLoading(loadingText = "Loading...") {
+      this.showLoading = true;
+      this.loadingText = loadingText;
+      this.progressValue = 0; // Reset progress
+
+      // If there's an existing interval, clear it to prevent overlaps
+      if (this.loadingInterval) {
+        clearInterval(this.loadingInterval);
+      }
+
+      // Store the interval ID for potential future use (e.g., cancellation)
+      this.loadingInterval = setInterval(() => {
+        if (this.progressValue < 100) { // Cap at 90% to allow room for actual progress
+          this.progressValue += 5; // Increment progress
+        } else {
+          clearInterval(this.loadingInterval); // Stop simulated progress
+          this.loadingInterval = null; // Reset interval ID
+        }
+      }, 200); // Adjust the interval speed as necessary
+    },
+
+    stopLoading() {
+      if (this.loadingInterval) {
+        clearInterval(this.loadingInterval);
+        this.loadingInterval = null;
+      }
+      // Ensure progress bar is complete
+      this.progressValue = 100;
+      this.showLoading = false;
+    },
+    
+    
     set_local_organism(organism_id) {
       this.config.active_organism_id = organism_id
     },
+  
+    //--------
+    //Code for when a plugin is clicked
+    //--------
     select_plugin(plugin) {
-      if (this.config.active_matrices.length > 0) {
+      this.loadingText = "select plugin";
+      //The matrix will have a length of > 0 when there is an actual df with values, its either 1 or 0
+      if (this.config && this.config.active_matrices && this.config.active_matrices.length > 0) {
         this.active_vis_link = null;
         this.active_plugin_id = null;
         if (plugin._id != this.active_plugin_id) {
@@ -296,6 +351,40 @@ export default {
         }
         this.post_active_plugin(this.active_plugin_id)
       }
+
+      //Checking to make sure the DF has less than 200 genes
+      //As clustergrammer can't handle large requests
+
+      //The variable this.filtered tells if a df has been filtered
+      //Need to error for two options.
+      //1. the page loads up and the user clicks on the button (filtered = false & df.size > 200)
+      //2. the dataframe is filtered and the number of genes > 200
+      if (plugin._id == "5f984ac1b478a2c8653ed827") {
+
+        if (this.filtered) {
+          console.log("true");
+          //catching error 2.
+          //The df has been filtered. Are there more than 200 genes?
+          if (this.config.filtered_dataframe.length > 200) {
+            console.log("filtered > 200");
+            this.error_occured_viz("res.data");
+            this.active_vis_link = null; //this line needed to no continue plotting
+            return;
+          }
+
+        } else {
+          // console.log("false");
+          //catching error 1.
+          //check if the size > 200
+          if (this.config.transformed_dataframe.length > 200) {
+            console.log("transformed > 200");
+            this.error_occured_viz("res.data");
+            this.active_vis_link = null; //this line needed to no continue plotting
+            return;
+          }
+        } // end this.filtered
+      }//end clustergrammer clicked
+
     },
     update_filtered(state) {
       this.filtered = state;
@@ -312,8 +401,8 @@ export default {
       });
     },
     generate_vis_link(plugin) {
-      this.loading.state = true;
-      this.loading.increment = 2;
+      // this.loading.state = true;
+      // this.loading.increment = 2;
       const path = `${this.backend_url}/visualization`;
       var payload = new FormData();
       payload.append("plugin", JSON.stringify(plugin));
@@ -328,85 +417,150 @@ export default {
       });
     },
     get_active_vis_link(plugin_id) {
-      var vis_link = null
-      for(let i=0;i<this.config.vis_links.length;i++) {
-        if(this.config.vis_links[i].plugin_id==plugin_id) {
-          vis_link = this.config.vis_links[i].link
-          break
+      if (this.config && this.config.vis_links) {
+        var vis_link = null;
+        for (let i = 0; i < this.config.vis_links.length; i++) {
+          if (this.config.vis_links[i].plugin_id == plugin_id) {
+            vis_link = this.config.vis_links[i].link;
+            break;
+          }
         }
+        return vis_link;
+      } else {
+        return null;
       }
-      return vis_link
     },
-    load_config() {
-      this.loading.state = true;
-      this.loading.increment = 5;
+    async load_config() {
+      // this.loading.state = true;
+      // this.loading.increment = 5;
       this.active_vis_link = null;
-      this.config = null;
+      this.startLoading("Loading configuration...1");
+
+      // this.config = null;
       const path = `${this.backend_url}/config`;
       var payload = new FormData();
       payload.append("url", JSON.stringify(this.$route.query.config));
-      axios
-        .post(path, payload)
-        .then(res => {
-          if (res.data.error_type) {
-            this.error_occured(res.data);
-          } else {
-            //this.config = res.data.db_entry;
-            // This is the session config which determines every data point in the whole session. We merge the session loaded from the DB via the backend and merge it with the local plugins file.
-            this.config = {...res.data.db_entry, ...pluginsConfig};
+      try {
+        const res = await axios.post(path, payload, {
 
-            this.parse_dataframe_json();
-            this.active_plugin_id = this.config.active_plugin_id
-            this.active_vis_link = this.get_active_vis_link(this.active_plugin_id) // PERFORMANCE: Maybe check for "", undefined, or null of active_plugin_id
-            this.$nextTick(() => {
-              this.loading.state = false;
-              this.initializing = false;
-            });
-          }
-        })
-        .catch(error => {
-          this.unexpected_error_occured(error)
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.lengthComputable) {
+              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              this.progressValue = percentCompleted; // 0-100% for upload
+              this.loadingText = `Uploading configuration... ${percentCompleted}%`;
+            } this.progressValue = 100;
+            this.loadingText = `Uploading configuration... 100%`;
+          },
+          onDownloadProgress: (progressEvent) => {
+            if (progressEvent.lengthComputable) {
+              this.progressValue = 0;
+              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              this.progressValue = percentCompleted; // 50-100% for download
+              this.loadingText = `Downloading configuration... ${percentCompleted}%`;
+            } this.progressValue = 100;
+            this.loadingText = `Downloading configuration... 100%`;
+            this.loadingText = `Preparing data - please wait`;
+          },
         });
+
+        if (res.data.error_type) {
+          this.error_occured(res.data);
+          this.stopLoading(); // Stop loading if there's an error
+          this.loadingText = "Loading configuration...error";
+        } else {
+          //this.config = res.data.db_entry;
+          // This is the session config which determines every data point in the whole session. 
+          // We merge the session loaded from the DB via the backend and merge it with the local plugins file.
+          this.config = { ...res.data.db_entry, ...pluginsConfig };
+
+          // Ensure config.query is initialized
+          if (!this.config.query) {
+            this.config.query = [];
+          }
+
+          this.parse_dataframe_json()
+            .then(() => {
+              this.stopLoading();
+              this.startLoading("Finalising data...");
+              this.progressValue = 0;
+              let step = 0;
+              const interval = setInterval(() => {
+                step += 1; // Increment the step
+                this.progressValue = step * 25; // Update progress (0, 25, 50, 75, 100)
+
+                if (step === 4) { // Stop once you reach 100%
+                  clearInterval(interval);
+                }
+              },
+                375); // 375ms per step to reach 1500ms total
+
+              // pause for time between 200-1500 miliseconds, 
+              // allowing loading screen to show and site progress to finish loading
+              return this.sleep(Math.floor(Math.random() * (1500 - 500 + 1)) + 200);
+            })
+            .then(() => {
+              this.stopLoading();
+            }),
+            this.active_plugin_id = this.config.active_plugin_id;
+          this.active_vis_link = this.get_active_vis_link(this.active_plugin_id);
+          // Finalize loading
+          this.initializing = false; //NEEDED
+          this.stopLoading(); // Hide loading screen after completion #NEEDED
+        }
+      } catch (error) {
+        this.unexpected_error_occured(error)
+        this.stopLoading();
+      }
     },
     parse_dataframe_json() {
-      if (this.config.transformed_dataframe.length && this.config.transformed_dataframe.length > 0) {
-        this.config.transformed_dataframe = JSON.parse(this.config.transformed_dataframe)
-      }
-      if (this.config.filtered_dataframe && this.config.filtered_dataframe.length > 0) {
-        this.config.filtered_dataframe = JSON.parse(this.config.filtered_dataframe)
-      }
+      return new Promise((resolve, reject) => {
+        try {
+          // console.log("---App.vue parse_dataframe start---");    
+
+          if (typeof this.config.transformed_dataframe === 'string') {
+            this.config.transformed_dataframe = JSON.parse(this.config.transformed_dataframe);
+          }
+          if (typeof this.config.filtered_dataframe === 'string') {
+            this.config.filtered_dataframe = JSON.parse(this.config.filtered_dataframe);
+          }
+          // console.log("---App.vue parse_dataframe end---");
+
+          resolve();
+        } catch (error) {
+          console.error("Error parsing dataframe: ", error);
+          this.error_occured({ error_type: 'Data Parsing Error', error_message: error.message });
+          this.stopLoading();
+          reject(error); // Reject the promise if an error occurs
+        }
+      });
     },
-    //get_plugins(res) {
-    //  this.hide_modal("modal_add_plugin");
-    //  this.plugins = res.data;
-    //},
+
     hide_modal(modal_id) {
       this.$bvModal.hide(modal_id);
     },
     show_modal(modal_id) {
       this.$bvModal.show(modal_id);
     },
+    error_occured_viz(error) {
+      this.stopLoading();
+      error = "Clustergrammer"
+      this.error = { error_type: error, error_message: "You can only pass a maximum of 200 genes for Clustergrammer visualisation" };
+    },
     error_occured(error) {
-      console.log('false');
-      this.loading.state = false;
+      this.stopLoading();
       this.error = error;
       console.log(this.error);
     },
     unexpected_error_occured(error) {
       this.error = {error_type: "Unexpected Error:", error_message: String(error)};
       console.log(error);
-      this.loading.state = false;
+      this.stopLoading();
     },
     redirect_to_config(res) {
-      // this.config = null
-      // console.log("res: ", res);
-      // console.log(this.config);
-      // console.log(res.data.db_entry_id["$oid"]);
+
       if (this.config._id == res.data.db_entry_id["$oid"]) {
-        // this.$router.go()
         this.active_vis_link = null;
         this.load_config();
-        // console.log(this.config);
       } else {
         this.$router.push({
           path: "/",
@@ -420,16 +574,7 @@ export default {
       this.hide_modal(modal);
     }
   },
-  mounted() {
-    this.loading.bar.timer = setInterval(() => {
-      this.loading.bar.value = this.loading.bar.value + 50 * Math.random(3, 4);
-    }, 500);
-  },
-  beforeDestroy() {
-    clearInterval(this.loading.bar.timer);
-    this.loading.bar.timer = null;
-  }
-};
+}
 </script>
 
 <style>
@@ -567,6 +712,34 @@ button {
   margin-top: 1rem;
   font-weight: 400 !important;
   font-family: 'SF Mono', -apple-system, BlinkMacSystemFont, 'Courier New', Courier, monospace;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-box {
+  background-color: white;
+  padding: 50px;
+  border-radius: 12px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+b-progress {
+  margin-top: 15px;
 }
 
 /* Initializing Loader loaders.css.min */
