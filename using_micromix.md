@@ -50,9 +50,12 @@ Clicking **Add** will load the data.
 
 If choosing to upload your own data, the file can be delimited (comma or tab) or an Excel spreadsheet. Files should contain a header row containing column names. 
 
+
 If combining user uploaded data with pre-defined datasets that are already available on Micromix, then care should be taken to make sure there are overlapping gene identifiers (for example, SL1344_xxxx).
 
-To test this feature for yourself, you can manually upload any of the predefined datasets available [here](https://github.com/BarquistLab/Micromix/tree/main/Website/backend/static) 
+To test this feature for yourself, you can manually upload any of the predefined datasets available [here](https://github.com/BarquistLab/Micromix/tree/main/Website/backend/static).
+
+> Note: The current version of Micromix can support large functional genomic datasets. We have tested datasets with 5000 genes (rows) and up to 500 columns (conditions). When using more than 100 conditions, additional loading times can be expected.
 
 <img width="50%" src="images/upload_data.png" />
 
