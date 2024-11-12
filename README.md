@@ -32,7 +32,7 @@ Micromix is designed as a visualization platform to easily view next-generation 
 ## Infrastructure
 The site comprises a backend (Flask) and a frontend (Vue.js) that communicate with each other, saving data from each session using MongoDB. Plugins within the site are typically set up on separate servers, displaying a visualisation within the site.
 
-Each user session is stored with a unique ID, allowing session information to be re-loaded by passing the unique ID into the URL. For example: [http://micromix.helmholtz-hiri.de/bacteroides/?config=652d4077f7670759f17ae4ba](http://micromix.helmholtz-hiri.de/bacteroides/?config=652d4077f7670759f17ae4ba). These links can be shared with collaborators to examine specific data patterns from data within the site, or unique user data they have manually uploaded.
+Each user session is stored with a unique ID, allowing session information to be re-loaded by passing the unique ID into the URL. For example: [https://micromix.helmholtz-hiri.de/bacteroides/?config=667e67422e5a30d66f793d96](https://micromix.helmholtz-hiri.de/bacteroides/?config=667e67422e5a30d66f793d96). These links can be shared with collaborators to examine specific data patterns from data within the site, or unique user data they have manually uploaded.
 
 
 <br>
